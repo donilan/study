@@ -1,0 +1,6 @@
+class A
+{
+public:
+	inline void f(int i){ return i;}
+	void g(int j = 0) { return j;}
+};
