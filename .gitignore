@@ -1,0 +1,16 @@
+*.o
+*.a
+*.dll
+*.jar
+*.class
+*.log
+*~
+*.make
+*.cmake
+*.exe
+bin
+build
+TAGS
+#*
+*#
+*.stackdump
