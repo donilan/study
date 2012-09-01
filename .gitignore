@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *.o
 *.a
 *.dll
@@ -14,3 +15,10 @@ TAGS
 #*
 *#
 *.stackdump
+=======
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+install_manifest.txt
+>>>>>>> c513a1b5298c03667c4594d902118ef8e305aa17
