@@ -8,6 +8,7 @@
 *.make
 *.cmake
 *.exe
+*.pyc
 bin
 build
 TAGS
