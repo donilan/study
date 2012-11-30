@@ -5,9 +5,33 @@ IMAGE_DOS_HEADER_FIELD = 'magic cblp cp crlc cparhdr minalloc maxalloc ss sp csu
 ImageDOSHeader = namedtuple('ImageDOSHeader', IMAGE_DOS_HEADER_FIELD)
 DOS_HEADER_FMT = '2sHHHHHHHHHHHHH8sHH20sL'
 
+IMAGE_DOS_HEADER = """
+2s magic
+H cblp
+H cp
+H crlc
+H cparhdr
+H minalloc
+H maxalloc
+H ss
+H sp
+H csum
+H ip
+H lfarlc
+H ovno
+4s res
+H oemid
+H oeminfo
+20s res2
+L lfanew
+"""
+
+
 IMAGE_FILE_HEADER_FIELD = 'machine numberOfSections timeDateStamp pointerToSymbolTable numberOfSymbols sizeOfOptionalHeader characteeristice'.split()
 ImageFileHeader = namedtuple('ImageFileHeader', IMAGE_FILE_HEADER_FIELD)
 FILE_HEADER_FMT = '2sHLLLH2s'
+
+IMAGE_OPTIONAL_HEADER_FIELD = 'magic majorLinkerVersion minorLinkerVersion sizeOfCode'.split()
 
 
 _TYPE_MAP = {ImageDOSHeader: DOS_HEADER_FMT,
