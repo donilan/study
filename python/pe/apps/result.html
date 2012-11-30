@@ -1,0 +1,152 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    
+  </head>
+  <body>
+    <h1>DOS HEADER</h1>
+    <table width="100%" cellspacing="0" cellpadding="0" border="1">
+      <tr>
+	<td>magic</td><td>{{dosHeader.magic}}</td>
+	<td>cblp</td><td>{{dosHeader.cblp}}</td>
+	<td>cp</td><td>{{dosHeader.cp}}</td>
+	<td>crlc</td><td>{{dosHeader.crlc}}</td>
+	<td>cparhdr</td><td>{{dosHeader.cparhdr}}</td>
+      <tr>
+	<td>minalloc</td><td>{{dosHeader.minalloc}}</td>
+	<td>maxalloc</td><td>{{dosHeader.maxalloc}}</td>
+	<td>ss</td><td>{{dosHeader.ss}}</td>
+	<td>sp</td><td>{{dosHeader.sp}}</td>
+	<td>csum</td><td>{{dosHeader.csum}}</td>	  
+      </tr>
+      <tr>
+	<td>ip</td><td>{{dosHeader.ip}}</td>
+	<td>cs</td><td>{{dosHeader.cs}}</td>
+	<td>lfarlc</td><td>{{dosHeader.lfarlc}}</td>
+	<td>ovno</td><td>{{dosHeader.ovno}}</td>
+	<td>res</td><td>{{dosHeader.res}}</td>
+      </tr>
+      <tr>
+	<td>oemid</td><td>{{dosHeader.oemid}}</td>
+	<td>oeminfo</td><td>{{dosHeader.oeminfo}}</td>
+	<td>res2</td><td>{{dosHeader.res2}}</td>
+	<td>lfanew</td><td>{{dosHeader.lfanew}}</td>
+	<td>&nbsp;</td><td>&nbsp;</td>
+      </tr>
+      </tr>
+    </table>
+
+    <h1>PE Signature</h1>
+    <table width="100%" cellspacing="0" cellpadding="0" border="1">
+      <tr>
+	<td>peSignature</td><td>{{peSignature.signature}}</td>
+      </tr>
+    </table>
+    <h1>File Header</h1>
+    <table width="100%" cellspacing="0" cellpadding="0" border="1">
+      <tr>
+	<td>machine</td><td>{{fileHeader.machine}}</td>
+	<td>numberOfSections</td><td>{{fileHeader.numberOfSections}}</td>
+	<td>timeDateStamp</td><td>{{fileHeader.timeDateStamp}}</td>
+	<td>pointerToSymbolTable</td><td>{{fileHeader.pointerToSymbolTable}}</td>
+      </tr>
+      <tr>
+	<td>numberOfSymbols</td><td>{{fileHeader.numberOfSymbols}}</td>
+	<td>sizeOfOptionalHeader</td><td>{{fileHeader.sizeOfOptionalHeader}}</td>
+	<td>characteristics</td><td>{{fileHeader.characteristics}}</td>
+	<td>&nbsp;</td><td>&nbsp;</td>
+      </tr>
+    </table>
+    <h1>Optional Header</h1>
+    <table width="100%" cellspacing="0" cellpadding="0" border="1">
+      <tr>
+	<td>magic</td><td>{{optionalHeader.magic}}</td>
+	<td>majorLinkerVersion</td><td>{{optionalHeader.majorLinkerVersion}}</td>
+	<td>minorLinkerVersion</td><td>{{optionalHeader.minorLinkerVersion}}</td>
+	<td>sizeOfCode</td><td>{{optionalHeader.sizeOfCode}}</td>
+      </tr>
+      <tr>
+	<td>sizeOfInitializedData</td><td>{{optionalHeader.sizeOfInitializedData}}</td>
+	<td>sizeOfUninitializedData</td><td>{{optionalHeader.sizeOfUninitializedData}}</td>
+	<td>addressOfEntryPoint</td><td>{{optionalHeader.addressOfEntryPoint}}</td>
+	<td>baseOfCode</td><td>{{optionalHeader.baseOfCode}}</td>
+      </tr>
+      <tr>
+	<td>baseOfData</td><td>{{optionalHeader.baseOfData}}</td>
+	<td>imageBase</td><td>{{optionalHeader.imageBase}}</td>
+	<td>sectionAlignment</td><td>{{optionalHeader.sectionAlignment}}</td>
+	<td>fileAlignment</td><td>{{optionalHeader.fileAlignment}}</td>
+      </tr>
+      <tr>
+	<td>majorOperatingSystemVersion</td><td>{{optionalHeader.majorOperatingSystemVersion}}</td>
+	<td>minorOperatingSystemVersion</td><td>{{optionalHeader.minorOperatingSystemVersion}}</td>
+	<td>majorImageVersion</td><td>{{optionalHeader.majorImageVersion}}</td>
+	<td>minorImageVersion</td><td>{{optionalHeader.minorImageVersion}}</td>
+      </tr>
+      <tr>
+	<td>majorSubsytemVersion</td><td>{{optionalHeader.majorSubsytemVersion}}</td>
+	<td>minorSubsystemVersion</td><td>{{optionalHeader.minorSubsystemVersion}}</td>
+	<td>win32VersionValue</td><td>{{optionalHeader.win32VersionValue}}</td>
+	<td>sizeOfImage</td><td>{{optionalHeader.sizeOfImage}}</td>
+      </tr>
+      <tr>
+	<td>sizeOfHeaders</td><td>{{optionalHeader.sizeOfHeaders}}</td>
+	<td>checkSum</td><td>{{optionalHeader.checkSum}}</td>
+	<td>subsystem</td><td>{{optionalHeader.subsystem}}</td>
+	<Td>DLLCharacteristics</Td><Td>{{OptionalHeader.DLLCharacteristics}}</Td>
+      </tr>
+      <tr>
+	<td>sizeOfStackReserve</td><td>{{optionalHeader.sizeOfStackReserve}}</td>
+	<td>sizeOfStackCommit</td><td>{{optionalHeader.sizeOfStackCommit}}</td>
+	<td>sizeOfHeapReserve</td><td>{{optionalHeader.sizeOfHeapReserve}}</td>
+	<td>sizeOfHeapCommit</td><td>{{optionalHeader.sizeOfHeapCommit}}</td>
+      </tr>
+      <tr>
+	<td>loaderFlags</td><td>{{optionalHeader.loaderFlags}}</td>
+	<td>numberOfRvaAndSizes</td><td>{{optionalHeader.numberOfRvaAndSizes}}</td>
+	<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+      </tr>
+    </table>
+    <h1>Image data directorys</h1>
+    <table width="100%" cellspacing="0" cellpadding="0" border="1">    
+      <tr>
+	<th>Virtual Address</th>
+	<th>Size</th>
+      </tr>
+    {% for d in imageDateDirectorys %}
+    <tr>
+      <td>{{d.virtualAddress}}</td>
+      <td>{{d.size}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    <h1>Sections</h1>
+    <table width="100%" cellspacing="0" cellpadding="0" border="1">
+      <tr>
+	<th>Name</th>
+	<th>VirtualSize</th>
+	<th>RVA</th>
+	<th>Data align size</th>
+	<th>Data offset</th>
+	<th>Relocation offset</th>
+	<th>Line Numbers offset</th>
+	<th>Num relocations</th>
+	<th>Num line Number</th>
+	<th>Flags</th>
+      </tr>
+      {% for s in sections %}
+      <tr>
+	<td>{{s.name}}</td>
+	<td>{{s.virtualSize}}</td>
+	<td>{{s.RVA}}</td>
+	<td>{{s.dataAlignSize}}</td>
+	<td>{{s.dataOffset}}</td>
+	<td>{{s.relocationsOffset}}</td>
+	<td>{{s.lineNumberOffset}}</td>
+	<td>{{s.numRelocations}}</td>
+	<td>{{s.numLineNumbers}}</td>
+	<td>{{s.flags}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>

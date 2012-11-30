@@ -1,17 +1,13 @@
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from django.shortcuts import render_to_response
 from apps.peParse import read
 
 def upload(request):
-    return HttpResponse("""
-<form method="POST" action="doUpload" enctype="multipart/form-data">
-  <input type="file" name="file" />
-  <input type="submit" value="Upload" />
-</form>""")
+    return render_to_response('upload.html')
 
 @csrf_exempt
 def doUpload(request):
     f = request.FILES['file']
-    read(f)
-    return HttpResponse('Done\n')
+    return render_to_response('result.html', read(f))

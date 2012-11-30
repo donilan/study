@@ -75,6 +75,19 @@ L virtualAddress
 L size
 """
 
+SectionStr = """
+8s name
+L virtualSize
+L RVA
+L dataAlignSize
+L dataOffset
+L relocationsOffset
+L lineNumbersOffset
+H numRelocations
+H numLineNumbers
+L flags
+"""
+
 def read(f):
     data = f.read()
     dosH = toStruct(ImageDOSHeaderStr, data)
@@ -84,12 +97,24 @@ def read(f):
     currentPos += fileHeader.structLength
     optionalHeader = toStruct(OptionalHeaderStr, data, currentPos)
     currentPos += optionalHeader.structLength
-    imageDataDirectory = []
-    for i in range(16):
+    imageDataDirectorys = []
+    for i in range(optionalHeader.numberOfRvaAndSizes):
         tmp = toStruct(ImageDataDirectoryStr, data, currentPos)
         currentPos += tmp.structLength
-        imageDataDirectory.append(tmp)
-    print imageDataDirectory
+        imageDataDirectorys.append(tmp)
+
+    sections = []
+    for i in range(fileHeader.numberOfSections):
+        tmp = toStruct(SectionStr, data, currentPos)
+        currentPos += tmp.structLength
+        sections.append(tmp)
+    
+    return {'dosHeader': dosH,
+            'peSignature': signature,
+            'fileHeader': fileHeader,
+            'optionalHeader': optionalHeader,
+            'imageDateDirectorys': imageDataDirectorys,
+            'sections': sections}
 
 
 def toStruct(_str, data, offset=None):
