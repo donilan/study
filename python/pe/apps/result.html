@@ -1,150 +1,165 @@
+{% load pe %}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    
+<style type="text/css" media="screen">
+table {
+border-top: 1px solid #AAA;
+border-left: 1px solid #AAA;
+}
+th, td {
+border-bottom: 1px solid #AAA;
+border-right: 1px solid #AAA;
+padding: 4px;
+}
+.title {
+font-weight: bold;
+background-color: #EEE;
+}
+</style>    
   </head>
   <body>
     <h1>DOS HEADER</h1>
-    <table width="100%" cellspacing="0" cellpadding="0" border="1">
+    <table width="100%" cellspacing="0" cellpadding="0" >
       <tr>
-	<td>magic</td><td>{{dosHeader.magic}}</td>
-	<td>cblp</td><td>{{dosHeader.cblp}}</td>
-	<td>cp</td><td>{{dosHeader.cp}}</td>
-	<td>crlc</td><td>{{dosHeader.crlc}}</td>
-	<td>cparhdr</td><td>{{dosHeader.cparhdr}}</td>
+	<td class="title">magic</td><td>{{dosHeader.magic|hexFormat}}</td>
+	<td class="title">cblp</td><td>{{dosHeader.cblp|hexFormat}}</td>
+	<td class="title">cp</td><td>{{dosHeader.cp|hexFormat}}</td>
+	<td class="title">crlc</td><td>{{dosHeader.crlc|hexFormat}}</td>
+	<td class="title">cparhdr</td><td>{{dosHeader.cparhdr|hexFormat}}</td>
       <tr>
-	<td>minalloc</td><td>{{dosHeader.minalloc}}</td>
-	<td>maxalloc</td><td>{{dosHeader.maxalloc}}</td>
-	<td>ss</td><td>{{dosHeader.ss}}</td>
-	<td>sp</td><td>{{dosHeader.sp}}</td>
-	<td>csum</td><td>{{dosHeader.csum}}</td>	  
+	<td class="title">minalloc</td><td>{{dosHeader.minalloc|hexFormat}}</td>
+	<td class="title">maxalloc</td><td>{{dosHeader.maxalloc|hexFormat}}</td>
+	<td class="title">ss</td><td>{{dosHeader.ss|hexFormat}}</td>
+	<td class="title">sp</td><td>{{dosHeader.sp|hexFormat}}</td>
+	<td class="title">csum</td><td>{{dosHeader.csum|hexFormat}}</td>	  
       </tr>
       <tr>
-	<td>ip</td><td>{{dosHeader.ip}}</td>
-	<td>cs</td><td>{{dosHeader.cs}}</td>
-	<td>lfarlc</td><td>{{dosHeader.lfarlc}}</td>
-	<td>ovno</td><td>{{dosHeader.ovno}}</td>
-	<td>res</td><td>{{dosHeader.res}}</td>
+	<td class="title">ip</td><td>{{dosHeader.ip|hexFormat}}</td>
+	<td class="title">cs</td><td>{{dosHeader.cs|hexFormat}}</td>
+	<td class="title">lfarlc</td><td>{{dosHeader.lfarlc|hexFormat}}</td>
+	<td class="title">ovno</td><td>{{dosHeader.ovno|hexFormat}}</td>
+	<td class="title">res</td><td>{{dosHeader.res|hexFormat}}</td>
       </tr>
       <tr>
-	<td>oemid</td><td>{{dosHeader.oemid}}</td>
-	<td>oeminfo</td><td>{{dosHeader.oeminfo}}</td>
-	<td>res2</td><td>{{dosHeader.res2}}</td>
-	<td>lfanew</td><td>{{dosHeader.lfanew}}</td>
+	<td class="title">oemid</td><td>{{dosHeader.oemid|hexFormat}}</td>
+	<td class="title">oeminfo</td><td>{{dosHeader.oeminfo|hexFormat}}</td>
+	<td class="title">res2</td><td>{{dosHeader.res2|hexFormat}}</td>
+	<td class="title">lfanew</td><td>{{dosHeader.lfanew|hexFormat}}</td>
 	<td>&nbsp;</td><td>&nbsp;</td>
       </tr>
       </tr>
     </table>
 
     <h1>PE Signature</h1>
-    <table width="100%" cellspacing="0" cellpadding="0" border="1">
+    <table width="100%" cellspacing="0" cellpadding="0" >
       <tr>
-	<td>peSignature</td><td>{{peSignature.signature}}</td>
+	<td class="title">peSignature</td><td>{{peSignature.signature|hexFormat}}</td>
       </tr>
     </table>
     <h1>File Header</h1>
-    <table width="100%" cellspacing="0" cellpadding="0" border="1">
+    <table width="100%" cellspacing="0" cellpadding="0" >
       <tr>
-	<td>machine</td><td>{{fileHeader.machine}}</td>
-	<td>numberOfSections</td><td>{{fileHeader.numberOfSections}}</td>
-	<td>timeDateStamp</td><td>{{fileHeader.timeDateStamp}}</td>
-	<td>pointerToSymbolTable</td><td>{{fileHeader.pointerToSymbolTable}}</td>
+	<td class="title">machine</td><td>{{fileHeader.machine|hexFormat}}</td>
+	<td class="title">numberOfSections</td><td>{{fileHeader.numberOfSections|hexFormat}}</td>
+	<td class="title">timeDateStamp</td><td>{{fileHeader.timeDateStamp|hexFormat}}</td>
+	<td class="title">pointerToSymbolTable</td><td>{{fileHeader.pointerToSymbolTable|hexFormat}}</td>
       </tr>
       <tr>
-	<td>numberOfSymbols</td><td>{{fileHeader.numberOfSymbols}}</td>
-	<td>sizeOfOptionalHeader</td><td>{{fileHeader.sizeOfOptionalHeader}}</td>
-	<td>characteristics</td><td>{{fileHeader.characteristics}}</td>
+	<td class="title">numberOfSymbols</td><td>{{fileHeader.numberOfSymbols|hexFormat}}</td>
+	<td class="title">sizeOfOptionalHeader</td><td>{{fileHeader.sizeOfOptionalHeader|hexFormat}}</td>
+	<td class="title">characteristics</td><td>{{fileHeader.characteristics|hexFormat}}</td>
 	<td>&nbsp;</td><td>&nbsp;</td>
       </tr>
     </table>
     <h1>Optional Header</h1>
-    <table width="100%" cellspacing="0" cellpadding="0" border="1">
+    <table width="100%" cellspacing="0" cellpadding="0" >
       <tr>
-	<td>magic</td><td>{{optionalHeader.magic}}</td>
-	<td>majorLinkerVersion</td><td>{{optionalHeader.majorLinkerVersion}}</td>
-	<td>minorLinkerVersion</td><td>{{optionalHeader.minorLinkerVersion}}</td>
-	<td>sizeOfCode</td><td>{{optionalHeader.sizeOfCode}}</td>
+	<td class="title">magic</td><td>{{optionalHeader.magic|hexFormat}}</td>
+	<td class="title">majorLinkerVersion</td><td>{{optionalHeader.majorLinkerVersion|hexFormat}}</td>
+	<td class="title">minorLinkerVersion</td><td>{{optionalHeader.minorLinkerVersion|hexFormat}}</td>
+	<td class="title">sizeOfCode</td><td>{{optionalHeader.sizeOfCode|hexFormat}}</td>
       </tr>
       <tr>
-	<td>sizeOfInitializedData</td><td>{{optionalHeader.sizeOfInitializedData}}</td>
-	<td>sizeOfUninitializedData</td><td>{{optionalHeader.sizeOfUninitializedData}}</td>
-	<td>addressOfEntryPoint</td><td>{{optionalHeader.addressOfEntryPoint}}</td>
-	<td>baseOfCode</td><td>{{optionalHeader.baseOfCode}}</td>
+	<td class="title">sizeOfInitializedData</td><td>{{optionalHeader.sizeOfInitializedData|hexFormat}}</td>
+	<td class="title">sizeOfUninitializedData</td><td>{{optionalHeader.sizeOfUninitializedData|hexFormat}}</td>
+	<td class="title">addressOfEntryPoint</td><td>{{optionalHeader.addressOfEntryPoint|hexFormat}}</td>
+	<td class="title">baseOfCode</td><td>{{optionalHeader.baseOfCode|hexFormat}}</td>
       </tr>
       <tr>
-	<td>baseOfData</td><td>{{optionalHeader.baseOfData}}</td>
-	<td>imageBase</td><td>{{optionalHeader.imageBase}}</td>
-	<td>sectionAlignment</td><td>{{optionalHeader.sectionAlignment}}</td>
-	<td>fileAlignment</td><td>{{optionalHeader.fileAlignment}}</td>
+	<td class="title">baseOfData</td><td>{{optionalHeader.baseOfData|hexFormat}}</td>
+	<td class="title">imageBase</td><td>{{optionalHeader.imageBase|hexFormat}}</td>
+	<td class="title">sectionAlignment</td><td>{{optionalHeader.sectionAlignment|hexFormat}}</td>
+	<td class="title">fileAlignment</td><td>{{optionalHeader.fileAlignment|hexFormat}}</td>
       </tr>
       <tr>
-	<td>majorOperatingSystemVersion</td><td>{{optionalHeader.majorOperatingSystemVersion}}</td>
-	<td>minorOperatingSystemVersion</td><td>{{optionalHeader.minorOperatingSystemVersion}}</td>
-	<td>majorImageVersion</td><td>{{optionalHeader.majorImageVersion}}</td>
-	<td>minorImageVersion</td><td>{{optionalHeader.minorImageVersion}}</td>
+	<td class="title">majorOperatingSystemVersion</td><td>{{optionalHeader.majorOperatingSystemVersion|hexFormat}}</td>
+	<td class="title">minorOperatingSystemVersion</td><td>{{optionalHeader.minorOperatingSystemVersion|hexFormat}}</td>
+	<td class="title">majorImageVersion</td><td>{{optionalHeader.majorImageVersion|hexFormat}}</td>
+	<td class="title">minorImageVersion</td><td>{{optionalHeader.minorImageVersion|hexFormat}}</td>
       </tr>
       <tr>
-	<td>majorSubsytemVersion</td><td>{{optionalHeader.majorSubsytemVersion}}</td>
-	<td>minorSubsystemVersion</td><td>{{optionalHeader.minorSubsystemVersion}}</td>
-	<td>win32VersionValue</td><td>{{optionalHeader.win32VersionValue}}</td>
-	<td>sizeOfImage</td><td>{{optionalHeader.sizeOfImage}}</td>
+	<td class="title">majorSubsytemVersion</td><td>{{optionalHeader.majorSubsytemVersion|hexFormat}}</td>
+	<td class="title">minorSubsystemVersion</td><td>{{optionalHeader.minorSubsystemVersion|hexFormat}}</td>
+	<td class="title">win32VersionValue</td><td>{{optionalHeader.win32VersionValue|hexFormat}}</td>
+	<td class="title">sizeOfImage</td><td>{{optionalHeader.sizeOfImage|hexFormat}}</td>
       </tr>
       <tr>
-	<td>sizeOfHeaders</td><td>{{optionalHeader.sizeOfHeaders}}</td>
-	<td>checkSum</td><td>{{optionalHeader.checkSum}}</td>
-	<td>subsystem</td><td>{{optionalHeader.subsystem}}</td>
-	<Td>DLLCharacteristics</Td><Td>{{OptionalHeader.DLLCharacteristics}}</Td>
+	<td class="title">sizeOfHeaders</td><td>{{optionalHeader.sizeOfHeaders|hexFormat}}</td>
+	<td class="title">checkSum</td><td>{{optionalHeader.checkSum|hexFormat}}</td>
+	<td class="title">subsystem</td><td>{{optionalHeader.subsystem|hexFormat}}</td>
+	<Td class="title">DLLCharacteristics</Td><Td>{{OptionalHeader.DLLCharacteristics|hexFormat}}</Td>
       </tr>
       <tr>
-	<td>sizeOfStackReserve</td><td>{{optionalHeader.sizeOfStackReserve}}</td>
-	<td>sizeOfStackCommit</td><td>{{optionalHeader.sizeOfStackCommit}}</td>
-	<td>sizeOfHeapReserve</td><td>{{optionalHeader.sizeOfHeapReserve}}</td>
-	<td>sizeOfHeapCommit</td><td>{{optionalHeader.sizeOfHeapCommit}}</td>
+	<td class="title">sizeOfStackReserve</td><td>{{optionalHeader.sizeOfStackReserve|hexFormat}}</td>
+	<td class="title">sizeOfStackCommit</td><td>{{optionalHeader.sizeOfStackCommit|hexFormat}}</td>
+	<td class="title">sizeOfHeapReserve</td><td>{{optionalHeader.sizeOfHeapReserve|hexFormat}}</td>
+	<td class="title">sizeOfHeapCommit</td><td>{{optionalHeader.sizeOfHeapCommit|hexFormat}}</td>
       </tr>
       <tr>
-	<td>loaderFlags</td><td>{{optionalHeader.loaderFlags}}</td>
-	<td>numberOfRvaAndSizes</td><td>{{optionalHeader.numberOfRvaAndSizes}}</td>
+	<td class="title">loaderFlags</td><td>{{optionalHeader.loaderFlags|hexFormat}}</td>
+	<td class="title">numberOfRvaAndSizes</td><td>{{optionalHeader.numberOfRvaAndSizes|hexFormat}}</td>
 	<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
       </tr>
     </table>
     <h1>Image data directorys</h1>
-    <table width="100%" cellspacing="0" cellpadding="0" border="1">    
+    <table width="100%" cellspacing="0" cellpadding="0" >    
       <tr>
-	<th>Virtual Address</th>
-	<th>Size</th>
+	<th class="title">Virtual Address</th>
+	<th class="title">Size</th>
       </tr>
     {% for d in imageDateDirectorys %}
     <tr>
-      <td>{{d.virtualAddress}}</td>
-      <td>{{d.size}}</td>
+      <td>{{d.virtualAddress|hexFormat}}</td>
+      <td>{{d.size|hexFormat}}</td>
     </tr>
     {% endfor %}
     </table>
     <h1>Sections</h1>
-    <table width="100%" cellspacing="0" cellpadding="0" border="1">
+    <table width="100%" cellspacing="0" cellpadding="0" >
       <tr>
-	<th>Name</th>
-	<th>VirtualSize</th>
-	<th>RVA</th>
-	<th>Data align size</th>
-	<th>Data offset</th>
-	<th>Relocation offset</th>
-	<th>Line Numbers offset</th>
-	<th>Num relocations</th>
-	<th>Num line Number</th>
-	<th>Flags</th>
+	<th class="title">Name</th>
+	<th class="title">VirtualSize</th>
+	<th class="title">RVA</th>
+	<th class="title">Data align size</th>
+	<th class="title">Data offset</th>
+	<th class="title">Relocation offset</th>
+	<th class="title">Line Numbers offset</th>
+	<th class="title">Num relocations</th>
+	<th class="title">Num line Number</th>
+	<th class="title">Flags</th>
       </tr>
       {% for s in sections %}
       <tr>
 	<td>{{s.name}}</td>
-	<td>{{s.virtualSize}}</td>
-	<td>{{s.RVA}}</td>
-	<td>{{s.dataAlignSize}}</td>
-	<td>{{s.dataOffset}}</td>
-	<td>{{s.relocationsOffset}}</td>
-	<td>{{s.lineNumberOffset}}</td>
-	<td>{{s.numRelocations}}</td>
-	<td>{{s.numLineNumbers}}</td>
-	<td>{{s.flags}}</td>
+	<td>{{s.virtualSize|hexFormat}}</td>
+	<td>{{s.RVA|hexFormat}}</td>
+	<td>{{s.dataAlignSize|hexFormat}}</td>
+	<td>{{s.dataOffset|hexFormat}}</td>
+	<td>{{s.relocationsOffset|hexFormat}}</td>
+	<td>{{s.lineNumberOffset|hexFormat}}</td>
+	<td>{{s.numRelocations|hexFormat}}</td>
+	<td>{{s.numLineNumbers|hexFormat}}</td>
+	<td>{{s.flags|hexFormat}}</td>
       </tr>
       {% endfor %}
     </table>

@@ -109,13 +109,14 @@ def read(f):
         currentPos += tmp.structLength
         sections.append(tmp)
     
-    return {'dosHeader': dosH,
+    result =  {'dosHeader': dosH,
             'peSignature': signature,
             'fileHeader': fileHeader,
             'optionalHeader': optionalHeader,
             'imageDateDirectorys': imageDataDirectorys,
             'sections': sections}
 
+    return result
 
 def toStruct(_str, data, offset=None):
     tmp = zip(*[line.split() for line in _str.strip().splitlines()])
@@ -125,7 +126,7 @@ def toStruct(_str, data, offset=None):
     structLength = struct.calcsize(packStr)
     args = struct.unpack(packStr, data[offset or 0 : (offset or 0) + structLength]) + (structLength, )
 
-    result = Struct(*args)
+    result = Struct(*args)    
     return result
 
 
