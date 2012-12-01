@@ -125,11 +125,13 @@ background-color: #EEE;
     <h1>Image data directorys</h1>
     <table width="100%" cellspacing="0" cellpadding="0" >    
       <tr>
+	<th class="title">Image data directory name</th>
 	<th class="title">Virtual Address</th>
 	<th class="title">Size</th>
       </tr>
     {% for d in imageDateDirectorys %}
     <tr>
+      <td>{{d.imageDataDirectoryName}}</td>
       <td>{{d.virtualAddress|hexFormat}}</td>
       <td>{{d.size|hexFormat}}</td>
     </tr>

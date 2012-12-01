@@ -74,6 +74,29 @@ ImageDataDirectoryStr = """
 L virtualAddress
 L size
 """
+ImageDataDirectoryNames = [
+'IMAGE_DIRECTORY_ENTRY_EXPORT',
+'IMAGE_DIRECTORY_ENTRY_IMPORT',
+'IMAGE_DIRECTORY_ENTRY_RESOURCE',
+'IMAGE_DIRECTORY_ENTRY_EXCEPTION',
+'IMAGE_DIRECTORY_ENTRY_SECURITY',
+'IMAGE_DIRECTORY_ENTRY_BASERELOC',
+'IMAGE_DIRECTORY_ENTRY_DEBUG',
+'IMAGE_DIRECTORY_ENTRY_COPYRIGHT',
+'IMAGE_DIRECTORY_ENTRY_GLOBALPTR',
+'IMAGE_DIRECTORY_ENTRY_TLS',
+'IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG',
+'IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT',
+'IMAGE_DIRECTORY_ENTRY_IAT',
+'IMAGE_DIRECTORY',
+'IMAGE_DIRECTORY',
+'IMAGE_DIRECTORY',
+'IMAGE_DIRECTORY',
+'IMAGE_DIRECTORY',
+'IMAGE_DIRECTORY',
+'IMAGE_DIRECTORY',
+'IMAGE_DIRECTORY',
+]
 
 SectionStr = """
 8s name
@@ -99,7 +122,7 @@ def read(f):
     currentPos += optionalHeader.structLength
     imageDataDirectorys = []
     for i in range(optionalHeader.numberOfRvaAndSizes):
-        tmp = toStruct(ImageDataDirectoryStr, data, currentPos)
+        tmp = toStruct(ImageDataDirectoryStr, data, currentPos, {'imageDataDirectoryName': ImageDataDirectoryNames[i]})
         currentPos += tmp.structLength
         imageDataDirectorys.append(tmp)
 
@@ -118,15 +141,37 @@ def read(f):
 
     return result
 
-def toStruct(_str, data, offset=None):
-    tmp = zip(*[line.split() for line in _str.strip().splitlines()])
-    packStr = ''.join(tmp[0])
-    fieldStr = ' '.join(tmp[1]) + ' structLength'
-    Struct = namedtuple('Struct', fieldStr)
-    structLength = struct.calcsize(packStr)
-    args = struct.unpack(packStr, data[offset or 0 : (offset or 0) + structLength]) + (structLength, )
+def toStruct(_str, data, offset=None, extends={}):
+    """
+    Translate data to struct.
+    """
 
-    result = Struct(*args)    
-    return result
+    tmp = zip(*[line.split() for line in _str.strip().splitlines()])
+    fields = list(tmp[1])
+    # join pack str like '4sHHHLLL'
+    packStr = ''.join(tmp[0])
+    
+    # calc struct length
+    structLength = struct.calcsize(packStr)
+    # unpack data
+    unpackData = data[offset or 0 : (offset or 0) + structLength]
+    args = struct.unpack(packStr, unpackData)
+
+    # add length to struct
+    fields.append('structLength')
+    args += (structLength, )
+
+    # add extends fields
+    fields += extends.keys()
+    args += tuple(extends.values())
+    print fields
+    print args
+
+    # fieldStr like 'field1 field2 field3 field4'
+    fieldStr = ' '.join(fields)
+
+    # Make struct
+    Struct = namedtuple('Struct', fieldStr)
+    return Struct(*args)
 
 
