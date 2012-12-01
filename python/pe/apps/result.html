@@ -2,7 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
 <style type="text/css" media="screen">
+body{font-size: 12px;}
+h1{font-size: 14px;}
 table {
+font-size: 12px;
 border-top: 1px solid #AAA;
 border-left: 1px solid #AAA;
 }
@@ -16,10 +19,11 @@ font-weight: bold;
 background-color: #EEE;
 }
 .important {color: red;}
+.group{border: 2px solid black; padding: 3px;}
 </style>    
   </head>
   <body>
-    <h1>DOS HEADER</h1>
+    <h1>DOS HEADER(Length: {{dosHeader.structLength}})</h1>
     <table width="100%" cellspacing="0" cellpadding="0" >
       <tr>
 	<td class="title important">magic</td><td>{{dosHeader.magic|hexFormat}}</td>
@@ -51,15 +55,10 @@ background-color: #EEE;
       </tr>
     </table>
 
-    <h1>PE Signature</h1>
+    <h1>File Header(Length: {{peSignature.structLength|add:fileHeader.structLength}})</h1>
     <table width="100%" cellspacing="0" cellpadding="0" >
       <tr>
 	<td class="title important">peSignature</td><td>{{peSignature.signature|hexFormat}}</td>
-      </tr>
-    </table>
-    <h1>File Header</h1>
-    <table width="100%" cellspacing="0" cellpadding="0" >
-      <tr>
 	<td class="title">machine</td>
 	<td>
 	  {{fileHeader.machine|machine}}
@@ -68,16 +67,20 @@ background-color: #EEE;
 	<td class="title important">numberOfSections</td><td>{{fileHeader.numberOfSections|hexFormat}}</td>
 	<td class="title">timeDateStamp</td>
 	<td>{{fileHeader.timeDateStamp}}</td>
-	<td class="title">pointerToSymbolTable</td><td>{{fileHeader.pointerToSymbolTable|hexFormat}}</td>
       </tr>
       <tr>
+	<td class="title">pointerToSymbolTable</td><td>{{fileHeader.pointerToSymbolTable|hexFormat}}</td>
 	<td class="title">numberOfSymbols</td><td>{{fileHeader.numberOfSymbols|hexFormat}}</td>
 	<td class="title">sizeOfOptionalHeader</td><td>{{fileHeader.sizeOfOptionalHeader|hexFormat}}</td>
-	<td class="title">characteristics</td><td>{{fileHeader.characteristics|hexFormat}}</td>
-	<td>&nbsp;</td><td>&nbsp;</td>
+	<td>&nbsp</td><td>&nbsp</td>
+      </tr>
+      <tr>
+	<td class="title">characteristics</td>
+	<td colspan="7">{{fileHeader.characteristics|characteristicsFlag|safe}}</td>
       </tr>
     </table>
-    <h1>Optional Header</h1>
+    <h1>Optional Header(Length: {{imageDateDirectorys|dataListLength|add:optionalHeader.structLength}})</h1>
+    <div class="group">
     <table width="100%" cellspacing="0" cellpadding="0" >
       <tr>
 	<td class="title">magic</td><td title="010Bh=32-bit executable image, 020Bh=64-bit executable image, 0107h=ROM image">{{optionalHeader.magic|hexFormat}}</td>
@@ -133,16 +136,19 @@ background-color: #EEE;
 	<th class="title">Image data directory name</th>
 	<th class="title">Virtual Address</th>
 	<th class="title">Size</th>
+	<th class="title">Length</th>
       </tr>
     {% for d in imageDateDirectorys %}
     <tr>
       <td>{{d.imageDataDirectoryName|safe}}</td>
       <td>{{d.virtualAddress|hexFormat}}</td>
       <td>{{d.size|hexFormat}}</td>
+      <td>{{d.structLength}}</td>
     </tr>
     {% endfor %}
     </table>
-    <h1>Sections</h1>
+    </div>
+    <h1>Sections(Length: {{sections|dataListLength}})</h1>
     <table width="100%" cellspacing="0" cellpadding="0" >
       <tr>
 	<th class="title important">Name</th>
@@ -174,5 +180,6 @@ background-color: #EEE;
       </tr>
       {% endfor %}
     </table>
+
   </body>
 </html>
