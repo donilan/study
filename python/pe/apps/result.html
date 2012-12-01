@@ -19,10 +19,12 @@ font-weight: bold;
 background-color: #EEE;
 }
 .important {color: red;}
+.more-important {color: blue; font-size: 14px; font-weight: bold;}
 .group{border: 2px solid black; padding: 3px;}
 </style>    
   </head>
   <body>
+    <h1>File size: {{fileSize}}({{fileSize|hex}}) Byte</h1>
     <h1>DOS HEADER(Length: {{dosHeader.structLength}})</h1>
     <table width="100%" cellspacing="0" cellpadding="0" >
       <tr>
@@ -97,8 +99,10 @@ background-color: #EEE;
       <tr>
 	<td class="title">baseOfData</td><td>{{optionalHeader.baseOfData|hexFormat}}</td>
 	<td class="title important">imageBase</td><td>{{optionalHeader.imageBase|hexFormat}}</td>
-	<td class="title important">sectionAlignment</td><td>{{optionalHeader.sectionAlignment|hexFormat}}</td>
-	<td class="title important">fileAlignment</td><td>{{optionalHeader.fileAlignment|hexFormat}}</td>
+	<td class="title important">sectionAlignment</td>
+	<td class="more-important">{{optionalHeader.sectionAlignment|hexFormat}}</td>
+	<td class="title important">fileAlignment</td>
+	<td class="more-important">{{optionalHeader.fileAlignment|hexFormat}}</td>
       </tr>
       <tr>
 	<td class="title">majorOperatingSystemVersion</td><td>{{optionalHeader.majorOperatingSystemVersion|hexFormat}}</td>
@@ -115,7 +119,8 @@ background-color: #EEE;
       <tr>
 	<td class="title important">sizeOfHeaders</td><td>{{optionalHeader.sizeOfHeaders|hexFormat}}</td>
 	<td class="title">checkSum</td><td>{{optionalHeader.checkSum|hexFormat}}</td>
-	<td class="title">subsystem</td><td>{{optionalHeader.subsystem|hexFormat}}</td>
+	<td class="title">subsystem</td>
+	<td>{{optionalHeader.subsystem|subsystem}}</td>
 	<Td class="title">DLLCharacteristics</Td><Td>{{OptionalHeader.DLLCharacteristics|hexFormat}}</Td>
       </tr>
       <tr>

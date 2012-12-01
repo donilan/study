@@ -28,7 +28,7 @@ _SECTION_FLAGS = {
 
 _CHARACTERISTICS_FLAGS = {
     0x0001:  'IMAGE_FILE_RELOCS_STRIPPED Relocation info stripped from file.',
-    0x0002:  'IMAGE_FILE_EXECUTABLE_IMAGE File is executable  (i.e. no unresolved externel references).',
+    0x0002:  '<span class="important">IMAGE_FILE_EXECUTABLE_IMAGE File is executable  (i.e. no unresolved externel references).</span>',
     0x0004:  'IMAGE_FILE_LINE_NUMS_STRIPPED Line nunbers stripped from file.',
     0x0008:  'IMAGE_FILE_LOCAL_SYMS_STRIPPED Local symbols stripped from file.',
     0x0010:  'IMAGE_FILE_AGGRESIVE_WS_TRIM Agressively trim working set',
@@ -39,16 +39,37 @@ _CHARACTERISTICS_FLAGS = {
     0x0400:  'IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP If Image is on removable media, copy and run from the swap file.',
     0x0800:  'IMAGE_FILE_NET_RUN_FROM_SWAP If Image is on Net, copy and run from the swap file.',
     0x1000:  'IMAGE_FILE_SYSTEM System File.',
-    0x2000:  'IMAGE_FILE_DLL File is a DLL.',
+    0x2000:  '<span class="important">IMAGE_FILE_DLL File is a DLL.</span>',
     0x4000:  'IMAGE_FILE_UP_SYSTEM_ONLY File should only be run on a UP machine',
     0x8000:  'IMAGE_FILE_BYTES_REVERSED_HI Bytes of machine word are reversed.',
 }
 
+_SUBSYSTEM = [
+    'IMAGE_SUBSYSTEM_UNKNOWN Unknown subsystem.',
+    'IMAGE_SUBSYSTEM_NATIVE Image doesn\'t require a subsystem.',
+    'IMAGE_SUBSYSTEM_WINDOWS_GUI Image runs in the Windows GUI subsystem.',
+    'IMAGE_SUBSYSTEM_WINDOWS_CUI Image runs in the Windows character subsystem.',
+    'IMAGE_SUBSYSTEM_OS2_CUI image runs in the OS/2 character subsystem.',
+    'IMAGE_SUBSYSTEM_POSIX_CUI image runs in the Posix character subsystem.',
+    'IMAGE_SUBSYSTEM_NATIVE_WINDOWS image is a native Win9x driver.',
+    'IMAGE_SUBSYSTEM_WINDOWS_CE_GUI Image runs in the Windows CE subsystem.',
+    'IMAGE_SUBSYSTEM_EFI_APPLICATION',
+    'IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER',
+    'IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER',
+    'IMAGE_SUBSYSTEM_EFI_ROM ',
+    'IMAGE_SUBSYSTEM_XBOX ',
+    'IMAGE_SUBSYSTEM_WINDOWS_BOOT_APPLICATION',
+]
+
 def _splitReverse(strs):
     return ''.join([strs[:i][::-1] for i in range(0,len(strs)+4,4)])
         
-def str2hex(strs):
-    return ''.join([("%02x" % ord(s)).upper() for s in _splitReverse(strs)])
+def hex(value):
+    if isinstance(value, str):
+        return ''.join([("%02x" % ord(s)).upper() for s in _splitReverse(value)])
+    elif isinstance(value, int) or isinstance(value, long):
+        return ('%08x' % value).upper()
+    return value
 
 def hexFormat(value):
     """
@@ -67,7 +88,7 @@ def hexFormat(value):
         elif len(value) > 8:
             return value;
 
-        return ''.join([value,'[0x', str2hex(value), ']'])
+        return ''.join([value,'[0x', hex(value), ']'])
     else:
         return value
     
@@ -104,7 +125,7 @@ def machine(value):
     Arguments:
     - `value`:
     """
-    return _MACHINES.get(str2hex(value),'Unknow machine')
+    return _MACHINES.get(hex(value),'Unknow machine')
 
 def dataListLength(value):
     """
@@ -115,9 +136,21 @@ def dataListLength(value):
     if isinstance(value, list):
         return sum(d.structLength for d in value)
 
+
+def subsystem(value):
+    """
+    Show sub system.
+    Arguments:
+    - `value`:
+    """
+    if value < len(_SUBSYSTEM):
+        return _SUBSYSTEM[value]
+    return 'Unknow.'
+    
 register.filter('hexFormat', hexFormat)
 register.filter('sectionFlags', sectionFlags)
 register.filter('machine', machine)
-register.filter('hex', str2hex)
+register.filter('hex', hex)
 register.filter('dataListLength', dataListLength)
 register.filter('characteristicsFlag', characteristicsFlag)
+register.filter('subsystem', subsystem)

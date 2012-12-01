@@ -113,6 +113,7 @@ L flags
 
 def read(f):
     data = f.read()
+    fileSize = len(data)
     dosH = toStruct(ImageDOSHeaderStr, data)
     signature = toStruct(PESignatureStr, data, dosH.lfanew)
     currentPos = dosH.lfanew+signature.structLength
@@ -132,12 +133,14 @@ def read(f):
         currentPos += tmp.structLength
         sections.append(tmp)
     
-    result =  {'dosHeader': dosH,
-            'peSignature': signature,
-            'fileHeader': fileHeader,
-            'optionalHeader': optionalHeader,
-            'imageDateDirectorys': imageDataDirectorys,
-            'sections': sections}
+    result =  {
+        'fileSize': fileSize,
+        'dosHeader': dosH,
+        'peSignature': signature,
+        'fileHeader': fileHeader,
+        'optionalHeader': optionalHeader,
+        'imageDateDirectorys': imageDataDirectorys,
+        'sections': sections}
 
     return result
 
