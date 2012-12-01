@@ -60,9 +60,14 @@ background-color: #EEE;
     <h1>File Header</h1>
     <table width="100%" cellspacing="0" cellpadding="0" >
       <tr>
-	<td class="title">machine</td><td>{{fileHeader.machine|hexFormat}}</td>
+	<td class="title">machine</td>
+	<td>
+	  {{fileHeader.machine|machine}}
+	  [0x{{fileHeader.machine|hex}}]
+	</td>
 	<td class="title important">numberOfSections</td><td>{{fileHeader.numberOfSections|hexFormat}}</td>
-	<td class="title">timeDateStamp</td><td>{{fileHeader.timeDateStamp|hexFormat}}</td>
+	<td class="title">timeDateStamp</td>
+	<td>{{fileHeader.timeDateStamp}}</td>
 	<td class="title">pointerToSymbolTable</td><td>{{fileHeader.pointerToSymbolTable|hexFormat}}</td>
       </tr>
       <tr>
@@ -131,7 +136,7 @@ background-color: #EEE;
       </tr>
     {% for d in imageDateDirectorys %}
     <tr>
-      <td>{{d.imageDataDirectoryName}}</td>
+      <td>{{d.imageDataDirectoryName|safe}}</td>
       <td>{{d.virtualAddress|hexFormat}}</td>
       <td>{{d.size|hexFormat}}</td>
     </tr>

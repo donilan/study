@@ -26,6 +26,12 @@ _SECTION_FLAGS = {
     80000000: "<span class='important' >Section is writable.</span>"
 }
 
+def _splitReverse(strs):
+    return ''.join([strs[:i][::-1] for i in range(0,len(strs)+4,4)])
+        
+def str2hex(strs):
+    return ''.join([("%02x" % ord(s)).upper() for s in _splitReverse(strs)])
+
 def hexFormat(value):
     """
     Translate object to hex format
@@ -40,7 +46,10 @@ def hexFormat(value):
     elif isinstance(value, str):
         if len(value) < 1:
             return '-'
-        return ''.join([value,'[0x']+[("%02x" % ord(s)).upper() for s in value]+[']'])
+        elif len(value) > 8:
+            return value;
+
+        return ''.join([value,'[0x', str2hex(value), ']'])
     else:
         return value
     
@@ -51,5 +60,28 @@ def sectionFlags(value):
             result.append(_SECTION_FLAGS[k])
     return '<br />'.join(result)
 
+
+_MACHINES = {
+    '014C': 'Intel 80386',
+    '014D': 'Intel 80386',
+    '014E': 'Intel 80386',
+    '0160': 'R3000',
+    '0162': 'R3000',
+    '0166': 'R4000',
+    '0168': 'R10000',
+    '0184': 'DEC Alpha AXP10',
+    '01F0': 'IBM Power PC'
+}
+
+def machine(value):
+    """
+    transalte string to machine.
+    Arguments:
+    - `value`:
+    """
+    return _MACHINES.get(str2hex(value),'Unknow machine')
+
 register.filter('hexFormat', hexFormat)
 register.filter('sectionFlags', sectionFlags)
+register.filter('machine', machine)
+register.filter('hex', str2hex)
