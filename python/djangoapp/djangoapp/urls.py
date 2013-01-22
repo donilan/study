@@ -4,6 +4,8 @@ from django.conf.urls import patterns, include, url
 # from django.contrib import admin
 # admin.autodiscover()
 
+import myapp.views
+
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'djangoapp.views.home', name='home'),
@@ -14,4 +16,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+    url(r'^now', myapp.views.current_datetime),
+    url(r'^upload', myapp.views.upload),
+    url(r'^session', myapp.views.session),
 )
