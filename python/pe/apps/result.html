@@ -1,0 +1,190 @@
+{% load pe %}
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+<style type="text/css" media="screen">
+body{font-size: 12px;}
+h1{font-size: 14px;}
+table {
+font-size: 12px;
+border-top: 1px solid #AAA;
+border-left: 1px solid #AAA;
+}
+th, td {
+border-bottom: 1px solid #AAA;
+border-right: 1px solid #AAA;
+padding: 4px;
+}
+.title {
+font-weight: bold;
+background-color: #EEE;
+}
+.important {color: red;}
+.more-important {color: blue; font-size: 14px; font-weight: bold;}
+.group{border: 2px solid black; padding: 3px;}
+</style>    
+  </head>
+  <body>
+    <h1>File size: {{fileSize}}({{fileSize|hex}}) Byte</h1>
+    <h1>DOS HEADER(Length: {{dosHeader.structLength}})</h1>
+    <table width="100%" cellspacing="0" cellpadding="0" >
+      <tr>
+	<td class="title important">magic</td><td>{{dosHeader.magic|hexFormat}}</td>
+	<td class="title">cblp</td><td>{{dosHeader.cblp|hexFormat}}</td>
+	<td class="title">cp</td><td>{{dosHeader.cp|hexFormat}}</td>
+	<td class="title">crlc</td><td>{{dosHeader.crlc|hexFormat}}</td>
+	<td class="title">cparhdr</td><td>{{dosHeader.cparhdr|hexFormat}}</td>
+      <tr>
+	<td class="title">minalloc</td><td>{{dosHeader.minalloc|hexFormat}}</td>
+	<td class="title">maxalloc</td><td>{{dosHeader.maxalloc|hexFormat}}</td>
+	<td class="title">ss</td><td>{{dosHeader.ss|hexFormat}}</td>
+	<td class="title">sp</td><td>{{dosHeader.sp|hexFormat}}</td>
+	<td class="title">csum</td><td>{{dosHeader.csum|hexFormat}}</td>	  
+      </tr>
+      <tr>
+	<td class="title">ip</td><td>{{dosHeader.ip|hexFormat}}</td>
+	<td class="title">cs</td><td>{{dosHeader.cs|hexFormat}}</td>
+	<td class="title">lfarlc</td><td>{{dosHeader.lfarlc|hexFormat}}</td>
+	<td class="title">ovno</td><td>{{dosHeader.ovno|hexFormat}}</td>
+	<td class="title">res</td><td>{{dosHeader.res|hexFormat}}</td>
+      </tr>
+      <tr>
+	<td class="title">oemid</td><td>{{dosHeader.oemid|hexFormat}}</td>
+	<td class="title">oeminfo</td><td>{{dosHeader.oeminfo|hexFormat}}</td>
+	<td class="title">res2</td><td>{{dosHeader.res2|hexFormat}}</td>
+	<td class="title important">lfanew</td><td>{{dosHeader.lfanew|hexFormat}}</td>
+	<td>&nbsp;</td><td>&nbsp;</td>
+      </tr>
+      </tr>
+    </table>
+
+    <h1>File Header(Length: {{peSignature.structLength|add:fileHeader.structLength}})</h1>
+    <table width="100%" cellspacing="0" cellpadding="0" >
+      <tr>
+	<td class="title important">peSignature</td><td>{{peSignature.signature|hexFormat}}</td>
+	<td class="title">machine</td>
+	<td>
+	  {{fileHeader.machine|machine}}
+	  [0x{{fileHeader.machine|hex}}]
+	</td>
+	<td class="title important">numberOfSections</td><td>{{fileHeader.numberOfSections|hexFormat}}</td>
+	<td class="title">timeDateStamp</td>
+	<td>{{fileHeader.timeDateStamp}}</td>
+      </tr>
+      <tr>
+	<td class="title">pointerToSymbolTable</td><td>{{fileHeader.pointerToSymbolTable|hexFormat}}</td>
+	<td class="title">numberOfSymbols</td><td>{{fileHeader.numberOfSymbols|hexFormat}}</td>
+	<td class="title">sizeOfOptionalHeader</td><td>{{fileHeader.sizeOfOptionalHeader|hexFormat}}</td>
+	<td>&nbsp</td><td>&nbsp</td>
+      </tr>
+      <tr>
+	<td class="title">characteristics</td>
+	<td colspan="7">{{fileHeader.characteristics|characteristicsFlag|safe}}</td>
+      </tr>
+    </table>
+    <h1>Optional Header(Length: {{imageDateDirectorys|dataListLength|add:optionalHeader.structLength}})</h1>
+    <div class="group">
+    <table width="100%" cellspacing="0" cellpadding="0" >
+      <tr>
+	<td class="title">magic</td><td title="010Bh=32-bit executable image, 020Bh=64-bit executable image, 0107h=ROM image">{{optionalHeader.magic|hexFormat}}</td>
+	<td class="title">majorLinkerVersion</td><td>{{optionalHeader.majorLinkerVersion|hexFormat}}</td>
+	<td class="title">minorLinkerVersion</td><td>{{optionalHeader.minorLinkerVersion|hexFormat}}</td>
+	<td class="title important">sizeOfCode</td><td>{{optionalHeader.sizeOfCode|hexFormat}}</td>
+      </tr>
+      <tr>
+	<td class="title important">sizeOfInitializedData</td><td>{{optionalHeader.sizeOfInitializedData|hexFormat}}</td>
+	<td class="title">sizeOfUninitializedData</td><td>{{optionalHeader.sizeOfUninitializedData|hexFormat}}</td>
+	<td class="title important">addressOfEntryPoint</td><td>{{optionalHeader.addressOfEntryPoint|hexFormat}}</td>
+	<td class="title">baseOfCode</td><td>{{optionalHeader.baseOfCode|hexFormat}}</td>
+      </tr>
+      <tr>
+	<td class="title">baseOfData</td><td>{{optionalHeader.baseOfData|hexFormat}}</td>
+	<td class="title important">imageBase</td><td>{{optionalHeader.imageBase|hexFormat}}</td>
+	<td class="title important">sectionAlignment</td>
+	<td class="more-important">{{optionalHeader.sectionAlignment|hexFormat}}</td>
+	<td class="title important">fileAlignment</td>
+	<td class="more-important">{{optionalHeader.fileAlignment|hexFormat}}</td>
+      </tr>
+      <tr>
+	<td class="title">majorOperatingSystemVersion</td><td>{{optionalHeader.majorOperatingSystemVersion|hexFormat}}</td>
+	<td class="title">minorOperatingSystemVersion</td><td>{{optionalHeader.minorOperatingSystemVersion|hexFormat}}</td>
+	<td class="title">majorImageVersion</td><td>{{optionalHeader.majorImageVersion|hexFormat}}</td>
+	<td class="title">minorImageVersion</td><td>{{optionalHeader.minorImageVersion|hexFormat}}</td>
+      </tr>
+      <tr>
+	<td class="title">majorSubsytemVersion</td><td>{{optionalHeader.majorSubsytemVersion|hexFormat}}</td>
+	<td class="title">minorSubsystemVersion</td><td>{{optionalHeader.minorSubsystemVersion|hexFormat}}</td>
+	<td class="title">win32VersionValue</td><td>{{optionalHeader.win32VersionValue|hexFormat}}</td>
+	<td class="title important">sizeOfImage</td><td>{{optionalHeader.sizeOfImage|hexFormat}}</td>
+      </tr>
+      <tr>
+	<td class="title important">sizeOfHeaders</td><td>{{optionalHeader.sizeOfHeaders|hexFormat}}</td>
+	<td class="title">checkSum</td><td>{{optionalHeader.checkSum|hexFormat}}</td>
+	<td class="title">subsystem</td>
+	<td>{{optionalHeader.subsystem|subsystem}}</td>
+	<Td class="title">DLLCharacteristics</Td><Td>{{OptionalHeader.DLLCharacteristics|hexFormat}}</Td>
+      </tr>
+      <tr>
+	<td class="title">sizeOfStackReserve</td><td>{{optionalHeader.sizeOfStackReserve|hexFormat}}</td>
+	<td class="title">sizeOfStackCommit</td><td>{{optionalHeader.sizeOfStackCommit|hexFormat}}</td>
+	<td class="title">sizeOfHeapReserve</td><td>{{optionalHeader.sizeOfHeapReserve|hexFormat}}</td>
+	<td class="title">sizeOfHeapCommit</td><td>{{optionalHeader.sizeOfHeapCommit|hexFormat}}</td>
+      </tr>
+      <tr>
+	<td class="title">loaderFlags</td><td>{{optionalHeader.loaderFlags|hexFormat}}</td>
+	<td class="title important">numberOfRvaAndSizes</td><td>{{optionalHeader.numberOfRvaAndSizes|hexFormat}}</td>
+	<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+      </tr>
+    </table>
+    <h1>Image data directorys</h1>
+    <table width="100%" cellspacing="0" cellpadding="0" >    
+      <tr>
+	<th class="title">Image data directory name</th>
+	<th class="title">Virtual Address</th>
+	<th class="title">Size</th>
+	<th class="title">Length</th>
+      </tr>
+    {% for d in imageDateDirectorys %}
+    <tr>
+      <td>{{d.imageDataDirectoryName|safe}}</td>
+      <td>{{d.virtualAddress|hexFormat}}</td>
+      <td>{{d.size|hexFormat}}</td>
+      <td>{{d.structLength}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    </div>
+    <h1>Sections(Length: {{sections|dataListLength}})</h1>
+    <table width="100%" cellspacing="0" cellpadding="0" >
+      <tr>
+	<th class="title important">Name</th>
+	<th class="title important">VirtualSize</th>
+	<th class="title important">RVA(Virtual address)</th>
+	<th class="title important" title="Size of raw data" >Data align size</th>
+	<th class="title important" title="Pointer to raw data" >Data offset</th>
+	<th class="title">Relocation offset</th>
+	<th class="title">Line Numbers offset</th>
+	<th class="title">Num relocations</th>
+	<th class="title">Num line Number</th>
+	<th class="title">Flags</th>
+      </tr>
+      {% for s in sections %}
+      <tr>
+	<td>{{s.name}}</td>
+	<td>{{s.virtualSize|hexFormat}}</td>
+	<td>{{s.RVA|hexFormat}}</td>
+	<td>{{s.dataAlignSize|hexFormat}}</td>
+	<td>{{s.dataOffset|hexFormat}}</td>
+	<td>{{s.relocationsOffset|hexFormat}}</td>
+	<td>{{s.lineNumberOffset|hexFormat}}</td>
+	<td>{{s.numRelocations|hexFormat}}</td>
+	<td>{{s.numLineNumbers|hexFormat}}</td>
+	<td>
+	  {{s.flags|hexFormat}}<br />
+	  {{s.flags|sectionFlags|safe}}
+	</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+  </body>
+</html>
