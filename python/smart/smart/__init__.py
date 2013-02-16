@@ -1,8 +1,7 @@
 import re
 class Context(object):
 
-    def __init__(self, client, cmd):
-        self.client = client
+    def __init__(self, cmd):
         self.target = ''
         self.cmdName = ''
         self.param = ''

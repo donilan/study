@@ -66,7 +66,9 @@ class SmartServer(object):
             if not data: break
             data = data.replace('\n', '')
             for cmd in re.sub(r'([^\\]);', r'\1;;;', data).split(';;;'):
-                context = Context(addr, cmd)
+                context = Context(cmd)
+                context.client = addr
+                context.connections = self.conns
                 result = self.executeCommand(context)
                 if result:
                     conn.sendall(result+'\n')
@@ -78,7 +80,6 @@ class SmartServer(object):
                        % (context.client, context.cmdName
                           , context.param, context.target))
         if context.target == 'smart':
-            context.connections = self.conns
             return CommandExecutor(context).run()
         elif context.target == 'all':
             for host, con in self.conns.items():
