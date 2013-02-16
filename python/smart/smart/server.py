@@ -1,4 +1,4 @@
-import socket, logging, thread, re
+import socket, logging, thread, re, errno
 from smart import Context, CommandExecutor
 
 class Connections(object):
@@ -62,9 +62,19 @@ class SmartServer(object):
         
     def handleClient(self, conn, addr):
         while True:
-            data = conn.recv(1024)
-            if not data: break
+            try:
+                data = conn.recv(1024)
+            except socket.error, v:
+                self.log.info('Host [%s] closed.' % addr)
+                self.conns.remove(addr)
+                break
+            if not data: 
+                self.log.info('Host [%s] closed.' % addr)
+                self.conns.remove(addr)
+                break
             data = data.replace('\n', '')
+            if not data:
+                return ''
             for cmd in re.sub(r'([^\\]);', r'\1;;;', data).split(';;;'):
                 context = Context(cmd)
                 context.client = addr
