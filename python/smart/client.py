@@ -1,19 +1,9 @@
 #!/usr/bin/env python
 
-import socket, thread
+from smart.client import SmartClient
+import logging
 
-def recvData(s):
-    while 1:
-        print s.recv(1024)
+logging.basicConfig(level=logging.DEBUG)
 
-
-ADDR = ('127.0.0.1', 19374)
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(ADDR)
-thread.start_new_thread(recvData, (s,))
-while 1:
-    msg = raw_input('')
-    s.sendall(msg)
-    
-s.close()
-    
+if __name__ == '__main__':
+    SmartClient(host='127.0.0.1').run()

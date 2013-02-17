@@ -1,5 +1,6 @@
-import socket, logging, thread, re, errno
+import socket, logging, threading, re, errno
 from smart import Context, CommandExecutor
+import smart.const
 
 class Connections(object):
     
@@ -39,29 +40,41 @@ class Connections(object):
 
 class SmartServer(object):
     
-    def __init__(self, hostname='0.0.0.0'
-                 , port=19374, conns=Connections()
+    def __init__(self, hostname=smart.const.LISTEN
+                 , cmdPort = smart.const.CMD_PORT
+                 , conns = Connections()
                  , log = logging.getLogger('SmartServer')):
-        self.port = port
+        self.cmdPort = cmdPort
         self.hostname = hostname
         self.conns = Connections()
         self.log = log
+        self.stopEvent = threading.Event()
 
     def run(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind((self.hostname, self.port))
-        s.listen(1)
+        cmdSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        cmdSocket.bind((self.hostname, self.cmdPort))
+        cmdSocket.listen(1)
         self.log.info('Server %s listening on %d starting...' 
-                      % (self.hostname, self.port))
+                      % (self.hostname, self.cmdPort))
+
         while True:
-            conn, addr = s.accept()
+            try:
+                conn, addr = cmdSocket.accept()
+            except KeyboardInterrupt:
+                break
             addr = "%s:%d" % addr
             self.log.info('Connectd by %s' % (addr))
             self.conns.add(addr, conn)
-            thread.start_new_thread(self.handleClient, (conn, addr))
+            t = threading.Thread(target=self.handleClient, args=(conn, addr))
+            t.start()
+
+
+        self.stopEvent.set()
+        cmdSocket.close()
+        self.log.info('User quit.')
         
     def handleClient(self, conn, addr):
-        while True:
+        while not self.stopEvent.is_set():
             try:
                 data = conn.recv(1024)
             except socket.error, v:
