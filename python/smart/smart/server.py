@@ -31,15 +31,18 @@ class Connections(object):
             name = host
         return self._conns.get(name, _default)
 
-    def sendLog(self, target, msg, origin = smart.const.SERVER_ALIAS, logType='info'):
-        self.send(Context(u'%s log %s %s for %s' %(target, logType, msg, origin)))
+    def sendLog(self, target, msg, origin = smart.const.SERVER_ALIAS, \
+                    logType='info'):
+        self.send(Context(u'%s log %s %s for %s' %(target, logType, \
+                                                       msg, origin)))
 
     def send(self, context):
         if isinstance(context, str):
             context = Context(context)
         con = self.get(context.target)
         if con:
-            self.log.debug('Send data [%s] to [%s]' % (context.cmd(), context.target))
+            self.log.debug('Send data [%s] to [%s]' % (context.cmd(), \
+                                                           context.target))
             con.sendall(context.cmd())
         else:
             self.log.debug('Connection not found for [%s]' % (context.target))
