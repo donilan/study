@@ -59,14 +59,14 @@ class SmartServer(object):
 
     def run(self):
         
-        for i in range(1, 10):
+        for i in range(1, 100):
             try:
                 self.cmdSocket.bind((self.hostname, self.cmdPort))
             except socket.error, v:
-                if i > 8:
+                if i > 90:
                     exit(1)
-                self.log.error('Server bind error. Retry after %ds.' % (2*i))
-                time.sleep(2*i)
+                self.log.error('Server bind error. Retry after %ds.' % (5))
+                time.sleep(5)
                 continue
             else:
                 break
