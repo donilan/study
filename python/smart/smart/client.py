@@ -37,11 +37,11 @@ class SmartClient(object):
                 continue
             if not data:
                 self.log.error('Server close connection.')
-                self.close()
                 break
 
             if data.startswith(self.name) or (self.alias is not None and data.startswith(self.alias)):
                 context = Context(data)
+                context.client = self
                 result = CommandExecutor(context).run()
                 if not result:
                     result = 'Execute success but no message.'

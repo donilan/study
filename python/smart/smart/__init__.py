@@ -62,6 +62,12 @@ class Context(object):
             cmd += ['for', self.origin]
         return ' '.join(cmd)
 
+    def isClient(self):
+        return hasattr(self, 'client')
+
+    def isServer(self):
+        return hasattr(self, 'server')
+
 class CommandExecutor(object):
 
     def __init__(self, context):
@@ -71,10 +77,10 @@ class CommandExecutor(object):
         if self.context.cmdName:
             try:
                 exec 'import %s.%s as cmdModule' % (smart.const.CMD_PACKAGE, self.context.cmdName.replace(' ', '.'))
-                return cmdModule.execute(self.context)
-            except ImportError:
+            except:
                 return '%s Don\'t know how to execute [%s]' % \
                     (self.context.cmd(), self.context.cmdName)
+            return cmdModule.execute(self.context)
         else:
             return 'Error: Command name cannot be empty.'
 

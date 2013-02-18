@@ -12,6 +12,12 @@ class Connections(object):
     def alias(self, name, alias):
         self._alias[alias] = name
 
+    def getAlias(self, name):
+        for k, v in self._alias.items():
+            if v == name:
+                return k
+        return name
+
     def add(self, name, conn):
         self._conns[name] = conn
 
@@ -26,9 +32,11 @@ class Connections(object):
         return self._conns.get(name, _default)
 
     def sendLog(self, target, msg, origin = smart.const.SERVER_ALIAS, logType='info'):
-        self.send(Context('%s log %s %s for %s' %(target, logType, msg, origin)))
+        self.send(Context(u'%s log %s %s for %s' %(target, logType, msg, origin)))
 
     def send(self, context):
+        if isinstance(context, str):
+            context = Context(context)
         con = self.get(context.target)
         if con:
             self.log.debug('Send data [%s] to [%s]' % (context.cmd(), context.target))
@@ -115,9 +123,10 @@ class SmartServer(object):
             if not data:
                 continue
             for cmd in re.sub(r'([^\\]);', r'\1;;;', data).split(';;;'):
-                cmd = self.__checkOrigin(cmd, addr)
+                cmd = self.__checkOrigin(cmd, self.conns.getAlias(addr))
                 context = Context(cmd)
                 context.connections = self.conns
+                context.server = self
                 result = self.executeCommand(context)
                 if result:
                     self.conns.sendLog(context.origin, result)
