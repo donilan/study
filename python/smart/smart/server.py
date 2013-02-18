@@ -116,31 +116,33 @@ class SmartServer(object):
             for cmd in re.sub(r'([^\\]);', r'\1;;;', data).split(';;;'):
                 cmd = self.__checkOrigin(cmd, addr)
                 context = Context(cmd)
-                context.client = addr
                 context.connections = self.conns
                 result = self.executeCommand(context)
                 if result:
-                    self.conns.sendLog(addr, result)
+                    self.conns.sendLog(context.origin, result)
 
     def __checkOrigin(self, cmd, origin):
         originRe = '\\s+for\\s+(me|%s)\\s*$' % origin
         cmd = re.sub('\\\\(;|\\\\)', '\\1', cmd)
-        if re.match(originRe, cmd):
+        if re.search(originRe, cmd):
+            self.log.debug('In check origin match self.')
             return re.sub(originRe, ' for %s' % (origin), cmd)
-        elif re.match('for\\s+\\w+\\s*$', cmd):
+        elif re.search('for\\s+\\w+\\s*$', cmd):
+            self.log.debug('In check origin match other.')
             return cmd
         else:
+            self.log.debug('In check origin Not match.')
             return ' '.join([cmd, 'for', origin])
 
     def executeCommand(self, context):
         self.log.debug("[%s] execute command: '%s' with param '%s' to [%s]" 
-                       % (context.client, context.cmdName
+                       % (context.origin, context.cmdName
                           , context.param, context.target))
         if context.target == 'smart':
             return CommandExecutor(context).run()
         elif context.target == 'all':
             for host, con in self.conns.items():
-                if host != context.client:
+                if host != context.origin:
                     context.target = host
                     return self.conns.send(context)
         else:
