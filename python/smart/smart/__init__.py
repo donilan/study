@@ -1,21 +1,60 @@
-import re
+import re, logging
+import smart.const
+
+
+def cmdArray2cmdName(cmdArr):
+    if len(cmdArr) > 0:
+        try:
+            exec 'import %s.%s as cmdModule' % (smart.const.CMD_PACKAGE, '.'.join(cmdArr))
+            return ' '.join(cmdArr)
+        except ImportError:
+            del cmdArr[-1]
+            checkModule(cmdArr)
+    else:
+        return None
+
 class Context(object):
 
-    def __init__(self, cmd):
+    def __init__(self, cmd, log=logging.getLogger('Context')):
         self.target = ''
         self.cmdName = ''
         self.param = ''
         self.origin = ''
+        self.badCommand = False
+        self.log = log
         if cmd:
             tmpArr = re.compile(r'\s+').split(cmd)
             if len(tmpArr) > 1:
                 self.target = tmpArr[0]
-                self.cmdName = tmpArr[1]
+                del tmpArr[0]
+
                 if tmpArr[-2] == 'for':
                     self.origin = tmpArr[-1]
                     cmd = re.sub('\\s*for\\s+%s\\s*$' % (self.origin), '', cmd)
-                self.param = re.sub('^\\s*%s\\s+%s\\s*' % (self.target, 
-                                                    self.cmdName), '', cmd)
+                    del tmpArr[-2:]
+
+                self.cmdName = self.__cmdArray2cmdName(tmpArr)
+                if self.cmdName:
+                    self.log.debug('Command is %s' % self.cmdName)
+                    self.param = re.sub('^\\s*' + \
+                                            '\\s+'.join([self.target,] \
+                                                            + self.cmdName.split(' ')) + '\\s+', '', cmd)
+                else:
+                    self.log.warn('Bad command [%s]' % cmd)
+                    self.badCommand = True
+                    self.cmdName = 'log error'
+                    self.param = cmd
+
+    def __cmdArray2cmdName(self, cmdArr):
+        if len(cmdArr) > 0:
+            try:
+                exec 'import %s.%s as cmdModule' % (smart.const.CMD_PACKAGE, '.'.join(cmdArr))
+                return ' '.join(cmdArr)
+            except:
+                del cmdArr[-1]
+                return self.__cmdArray2cmdName(cmdArr)
+        else:
+            return None
 
     def cmd(self):
         cmd = [self.target, self.cmdName, self.param]
@@ -30,8 +69,12 @@ class CommandExecutor(object):
 
     def run(self):
         if self.context.cmdName:
-            exec 'import smart.cmd.%s as cmdModule' % (self.context.cmdName)
-            return cmdModule.execute(self.context)
+            try:
+                exec 'import %s.%s as cmdModule' % (smart.const.CMD_PACKAGE, self.context.cmdName.replace(' ', '.'))
+                return cmdModule.execute(self.context)
+            except ImportError:
+                return '%s Don\'t know how to execute [%s]' % \
+                    (self.context.cmd(), self.context.cmdName)
         else:
             return 'Error: Command name cannot be empty.'
 

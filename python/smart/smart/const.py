@@ -4,3 +4,4 @@ CMD_PORT = 19374
 RECV_TIMEOUT = 3
 SERVER_ALIAS = 'smart'
 SERVER = 'java.ii2d.com'
+CMD_PACKAGE = 'smart.cmd'
