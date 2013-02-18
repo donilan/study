@@ -3,7 +3,7 @@
 from smart.client import SmartClient
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 
 if __name__ == '__main__':
     client = SmartClient(host='127.0.0.1')

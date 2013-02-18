@@ -79,8 +79,12 @@ class CommandExecutor(object):
                 exec 'import %s.%s as cmdModule' % (smart.const.CMD_PACKAGE, self.context.cmdName.replace(' ', '.'))
             except:
                 return '%s Don\'t know how to execute [%s]' % \
-                    (self.context.cmd(), self.context.cmdName)
-            return cmdModule.execute(self.context)
+                    (self.context.target, self.context.param)
+            if hasattr(cmdModule, 'execute'):
+                return cmdModule.execute(self.context)
+            else:
+                return '%s Don\'t know how to execute [%s]' % \
+                    (self.context.target, self.context.param)
         else:
             return 'Error: Command name cannot be empty.'
 
