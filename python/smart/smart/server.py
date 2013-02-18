@@ -79,7 +79,11 @@ class SmartServer(object):
         while True:
             try:
                 conn, addr = self.cmdSocket.accept()
+            except socket.error:
+                self.log.error('Socket error.')
+                break
             except KeyboardInterrupt:
+                self.log.info('User close by keyboard interrupt.')
                 break
             addr = "%s:%d" % addr
             self.log.info('Connectd by %s' % (addr))
@@ -87,13 +91,14 @@ class SmartServer(object):
             t = threading.Thread(target=self.handleClient, args=(conn, addr))
             t.start()
 
-
         self.stopEvent.set()
-        self.cmdSocket.close()
-        self.log.info('User quit.')
 
     def __del__(self):
+        self.log.info('User call __del__ to close.')
+        for host, con in self.conns.items():
+            con.close()
         self.cmdSocket.close()
+        self.stopEvent.set()
         
     def handleClient(self, conn, addr):
         conn.settimeout(self.recvTimeout)
@@ -103,12 +108,8 @@ class SmartServer(object):
             except socket.timeout:
                 continue
             except socket.error, v:
-                self.log.info('Host [%s] closed.' % addr)
-                self.conns.remove(addr)
                 break
             if not data: 
-                self.log.info('Host [%s] closed.' % addr)
-                self.conns.remove(addr)
                 break
             data = data.replace('\n', '')
             if not data:
@@ -120,6 +121,9 @@ class SmartServer(object):
                 result = self.executeCommand(context)
                 if result:
                     self.conns.sendLog(context.origin, result)
+        self.log.info('Host [%s] closed.' % addr)
+        self.conns.remove(addr)
+        conn.close()
 
     def __checkOrigin(self, cmd, origin):
         originRe = '\\s+for\\s+(me|%s)\\s*$' % origin
