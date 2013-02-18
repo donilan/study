@@ -1,4 +1,6 @@
 LISTEN = '0.0.0.0'
 BUFF_SIZE = 2048
 CMD_PORT = 19374
+RECV_TIMEOUT = 3
+SERVER_ALIAS = 'smart'
 SERVER = 'java.ii2d.com'

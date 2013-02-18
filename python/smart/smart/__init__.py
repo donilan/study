@@ -5,15 +5,23 @@ class Context(object):
         self.target = ''
         self.cmdName = ''
         self.param = ''
-        self.orgCmd = cmd
+        self.origin = ''
         if cmd:
             tmpArr = re.compile(r'\s+').split(cmd)
             if len(tmpArr) > 1:
                 self.target = tmpArr[0]
                 self.cmdName = tmpArr[1]
-                self.param = re.sub('%s\\s+%s\\s*' % (self.target, 
+                if tmpArr[-2] == 'for':
+                    self.origin = tmpArr[-1]
+                    cmd = re.sub('\\s*for\\s+%s\\s*$' % (self.origin), '', cmd)
+                self.param = re.sub('^\\s*%s\\s+%s\\s*' % (self.target, 
                                                     self.cmdName), '', cmd)
 
+    def cmd(self):
+        cmd = [self.target, self.cmdName, self.param]
+        if self.origin:
+            cmd += ['for', self.origin]
+        return ' '.join(cmd)
 
 class CommandExecutor(object):
 

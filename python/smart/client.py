@@ -6,4 +6,13 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 if __name__ == '__main__':
-    SmartClient(host='127.0.0.1').run()
+    client = SmartClient(host='127.0.0.1')
+    while True:
+        try:
+            msg = raw_input('')
+            client.send(msg)
+        except KeyboardInterrupt:
+            break
+        if msg == 'quit': 
+            break
+    client.close()
