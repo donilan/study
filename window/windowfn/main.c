@@ -39,11 +39,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
                       NULL, NULL, hInstance, NULL);
-
-  printf("%d\n", iCmdShow);
-
   ShowWindow(hwnd, iCmdShow);
-  /* UpdateWindow(hwnd); */
+  UpdateWindow(hwnd);
+  HDC hdc;
+  PAINTSTRUCT ps;
+  RECT rect;
+
+      hdc = BeginPaint(hwnd, &ps);
+      GetClientRect(hwnd, &rect);
+      DrawText(hdc, TEXT("Hello, windows 99!")
+                , -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+      EndPaint(hwnd, &ps);
+
+
+
+
+
 
   while(GetMessage(&msg, NULL, 0, 0))
     {
@@ -65,11 +76,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
       MessageBox(NULL, TEXT("Creating... ..."), TEXT("Hello win message"), MB_OK);
       return 0;
     case WM_PAINT:
-      hdc = BeginPaint(hwnd, &ps);
-      GetClientRect(hwnd, &rect);
-      DrawText(hdc, TEXT("Hello, windows 99!")
-               , -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-      EndPaint(hwnd, &ps);
+
       return 0;
     case WM_DESTROY:
       PostQuitMessage(0);
