@@ -233,8 +233,6 @@ class DropboxSession(object):
             'oauth_version' : self._oauth_version(),
         }
 
-        print oauth_params
-
         token = request_token if request_token is not None else self.token
 
         if token:

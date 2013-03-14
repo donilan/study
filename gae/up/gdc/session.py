@@ -1,4 +1,4 @@
-import urllib, time, random
+import urllib, time, random, logging
 from google.appengine.api import urlfetch
 
 try:
@@ -55,6 +55,15 @@ class DropboxSession(object):
         self.request_token = self._parse_token(result.content)
         return self.request_token
 
+    def obtain_access_token(self, request_token=None):
+        request_token = request_token or self.request_token
+        assert request_token, 'No request_token available on the session. Please pass one.'
+        url = self.build_url(self.API_HOST, '/oauth/access_token')
+        headers, params = self.build_access_headers(request_token=request_token)
+        result = urlfetch.fetch(url=url, method=urlfetch.POST, headers=headers, payload=urllib.urlencode(params))
+        self.token = self._parse_token(result.content)
+        return self.token
+
     def build_access_headers(self, params=None, request_token=None):
         if params is None:
             params = {}
@@ -72,7 +81,7 @@ class DropboxSession(object):
             oauth_params['oauth_token'] = token.key
         self._oauth_sign_request(oauth_params, self.consumer_creds, token)
         params.update(oauth_params)
-        
+        logging.info(params)        
         return {}, params
         
         
