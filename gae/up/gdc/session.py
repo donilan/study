@@ -81,7 +81,6 @@ class DropboxSession(object):
             oauth_params['oauth_token'] = token.key
         self._oauth_sign_request(oauth_params, self.consumer_creds, token)
         params.update(oauth_params)
-        logging.info(params)        
         return {}, params
         
         
