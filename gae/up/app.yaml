@@ -1,8 +1,10 @@
 application: d-uploader
 version: 1
-runtime: python
+runtime: python27
 api_version: 1
+threadsafe: yes
+
 
 handlers:
  - url: /.*
-   script: main.py
+   script: main.application

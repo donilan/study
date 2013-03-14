@@ -47,11 +47,13 @@ class DropboxSession(object):
 
     def obtain_request_token(self):
         self.token = None
-        url = self.build_url(self.API_HOST, 'oauth/request_token')
+        url = self.build_url(self.API_HOST, '/oauth/request_token')
         headers, params = self.build_access_headers()
-        #TODO 
-        result = urlfetch.fetch(url=url, method=urlfetch.POST, headers=headers, payload=params)
+        
+        result = urlfetch.fetch(url=url, method=urlfetch.POST, headers=headers, payload=urllib.urlencode(params))
 
+        self.request_token = self._parse_token(result.content)
+        return self.request_token
 
     def build_access_headers(self, params=None, request_token=None):
         if params is None:
@@ -98,7 +100,7 @@ class DropboxSession(object):
             raise ValueError("Invalid parameter string.")
         params = parse_qs(s, keep_blank_values=False)
         if not params:
-            raise ValueError("Invalid parameter string: %r" % s)
+            raise ValueError("Invalid parameter string: %s" % s)
         
         try:
             key = params['oauth_token'][0]
