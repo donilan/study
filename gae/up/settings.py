@@ -4,14 +4,14 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('donilan', 'donilanup0@163.com'),
 )
 
-DROPBOX_KEY = 'vq7oaa7sagyzqaq'
-DROPBOX_SECRET = 'gzm2e0t4t2odqlj'
+DROPBOX_KEY = 'y2zwounslkkgd4r'
+DROPBOX_SECRET = '0h1ds02le9fq7ig'
 DROPBOX_ACCESS_TYPE = 'dropbox'
-DROPBOX_TOKEN_KEY = '1tr3wd2q707dlyf'
-DROPBOX_TOKEN_SECRET = 'oh8jbht5iz8mbp5'
+DROPBOX_TOKEN_KEY = 'f3ape8awmzwxie5'
+DROPBOX_TOKEN_SECRET = 'e4q8dc9gvedg3wq'
 
 MANAGERS = ADMINS
 
@@ -122,7 +122,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'guestbook',
+    'up0',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
