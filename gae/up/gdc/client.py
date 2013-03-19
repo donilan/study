@@ -54,4 +54,4 @@ class DropboxClient(object):
     def thumbnail(self, from_path, size='large', format='JPEG'):
         assert format in ['JPEG', 'PNG'], 'expected a thumbnail format of "JPEG" or "PNG", got %s' % format
         path = "/thumbnails/%s%s" % (self.session.root, format_path(from_path))
-        
+        return self.request(path, {'size': size, 'format': format}, content_server=True)
