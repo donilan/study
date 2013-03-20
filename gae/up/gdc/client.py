@@ -28,7 +28,9 @@ class DropboxClient(object):
         if params is None:
             params = {}
         headers, params = self.session.build_access_headers(params)
-        url = self.session.build_url(self.session.API_HOST, path, params)
+        
+        url = self.session.build_url(host, path, params)
+
         result = urlfetch.fetch(url=url, method=urlfetch.GET, headers=headers)
         return result.content
 
@@ -55,3 +57,15 @@ class DropboxClient(object):
         assert format in ['JPEG', 'PNG'], 'expected a thumbnail format of "JPEG" or "PNG", got %s' % format
         path = "/thumbnails/%s%s" % (self.session.root, format_path(from_path))
         return self.request(path, {'size': size, 'format': format}, content_server=True)
+
+
+    def get_file(self, from_path):
+        path = "/files/%s%s" % (self.session.root, format_path(from_path))
+        return self.request(path, content_server=True)
+
+    def put_file(self, full_path, file_obj):
+        path = '/files_put/%s%s' % (self.session.root, format_path(full_path))
+        headers, params = self.session.build_access_headers()
+        url = self.session.build_url(self.session.API_CONTENT_HOST, path, params)
+        result = urlfetch.fetch(url=url, method=urlfetch.PUT, headers=headers, payload=file_obj.read())
+
