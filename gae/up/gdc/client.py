@@ -66,4 +66,7 @@ class DropboxClient(object):
         path = '/files_put/%s%s' % (self.session.root, format_path(full_path))
         headers, params = self.session.build_access_headers()
         url = self.session.build_url(self.session.API_CONTENT_HOST, path, params)
-        result = urlfetch.fetch(url=url, method=urlfetch.PUT, headers=headers, payload=file_obj.read())
+        content = file_obj
+        if not isinstance(content, str):
+            content = file_obj.read()
+        result = urlfetch.fetch(url=url, method=urlfetch.PUT, headers=headers, payload=content)
