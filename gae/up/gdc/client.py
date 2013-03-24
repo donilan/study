@@ -58,6 +58,7 @@ class DropboxClient(object):
         path = "/thumbnails/%s%s" % (self.session.root, format_path(from_path))
         return self.request(path, {'size': size, 'format': format}, content_server=True)
 
+
     def get_file(self, from_path):
         path = "/files/%s%s" % (self.session.root, format_path(from_path))
         return self.request(path, content_server=True)
@@ -70,3 +71,4 @@ class DropboxClient(object):
         if not isinstance(content, str):
             content = file_obj.read()
         result = urlfetch.fetch(url=url, method=urlfetch.PUT, headers=headers, payload=content)
+
