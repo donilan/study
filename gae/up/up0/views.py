@@ -4,8 +4,7 @@ from django.template.context import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
-
-import logging, gdc, re
+import logging, gdc, re, up0.token
 
 
 def index(request):
@@ -35,7 +34,9 @@ def callback(request):
         return HttpResponse('fail')
     sess = _getSession()
     sess.obtain_access_token(gdc.session.OAuthToken(key, secret))
-    #TODO store token
+
+    oauthToken = sess.token
+    up0.token.storeToken(_getClient(), oauthToken.key, oauthToken.secret)
     return HttpResponse('success')
 
 def viewStoreTokens(request):
