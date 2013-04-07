@@ -186,7 +186,7 @@ void CcgxDlg::OnBnClickedButton1()
 			if(locations[i].status > 0)
 			{
 				texts[i]->SetWindowTextW(TEXT("1"));
-				this->gameManager.games[0]->leftClick(locations[i].x+30, locations[i].y);
+
 			} else {
 				texts[i]->SetWindowTextW(TEXT("0"));
 			}

@@ -6,22 +6,17 @@
 
 #define KV_1 49
 
-
-#define GAME_STATUS_UNKNOW 0
-#define GAME_STATUS_TRAVEL 1
-#define GAME_STATUS_STANDBY 2
-#define GAME_STATUS_FIGHTING 4
-
-
 UINT AutoRefreshThread( LPVOID pParam );
 UINT AutoFightingThread( LPVOID pParam );
 UINT AutoSpeedUpWalkThread( LPVOID pParam );
 
-
-
 class CGame
 {
 public:
+	enum STATUS {GAME_STATUS_UNKNOW, 
+		GAME_STATUS_TRAVEL, 
+		GAME_STATUS_PLAYER_FIGHT, 
+		GAME_STATUS_MONSTER_FIGHT};
 	enum {FACE_SIT, FACE_HELLO};
 
 	CGame(HWND);
@@ -31,7 +26,7 @@ public:
 	BOOL doRandomFace();
 	BOOL sendKey(int);
 	BOOL sendKeyWithCtl(int);
-	BOOL leftClick(int x, int y);
+	BOOL leftClick(GAME_LOCATION*);
 	BOOL rightClick(int x, int y);
 	BOOL say(const char*);
 	BOOL reSay();
@@ -40,7 +35,11 @@ public:
 	BOOL getRect(RECT*);
 	BOOL refresh();
 	BOOL saveScreenshot2file(LPCTSTR);
-	BOOL caclImage();
+	BOOL hitMonster(int);
+	BOOL hitFitBtn(int);
+	
+
+	BOOL locateBMP(PTSTR, PGAME_LOCATION);
 
 	// auto refresh
 	BOOL startAutoRefresh();
@@ -61,7 +60,8 @@ public:
 	BOOL speedUpBySpeak;
 
 	PGAME_LOCATION findMonster();
-
+	PGAME_LOCATION findSkillWindow();
+	PGAME_LOCATION getLocation(int idx);
 	BOOL checkStatus();
 	int getStatus();
 
@@ -83,8 +83,13 @@ private:
 
 	int status;
 	
-	int searchRGB(const PGAME_LOCATION l, int r, int g, int b, int deviation);
+	GAME_LOCATION skillWindow;
+
+	int searchRGB(PGAME_LOCATION l, COLORREF rgb, int deviation);
+	inline int colorDeviation(PGAME_LOCATION l, COLORREF rgb);
 
 	GAME_LOCATION monsterLocations[MAX_MONSTER_LOCATION];
+	GAME_LOCATION locations[MAX_LOCATION];
+
 };
 

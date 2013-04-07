@@ -24,6 +24,8 @@ CGame::CGame(HWND hwnd)
 	srand((unsigned) time(NULL));
 	this->hScreenDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
 	memcpy(this->monsterLocations, MONSTER_LOCATIONS, sizeof(GAME_LOCATION)*MAX_MONSTER_LOCATION);
+	memset(this->locations, 0, sizeof(GAME_LOCATION)*MAX_LOCATION);
+	memcpy(this->locations, ALL_LOCATIONS, sizeof(GAME_LOCATION)*MAX_LOCATION);
 }
 
 
@@ -65,8 +67,10 @@ BOOL CGame::sendKeyWithCtl( int key )
 	return FALSE;
 }
 
-BOOL CGame::leftClick( int x, int y )
+BOOL CGame::leftClick(GAME_LOCATION* l)
 {
+	int x = l->x+15;
+	int y = l->y+5;
 	LOG_DEBUG << "mouse move to " << x << "," << y;
 	SetCursorPos(x, y);
 	Sleep(100);
@@ -158,18 +162,6 @@ BOOL CGame::isFocus()
 	return GetForegroundWindow() == this->hwnd;
 }
 
-BOOL CGame::caclImage()
-{
-	BYTE *pBytes = (BYTE *)pImage->GetBits();
-	
-	for(int i = 0; i < windowWidth; ++i)
-	{
-		LOG_DEBUG << (int)pBytes[i*3+2] << " " << (int)pBytes[i*3+1] << " " << (int)pBytes[i*3] ;
-	}
-	
-	return TRUE;
-}
-
 BOOL CGame::startAutoRefresh()
 {
 	if(this->autoRefresh)
@@ -237,10 +229,7 @@ PGAME_LOCATION CGame::findMonster()
 {
 	for(int i = 0; i < MAX_MONSTER_LOCATION; ++i)
 	{
-		int count = searchRGB(&monsterLocations[i], 255, 255, 255, 5);
-		int pixSize = monsterLocations[i].cx * monsterLocations[i].cy;
-		LOG_DEBUG << "pix count: " << monsterLocations[i].cx * monsterLocations[i].cy << " found count: " << count;
-		if((count*100 / pixSize) > 5)
+		if(colorDeviation(&monsterLocations[i], COLOR_MONSTER_FONT) > DEVIATION_MONSTER_FONT)
 		{
 			monsterLocations[i].status = 1;
 		}else{
@@ -250,7 +239,7 @@ PGAME_LOCATION CGame::findMonster()
 	return monsterLocations;
 }
 
-int CGame::searchRGB( const PGAME_LOCATION l, int r, int g, int b, int deviation )
+int CGame::searchRGB( const PGAME_LOCATION l, COLORREF rgb, int deviation )
 {
 	LOG_DEBUG << "Searching RGB... width: " << windowWidth << " height: " << windowHeight;
 	if(!pImage)
@@ -258,15 +247,15 @@ int CGame::searchRGB( const PGAME_LOCATION l, int r, int g, int b, int deviation
 
 	int result = 0;
 
-	for(unsigned int x = l->x; x < (l->x + l->cx); ++x) 
+	for(unsigned int x = l->x; x <= (l->x + l->cx); ++x) 
 	{
-		for(unsigned int y = l->y; y < (l->y + l->cy); ++y)
+		for(unsigned int y = l->y; y <= (l->y + l->cy); ++y)
 		{
 			COLORREF color = pImage->GetPixel(x, y);
 			
-			if(abs(r - GetRValue(color)) < deviation
-				&& abs(g - GetGValue(color)) < deviation
-				&& abs(b - GetGValue(color)) < deviation)
+			if(abs(GetRValue(rgb) - GetRValue(color)) < deviation
+				&& abs(GetGValue(rgb) - GetGValue(color)) < deviation
+				&& abs(GetBValue(rgb) - GetBValue(color)) < deviation)
 			{
 				result++;
 			}
@@ -288,7 +277,93 @@ int CGame::getStatus()
 
 BOOL CGame::checkStatus()
 {
+	if(colorDeviation(getLocation(BTN_DUMP), COLOR_BTN_ENABLE) > DEVIATION_BTN)
+		status = GAME_STATUS_TRAVEL;
+	else if(colorDeviation(getLocation(FIT_BTN_RUN), COLOR_FIT_BTN_DISABLE) > DEVIATION_FIT_BTN)
+		status = GAME_STATUS_PLAYER_FIGHT;
+	else if(colorDeviation(getLocation(FIT_BTN_MONSTER_SKILL), COLOR_FIT_BTN_DISABLE) > DEVIATION_FIT_BTN)
+		status = GAME_STATUS_MONSTER_FIGHT;
+	else
+		status = GAME_STATUS_UNKNOW;
+	return TRUE;
+}
+
+BOOL CGame::hitMonster( int witchOne )
+{
+	leftClick(&monsterLocations[witchOne]);
+	return TRUE;
+}
+
+
+
+int CGame::colorDeviation( PGAME_LOCATION l, COLORREF rgb)
+{
+	int count = searchRGB(l, rgb, 8);
+	int pixSize = l->cx * l->cy;
+	LOG_DEBUG << "size: " << pixSize << " color (" 
+		<< (int)GetRValue(rgb) << "," << (int)GetGValue(rgb) << "," << (int)GetBValue(rgb) 
+		<<  ") count: " << count << " deviation: " << (100 *count) / pixSize;
+	return (100 *count) / pixSize;
+}
+
+BOOL CGame::hitFitBtn(int idx)
+{
+	if(colorDeviation(getLocation(idx), COLOR_FIT_BTN_DISABLE) > DEVIATION_FIT_BTN) {
+		return leftClick(getLocation(idx));
+	}
 	return FALSE;
+}
+
+PGAME_LOCATION CGame::getLocation( int idx )
+{
+	return &locations[idx];
+}
+
+BOOL CGame::locateBMP( PTSTR pszFilename, PGAME_LOCATION l)
+{
+	CImage finder;
+	finder.Load(pszFilename);
+	
+	for(int x = pImage->GetWidth()/3; x < pImage->GetWidth(); ++x)
+	{
+		for(int y = 97; y < pImage->GetHeight(); ++y) {
+			if(pImage->GetPixel(x, y) == finder.GetPixel(0, 0))
+			{
+				BOOL match = TRUE;
+				for(int x2 = 0; x2 < finder.GetWidth(); ++x2) {
+					for(int y2 = 0; y2 < finder.GetHeight(); ++y2) {
+						if(pImage->GetPixel(x+x2, y+y2) != finder.GetPixel(x2, y2)) {
+							match = FALSE;
+							break;
+						}
+					}
+					if(!match) break;
+				}
+				if(match) {
+					l->y = y;
+					l->x = x;
+					l->cx = finder.GetWidth();
+					l->cy = finder.GetHeight();
+					return TRUE;
+				}
+			}
+		}
+	}
+	return FALSE;
+}
+
+PGAME_LOCATION CGame::findSkillWindow()
+{
+	memset(&skillWindow, 0, sizeof(GAME_LOCATION));
+	if(locateBMP(TEXT("job.bmp"), &skillWindow))
+	{
+		skillWindow.x += 5;
+		skillWindow.y += 36;
+		skillWindow.cx = 46;
+		skillWindow.cy = 16*10;
+	}
+	searchRGB(&skillWindow, RGB(0,0,0), 5);
+	return &skillWindow;
 }
 
 UINT AutoSpeedUpWalkThread(LPVOID pParam)

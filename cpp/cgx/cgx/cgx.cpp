@@ -6,6 +6,7 @@
 #include "cgx.h"
 #include "cgxDlg.h"
 #include "log.h"
+#include "TestDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -70,9 +71,12 @@ BOOL CcgxApp::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-	CcgxDlg dlg;
-	m_pMainWnd = &dlg;
-	INT_PTR nResponse = dlg.DoModal();
+	//CcgxDlg dlg;
+	//m_pMainWnd = &dlg;
+	//INT_PTR nResponse = dlg.DoModal();
+	CTestDlg testDlg;
+	m_pMainWnd - &testDlg;
+	INT_PTR nResponse = testDlg.DoModal();
 	if (nResponse == IDOK)
 	{
 		// TODO: 在此放置处理何时用

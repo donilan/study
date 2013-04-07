@@ -23,6 +23,9 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="ClassDiagram1.cd" />
+    <None Include="job.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cgx.h">
@@ -52,6 +55,9 @@
     <ClInclude Include="cgxData.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="TestDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cgx.cpp">
@@ -67,6 +73,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GameManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TestDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
