@@ -1,336 +1,11 @@
 // money.cpp : 定义控制台应用程序的入口点。
 //
-
-#include "stdafx.h"
+#define UNICODE
 #include <afxwin.h>
+#include "Screenshot.h"
 
+#define CROSS_GATE_CN TEXT("lol")
 
-// WriteDIB  - Writes a DIB to file
-// Returns  - TRUE on success
-// szFile  - Name of file to write to
-// hDIB  	- Handle of the DIB
-BOOL WriteDIB( LPTSTR szFile, HANDLE hDIB)
-{
-	BITMAPFILEHEADER	hdr;
-	LPBITMAPINFOHEADER	lpbi;
-
-	if (!hDIB)
-		return FALSE;
-
-	CFile file;
-	if( !file.Open( szFile, CFile::modeWrite|CFile::modeCreate) )
-		return FALSE;
-
-	lpbi = (LPBITMAPINFOHEADER)hDIB;
-
-	int nColors = 1 << lpbi->biBitCount;
-
-	// Fill in the fields of the file header 
-	hdr.bfType  = ((WORD) ('M' << 8) | 'B');	// is always "BM"
-	hdr.bfSize  = GlobalSize (hDIB) + sizeof( hdr );
-	hdr.bfReserved1  = 0;
-	hdr.bfReserved2  = 0;
-	hdr.bfOffBits  = (DWORD) (sizeof( hdr ) + lpbi->biSize +
-		nColors * sizeof(RGBQUAD));
-
-	// Write the file header 
-	file.Write( &hdr, sizeof(hdr) );
-
-	// Write the DIB header and the bits 
-	file.Write( lpbi, GlobalSize(hDIB) );
-
-	return TRUE;
-}
-
-// DDBToDIB		- Creates a DIB from a DDB
-// bitmap		- Device dependent bitmap
-// dwCompression	- Type of compression - see BITMAPINFOHEADER
-// pPal			- Logical palette
-HANDLE DDBToDIB( CBitmap& bitmap, DWORD dwCompression, CPalette* pPal ) 
-{
-	BITMAP			bm;
-	BITMAPINFOHEADER	bi;
-	LPBITMAPINFOHEADER 	lpbi;
-	DWORD			dwLen;
-	HANDLE			hDIB;
-	HANDLE			handle;
-	HDC 			hDC;
-	HPALETTE		hPal;
-
-
-	ASSERT( bitmap.GetSafeHandle() );
-
-	// The function has no arg for bitfields
-	if( dwCompression == BI_BITFIELDS )
-		return NULL;
-
-	// If a palette has not been supplied use defaul palette
-	hPal = (HPALETTE) pPal->GetSafeHandle();
-	if (hPal==NULL)
-		hPal = (HPALETTE) GetStockObject(DEFAULT_PALETTE);
-
-	// Get bitmap information
-	bitmap.GetObject(sizeof(bm),(LPSTR)&bm);
-
-	// Initialize the bitmapinfoheader
-	bi.biSize		= sizeof(BITMAPINFOHEADER);
-	bi.biWidth		= bm.bmWidth;
-	bi.biHeight 		= bm.bmHeight;
-	bi.biPlanes 		= 1;
-	bi.biBitCount		= bm.bmPlanes * bm.bmBitsPixel;
-	bi.biCompression	= dwCompression;
-	bi.biSizeImage		= 0;
-	bi.biXPelsPerMeter	= 0;
-	bi.biYPelsPerMeter	= 0;
-	bi.biClrUsed		= 0;
-	bi.biClrImportant	= 0;
-
-	// Compute the size of the  infoheader and the color table
-	int nColors = (1 << bi.biBitCount);
-	if( nColors > 256 ) 
-		nColors = 0;
-	dwLen  = bi.biSize + nColors * sizeof(RGBQUAD);
-
-	// We need a device context to get the DIB from
-	hDC = GetDC(NULL);
-	hPal = SelectPalette(hDC,hPal,FALSE);
-	RealizePalette(hDC);
-
-	// Allocate enough memory to hold bitmapinfoheader and color table
-	hDIB = GlobalAlloc(GMEM_FIXED,dwLen);
-
-	if (!hDIB){
-		SelectPalette(hDC,hPal,FALSE);
-		ReleaseDC(NULL,hDC);
-		return NULL;
-	}
-
-	lpbi = (LPBITMAPINFOHEADER)hDIB;
-
-	*lpbi = bi;
-
-	// Call GetDIBits with a NULL lpBits param, so the device driver 
-	// will calculate the biSizeImage field 
-	GetDIBits(hDC, (HBITMAP)bitmap.GetSafeHandle(), 0L, (DWORD)bi.biHeight,
-		(LPBYTE)NULL, (LPBITMAPINFO)lpbi, (DWORD)DIB_RGB_COLORS);
-
-	bi = *lpbi;
-
-	// If the driver did not fill in the biSizeImage field, then compute it
-	// Each scan line of the image is aligned on a DWORD (32bit) boundary
-	if (bi.biSizeImage == 0){
-		bi.biSizeImage = ((((bi.biWidth * bi.biBitCount) + 31) & ~31) / 8) 
-			* bi.biHeight;
-
-		// If a compression scheme is used the result may infact be larger
-		// Increase the size to account for this.
-		if (dwCompression != BI_RGB)
-			bi.biSizeImage = (bi.biSizeImage * 3) / 2;
-	}
-
-	// Realloc the buffer so that it can hold all the bits
-	dwLen += bi.biSizeImage;
-	if (handle = GlobalReAlloc(hDIB, dwLen, GMEM_MOVEABLE))
-		hDIB = handle;
-	else{
-		GlobalFree(hDIB);
-
-		// Reselect the original palette
-		SelectPalette(hDC,hPal,FALSE);
-		ReleaseDC(NULL,hDC);
-		return NULL;
-	}
-
-	// Get the bitmap bits
-	lpbi = (LPBITMAPINFOHEADER)hDIB;
-
-	// FINALLY get the DIB
-	BOOL bGotBits = GetDIBits( hDC, (HBITMAP)bitmap.GetSafeHandle(),
-		0L,				// Start scan line
-		(DWORD)bi.biHeight,		// # of scan lines
-		(LPBYTE)lpbi 			// address for bitmap bits
-		+ (bi.biSize + nColors * sizeof(RGBQUAD)),
-		(LPBITMAPINFO)lpbi,		// address of bitmapinfo
-		(DWORD)DIB_RGB_COLORS);		// Use RGB for color table
-
-	if( !bGotBits )
-	{
-		GlobalFree(hDIB);
-
-		SelectPalette(hDC,hPal,FALSE);
-		ReleaseDC(NULL,hDC);
-		return NULL;
-	}
-
-	SelectPalette(hDC,hPal,FALSE);
-	ReleaseDC(NULL,hDC);
-	return hDIB;
-}
-
-BOOL WriteWindowToDIB( LPTSTR szFile, CWnd *pWnd )
-{
-	CBitmap 	bitmap;
-	CWindowDC	dc(pWnd);
-	CDC 		memDC;
-	CRect		rect;
-
-	memDC.CreateCompatibleDC(&dc); 
-
-	pWnd->GetWindowRect(rect);
-
-	bitmap.CreateCompatibleBitmap(&dc, rect.Width(),rect.Height() );
-
-	CBitmap* pOldBitmap = memDC.SelectObject(&bitmap);
-	memDC.BitBlt(0, 0, rect.Width(),rect.Height(), &dc, 0, 0, SRCCOPY); 
-
-	// Create logical palette if device support a palette
-	CPalette pal;
-	if( dc.GetDeviceCaps(RASTERCAPS) & RC_PALETTE )
-	{
-		UINT nSize = sizeof(LOGPALETTE) + (sizeof(PALETTEENTRY) * 256);
-		LOGPALETTE *pLP = (LOGPALETTE *) new BYTE[nSize];
-		pLP->palVersion = 0x300;
-
-		pLP->palNumEntries = 
-			GetSystemPaletteEntries( dc, 0, 255, pLP->palPalEntry );
-
-		// Create the palette
-		pal.CreatePalette( pLP );
-
-		delete[] pLP;
-	}
-
-	memDC.SelectObject(pOldBitmap);
-
-	// Convert the bitmap to a DIB
-	HANDLE hDIB = DDBToDIB( bitmap, BI_RGB, &pal );
-
-	if( hDIB == NULL )
-		return FALSE;
-
-	// Write it to file
-	WriteDIB( szFile, hDIB );
-
-	// Free the memory allocated by DDBToDIB for the DIB
-	GlobalFree( hDIB );
-	return TRUE;
-}
-
-/****/
-
-BOOL CALLBACK childWindow1(HWND hWnd, LPARAM lParam)
-{
-	WCHAR buff[1024] = {0};
-	SendMessage(hWnd, WM_KEYDOWN, (WPARAM)'A', NULL);
-	SendMessage(hWnd, WM_KEYUP, (WPARAM)'A', NULL);
-	GetClassName(hWnd, buff, 1024);
-	MessageBox(NULL, buff, L"Title", MB_OK);
-	return TRUE;
-}
-
-void test1() 
-{
-	STARTUPINFO si;
-	PROCESS_INFORMATION pi;
-	ZeroMemory(&pi, sizeof(pi));
-	ZeroMemory(&si, sizeof(si));
-	si.cb = sizeof(si);
-	if(CreateProcess(TEXT("C:\\WINDOWS\\NOTEPAD.EXE"), NULL, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &si, &pi))
-	{
-		WaitForInputIdle(pi.hProcess, INFINITE);
-		//EnumThreadWindows(pi.dwThreadId, childWindow, 0);
-		DWORD handle = GetWindowThreadProcessId(GetTopWindow(0), &pi.dwProcessId);
-		EnumChildWindows((HWND)handle, childWindow1, 0);
-		MessageBox(NULL, L"Done", L"Title", MB_OK);
-		TerminateProcess(pi.hProcess, 0);
-		TerminateThread(pi.hThread, 0);
-	}
-
-}
-
-
-/******/
-
-BOOL SaveToFile(HBITMAP hBitmap3, LPCTSTR lpszFileName)
-{   
-	HDC hDC;
-	int iBits;
-	WORD wBitCount;
-	DWORD dwPaletteSize=0, dwBmBitsSize=0, dwDIBSize=0, dwWritten=0;
-	BITMAP Bitmap0;
-	BITMAPFILEHEADER bmfHdr;
-	BITMAPINFOHEADER bi;
-	LPBITMAPINFOHEADER lpbi;
-	HANDLE fh, hDib, hPal,hOldPal2=NULL;
-	hDC = CreateDC(L"DISPLAY", NULL, NULL, NULL);
-	iBits = GetDeviceCaps(hDC, BITSPIXEL) * GetDeviceCaps(hDC, PLANES);
-	DeleteDC(hDC);
-	if (iBits <= 1)
-		wBitCount = 1;
-	else if (iBits <= 4)
-		wBitCount = 4;
-	else if (iBits <= 8)
-		wBitCount = 8;
-	else
-		wBitCount = 24; 
-	GetObject(hBitmap3, sizeof(Bitmap0), (LPSTR)&Bitmap0);
-	bi.biSize = sizeof(BITMAPINFOHEADER);
-	bi.biWidth = Bitmap0.bmWidth;
-	bi.biHeight =-Bitmap0.bmHeight;
-	bi.biPlanes = 1;
-	bi.biBitCount = wBitCount;
-	bi.biCompression = BI_RGB;
-	bi.biSizeImage = 0;
-	bi.biXPelsPerMeter = 0;
-	bi.biYPelsPerMeter = 0;
-	bi.biClrImportant = 0;
-	bi.biClrUsed = 256;
-	dwBmBitsSize = ((Bitmap0.bmWidth * wBitCount +31) & ~31) /8
-		* Bitmap0.bmHeight; 
-	hDib = GlobalAlloc(GHND,dwBmBitsSize + dwPaletteSize + sizeof(BITMAPINFOHEADER));
-	lpbi = (LPBITMAPINFOHEADER)GlobalLock(hDib);
-	*lpbi = bi;
-
-	hPal = GetStockObject(DEFAULT_PALETTE);
-	if (hPal)
-	{ 
-		hDC = GetDC(NULL);
-		hOldPal2 = SelectPalette(hDC, (HPALETTE)hPal, FALSE);
-		RealizePalette(hDC);
-	}
-
-
-	GetDIBits(hDC, hBitmap3, 0, (UINT) Bitmap0.bmHeight, (LPSTR)lpbi + sizeof(BITMAPINFOHEADER) 
-		+dwPaletteSize, (BITMAPINFO *)lpbi, DIB_RGB_COLORS);
-
-	if (hOldPal2)
-	{
-		SelectPalette(hDC, (HPALETTE)hOldPal2, TRUE);
-		RealizePalette(hDC);
-		ReleaseDC(NULL, hDC);
-	}
-
-	fh = CreateFile(lpszFileName, GENERIC_WRITE,0, NULL, CREATE_ALWAYS, 
-		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL); 
-
-	if (fh == INVALID_HANDLE_VALUE)
-		return FALSE; 
-
-	bmfHdr.bfType = 0x4D42; // "BM"
-	dwDIBSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwPaletteSize + dwBmBitsSize;
-	bmfHdr.bfSize = dwDIBSize;
-	bmfHdr.bfReserved1 = 0;
-	bmfHdr.bfReserved2 = 0;
-	bmfHdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + (DWORD)sizeof(BITMAPINFOHEADER) + dwPaletteSize;
-
-	WriteFile(fh, (LPSTR)&bmfHdr, sizeof(BITMAPFILEHEADER), &dwWritten, NULL);
-
-	WriteFile(fh, (LPSTR)lpbi, dwDIBSize, &dwWritten, NULL);
-	GlobalUnlock(hDib);
-	GlobalFree(hDib);
-	CloseHandle(fh);
-	return TRUE;
-} 
 
 /*******CreateBMPFile********/
 void errhandler(LPTSTR tmp, HWND hwnd)
@@ -489,15 +164,15 @@ void print(HWND hwnd)
 		if (hdcMem)
 		{
 			RECT rc;
-			GetWindowRect(hwnd, &rc);
+			GetWindowRect(0, &rc);
 
 			HBITMAP hbitmap = CreateCompatibleBitmap(hdc, rc.right-rc.left, rc.bottom-rc.top);
 
 			if (hbitmap)
 			{
 				SelectObject(hdcMem, hbitmap);
-
-				PrintWindow(hwnd, hdcMem, 0);
+				BitBlt(hdcMem, 0, 0, rc.right-rc.left, rc.bottom-rc.top, hdc, 0, 0, SRCCOPY);
+				//PrintWindow(hwnd, hdcMem, 0);
 
 				// write to file
 				PBITMAPINFO info = CreateBitmapInfoStruct(hwnd, hbitmap);
@@ -511,64 +186,46 @@ void print(HWND hwnd)
 	}
 }
 
-BOOL CALLBACK EnumWindowProc(HWND hwnd, LPARAM lparam)
+BOOL CALLBACK FindCrossGateWindowsProc (HWND hwnd, LPARAM lParam)
 {
-	if(lparam)
+	TCHAR buff[MAX_PATH] = {0};
+	GetWindowText(hwnd, buff, MAX_PATH);
+	if(_tcsncmp(buff, CROSS_GATE_CN, lstrlen(CROSS_GATE_CN)) == 0)
 	{
-		DWORD curPID = *((DWORD*)lparam);
-		DWORD pid = 0;
-		GetWindowThreadProcessId(hwnd, &pid);
-		if (pid == curPID)
-		{
-			*((HWND *)lparam) = hwnd;
-			MessageBox(NULL, L"Before print", L"Title", MB_OK);
-			//WriteWindowToDIB(L"D:\\img.bmp", CWnd::FromHandle(hwnd));
-			print(hwnd);
-			return false;
-		}
-	}
-	else 
-	{
-		WCHAR buff[1024] = {0};
-		PostMessage(hwnd, WM_KEYDOWN, 'A', NULL);
-		PostMessage(hwnd, WM_KEYUP, 'A', NULL);
-		GetClassName(hwnd, buff, 1024);
-		MessageBox(NULL, buff, L"Title", MB_OK);
+		//print(hwnd);
+		CScreenshot ss(hwnd);
+		ss.refresh();
+		ss.print(TEXT("D:\\bit2.bmp"));
 	}
 	return TRUE;
 }
 
-void test2() 
-{
-	DWORD hwnd = NULL;
-
-	STARTUPINFO si;
-	PROCESS_INFORMATION pi;
-	ZeroMemory(&pi, sizeof(pi));
-	ZeroMemory(&si, sizeof(si));
-	si.cb = sizeof(si);
-	if(CreateProcess(TEXT("C:\\WINDOWS\\NOTEPAD.EXE"), NULL, 
-		NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &si, &pi))
-	{
-		WaitForInputIdle(pi.hProcess, INFINITE);
-		hwnd = pi.dwProcessId;
-		if(!EnumWindows(EnumWindowProc, (LPARAM)&hwnd))
-		{
-			EnumChildWindows((HWND)hwnd, EnumWindowProc, NULL);
-		}
-		TerminateProcess(pi.hProcess, 0);
-		TerminateThread(pi.hThread, 0);
-	}
-}
-
-
-
-/*****/
-
-
-
 int _tmain(int argc, _TCHAR* argv[])
 {
-	test2();
+	//Sleep(2000);
+	EnumWindows(FindCrossGateWindowsProc, NULL);
+	// get the device context of the screen
+	HDC hScreenDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);     
+	// and a device context to put it in
+	HDC hMemoryDC = CreateCompatibleDC(hScreenDC);
+
+	int x = GetDeviceCaps(hScreenDC, HORZRES);
+	int y = GetDeviceCaps(hScreenDC, VERTRES);
+
+	// maybe worth checking these are positive values
+	HBITMAP hBitmap = CreateCompatibleBitmap(hScreenDC, x, y);
+
+	// get a new bitmap
+	HGDIOBJ hOldBitmap = SelectObject(hMemoryDC, hBitmap);
+
+	BitBlt(hMemoryDC, 0, 0, 800, 600, hScreenDC, 0, 0, SRCCOPY);
+	SelectObject(hMemoryDC, hOldBitmap);
+	//PBITMAPINFO info = CreateBitmapInfoStruct(NULL, hBitmap);
+	//CreateBMPFile(NULL, L"D:\\bit.bmp", info, hBitmap, hMemoryDC);
+	// clean up
+	DeleteDC(hMemoryDC);
+	DeleteDC(hScreenDC);
+
+	// now your image is held in hBitmap. You can save it or do whatever with it
 	return 0;
 }
