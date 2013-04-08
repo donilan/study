@@ -26,6 +26,7 @@ CGame::CGame(HWND hwnd)
 	memcpy(this->monsterLocations, MONSTER_LOCATIONS, sizeof(GAME_LOCATION)*MAX_MONSTER_LOCATION);
 	memset(this->locations, 0, sizeof(GAME_LOCATION)*MAX_LOCATION);
 	memcpy(this->locations, ALL_LOCATIONS, sizeof(GAME_LOCATION)*MAX_LOCATION);
+	memset(this->skillLocations, 0 , sizeof(GAME_LOCATION)*SKILL_LENGTH);
 }
 
 
@@ -81,9 +82,18 @@ BOOL CGame::leftClick(GAME_LOCATION* l)
 	return TRUE;
 }
 
-BOOL CGame::rightClick( int x, int y )
+BOOL CGame::rightClick(GAME_LOCATION* l)
 {
-	return FALSE;
+	int x = l->x+15;
+	int y = l->y+5;
+	LOG_DEBUG << "mouse move to " << x << "," << y;
+	SetCursorPos(x, y);
+	Sleep(100);
+	mouse_event(MOUSEEVENTF_RIGHTDOWN, x, y, 0, 0);
+	Sleep(100);
+	mouse_event(MOUSEEVENTF_RIGHTUP, x, y, 0, 0);
+
+	return TRUE;
 }
 
 BOOL CGame::doFace( int faceType )
@@ -319,20 +329,17 @@ PGAME_LOCATION CGame::getLocation( int idx )
 	return &locations[idx];
 }
 
-BOOL CGame::locateBMP( PTSTR pszFilename, PGAME_LOCATION l)
+BOOL CGame::_locateBMP(CImage *finder, PGAME_LOCATION l)
 {
-	CImage finder;
-	finder.Load(pszFilename);
-	
-	for(int x = pImage->GetWidth()/3; x < pImage->GetWidth(); ++x)
+	for(int x = 0; x < pImage->GetWidth(); ++x)
 	{
-		for(int y = 97; y < pImage->GetHeight(); ++y) {
-			if(pImage->GetPixel(x, y) == finder.GetPixel(0, 0))
+		for(int y = 0; y < pImage->GetHeight(); ++y) {
+			if(pImage->GetPixel(x, y) == finder->GetPixel(0, 0))
 			{
 				BOOL match = TRUE;
-				for(int x2 = 0; x2 < finder.GetWidth(); ++x2) {
-					for(int y2 = 0; y2 < finder.GetHeight(); ++y2) {
-						if(pImage->GetPixel(x+x2, y+y2) != finder.GetPixel(x2, y2)) {
+				for(int x2 = 0; x2 < finder->GetWidth(); ++x2) {
+					for(int y2 = 0; y2 < finder->GetHeight(); ++y2) {
+						if(pImage->GetPixel(x+x2, y+y2) != finder->GetPixel(x2, y2)) {
 							match = FALSE;
 							break;
 						}
@@ -342,8 +349,8 @@ BOOL CGame::locateBMP( PTSTR pszFilename, PGAME_LOCATION l)
 				if(match) {
 					l->y = y;
 					l->x = x;
-					l->cx = finder.GetWidth();
-					l->cy = finder.GetHeight();
+					l->cx = finder->GetWidth();
+					l->cy = finder->GetHeight();
 					return TRUE;
 				}
 			}
@@ -351,19 +358,83 @@ BOOL CGame::locateBMP( PTSTR pszFilename, PGAME_LOCATION l)
 	}
 	return FALSE;
 }
+BOOL CGame::locateBMP( PTSTR pszFilename, PGAME_LOCATION l)
+{
+	CImage finder;
+	finder.Load(pszFilename);
+	return _locateBMP(&finder, l);
+}
 
 PGAME_LOCATION CGame::findSkillWindow()
 {
 	memset(&skillWindow, 0, sizeof(GAME_LOCATION));
-	if(locateBMP(TEXT("job.bmp"), &skillWindow))
+	if(locateBMP(TEXT("img\\job.bmp"), &skillWindow))
 	{
 		skillWindow.x += 5;
 		skillWindow.y += 36;
 		skillWindow.cx = 46;
-		skillWindow.cy = 16*10;
+		skillWindow.cy = 16*SKILL_LENGTH;
+
+		for(int i = 0; i < SKILL_LENGTH; ++i)
+		{
+			skillLocations[i].x = skillWindow.x;
+			skillLocations[i].y = skillWindow.y + (skillWindow.cy/SKILL_LENGTH * i);
+			skillLocations[i].cx = skillWindow.cx;
+			skillLocations[i].cy = skillWindow.cy/SKILL_LENGTH;
+			//searchRGB(&skillLocations[i], RGB(0,0,0), 5);
+		}
+		saveSkillPhotos();
+		//searchRGB(&skillWindow, RGB(0,0,0), 5);
 	}
-	searchRGB(&skillWindow, RGB(0,0,0), 5);
+	
 	return &skillWindow;
+}
+
+BOOL CGame::locateBMPFromResource( UINT id, PGAME_LOCATION l)
+{
+	CImage finder;
+	finder.LoadFromResource(GetModuleHandle(NULL), id);
+	return _locateBMP(&finder, l);
+}
+
+BOOL CGame::load4refresh( CString pszFilename)
+{
+	if(pImage)
+		delete pImage;
+
+	pImage = new CImage();
+	pImage->Load(pszFilename);
+	
+	return TRUE;
+}
+
+BOOL CGame::saveSkillPhotos()
+{
+	TCHAR buff[MAX_PATH] = {0};
+	for(int i = 0; i < SKILL_LENGTH; ++i)
+	{
+		swprintf(buff, TEXT("D:\\cgx\\skill\\skill_%d.bmp"), i);
+		saveGameLocation(&skillLocations[i], buff);
+	}
+	return TRUE;
+}
+
+BOOL CGame::saveGameLocation( GAME_LOCATION* l, PTSTR pszFilename)
+{
+	CImage image;
+	image.Create(l->cx, l->cy, pImage->GetBPP());
+	LOG_DEBUG << "save image: x: " << l->x << " y: " << l->y << " width: " << l->cx << " height: " << l->cy <<std::endl;
+	for(int x= 0; x < l->cx; ++x)
+	{
+		for(int y = 0; y < l->cy; ++y)
+		{
+			//LOG_DEBUG << GetRValue(pImage->GetPixel(x, y)) << "," << GetGValue(pImage->GetPixel(x, y)) << "," << GetBValue(pImage->GetPixel(x, y));
+			image.SetPixel(x, y, pImage->GetPixel(x+l->x, y+l->y));
+			
+		}
+	}
+	image.Save(pszFilename);
+	return TRUE;
 }
 
 UINT AutoSpeedUpWalkThread(LPVOID pParam)

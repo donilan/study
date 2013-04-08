@@ -5,6 +5,7 @@
 #include "cgxData.h"
 
 #define KV_1 49
+#define SKILL_LENGTH 10
 
 UINT AutoRefreshThread( LPVOID pParam );
 UINT AutoFightingThread( LPVOID pParam );
@@ -27,7 +28,7 @@ public:
 	BOOL sendKey(int);
 	BOOL sendKeyWithCtl(int);
 	BOOL leftClick(GAME_LOCATION*);
-	BOOL rightClick(int x, int y);
+	BOOL rightClick(GAME_LOCATION*);
 	BOOL say(const char*);
 	BOOL reSay();
 	BOOL focus();
@@ -38,8 +39,10 @@ public:
 	BOOL hitMonster(int);
 	BOOL hitFitBtn(int);
 	
-
+	BOOL load4refresh(CString);
 	BOOL locateBMP(PTSTR, PGAME_LOCATION);
+	BOOL locateBMPFromResource(UINT, PGAME_LOCATION);
+	
 
 	// auto refresh
 	BOOL startAutoRefresh();
@@ -59,8 +62,11 @@ public:
 	BOOL autoTakeScreenshot;
 	BOOL speedUpBySpeak;
 
+	BOOL saveGameLocation(GAME_LOCATION*, PTSTR);
+
 	PGAME_LOCATION findMonster();
 	PGAME_LOCATION findSkillWindow();
+	BOOL saveSkillPhotos();
 	PGAME_LOCATION getLocation(int idx);
 	BOOL checkStatus();
 	int getStatus();
@@ -84,9 +90,11 @@ private:
 	int status;
 	
 	GAME_LOCATION skillWindow;
+	GAME_LOCATION skillLocations[SKILL_LENGTH];
 
 	int searchRGB(PGAME_LOCATION l, COLORREF rgb, int deviation);
 	inline int colorDeviation(PGAME_LOCATION l, COLORREF rgb);
+	BOOL _locateBMP(CImage*, PGAME_LOCATION);
 
 	GAME_LOCATION monsterLocations[MAX_MONSTER_LOCATION];
 	GAME_LOCATION locations[MAX_LOCATION];

@@ -96,8 +96,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
+    <None Include="img\job.bmp" />
     <None Include="job.bmp" />
     <None Include="ReadMe.txt" />
+    <None Include="res\bitmap1.bmp" />
     <None Include="res\cgx.ico" />
     <None Include="res\cgx.rc2" />
   </ItemGroup>

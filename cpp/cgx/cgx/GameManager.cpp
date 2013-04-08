@@ -33,8 +33,16 @@ BOOL CGameManager::init( void )
 {
 	if(EnumWindows(FindCrossGateWindowsProc, (LPARAM)this))
 	{
+#ifdef DEBUG
+		if(gameSize < 1)
+		{ 
+			games[0] = new CGame(NULL);
+			gameSize = 1;
+		}
+#endif
 		return TRUE;
 	}
+
 	return FALSE;
 }
 

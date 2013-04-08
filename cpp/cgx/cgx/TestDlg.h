@@ -33,4 +33,6 @@ public:
 	afx_msg void OnBnClickedHitHitBtn();
 	afx_msg void OnBnClickedHitSkillBtn();
 	afx_msg void OnBnClickedFindSkillWindow();
+	afx_msg void OnBnClickedRefreshScreenshotList();
+	afx_msg void OnBnClickedLoadImage();
 };

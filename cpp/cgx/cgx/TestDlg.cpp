@@ -38,6 +38,8 @@ BEGIN_MESSAGE_MAP(CTestDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_HIT_HIT_BTN, &CTestDlg::OnBnClickedHitHitBtn)
 	ON_BN_CLICKED(IDC_HIT_SKILL_BTN, &CTestDlg::OnBnClickedHitSkillBtn)
 	ON_BN_CLICKED(IDC_FIND_SKILL_WINDOW, &CTestDlg::OnBnClickedFindSkillWindow)
+	ON_BN_CLICKED(IDC_REFRESH_SCREENSHOT_LIST, &CTestDlg::OnBnClickedRefreshScreenshotList)
+	ON_BN_CLICKED(IDC_LOAD_IMAGE, &CTestDlg::OnBnClickedLoadImage)
 END_MESSAGE_MAP()
 
 
@@ -167,5 +169,44 @@ void CTestDlg::OnBnClickedFindSkillWindow()
 		CEdit* edit = (CEdit*)GetDlgItem(IDC_MESSAGE_BOX);
 		swprintf(buff, TEXT("left: %d, top: %d, width: %d, height: %d"), l->x, l->y, l->cx, l->cy);
 		edit->SetWindowTextW(buff);
+	}
+}
+
+
+void CTestDlg::OnBnClickedRefreshScreenshotList()
+{
+	TCHAR bmpPath[MAX_PATH] = {0};
+	TCHAR tmp[MAX_PATH] = {0};
+	GetCurrentDirectory(sizeof(tmp), tmp);
+	swprintf(bmpPath, TEXT("%c:\\cgx\\*.bmp"), tmp[0]);
+	TRACE(TEXT("%s\n"), bmpPath);
+	CFileFind finder;
+	BOOL bWorking = finder.FindFile(bmpPath);
+	CListBox* listBox = (CListBox *)GetDlgItem(IDC_SCREENSHOT_LIST);
+	listBox->ResetContent();
+	while(bWorking)
+	{
+		bWorking = finder.FindNextFile();
+		listBox->AddString(finder.GetFilePath());
+		
+	}
+}
+
+
+void CTestDlg::OnBnClickedLoadImage()
+{
+	if(this->gameManager.gameSize >0)
+	{
+		TCHAR buff[MAX_PATH] = {0};
+		CString str;
+		CListBox* listBox = (CListBox *)GetDlgItem(IDC_SCREENSHOT_LIST);
+		int idx = listBox->GetCurSel();
+		if(idx > -1)
+		{
+			int len = listBox->GetTextLen(idx);
+			listBox->GetText(idx, str);
+			this->gameManager.games[0]->load4refresh(str);
+		}
+		
 	}
 }
