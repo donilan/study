@@ -97,11 +97,18 @@
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
     <None Include="img\job.bmp" />
-    <None Include="job.bmp" />
+    <None Include="img\skill\dis_chong_wu_qiang_hua.bmp" />
+    <None Include="img\skill\dis_tiao_jiao.bmp" />
+    <None Include="img\skill\en_gong_ji_fan_tan.bmp" />
+    <None Include="img\skill\en_gong_ji_xi_shou.bmp" />
+    <None Include="img\skill\en_luan_she.bmp" />
+    <None Include="img\skill\en_ming_jing.bmp" />
+    <None Include="img\skill\en_qian_kun.bmp" />
+    <None Include="img\skill\en_qi_jue_hui_fu.bmp" />
+    <None Include="img\skill\en_yang_yan.bmp" />
+    <None Include="img\skill\no_skill.bmp" />
     <None Include="ReadMe.txt" />
-    <None Include="res\bitmap1.bmp" />
     <None Include="res\cgx.ico" />
-    <None Include="res\cgx.rc2" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cgx.h" />
@@ -111,6 +118,7 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Skill.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TestDlg.h" />
@@ -120,6 +128,7 @@
     <ClCompile Include="cgxDlg.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="Skill.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

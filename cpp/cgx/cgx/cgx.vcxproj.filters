@@ -16,17 +16,38 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
-    <None Include="res\cgx.rc2">
-      <Filter>资源文件</Filter>
-    </None>
     <None Include="res\cgx.ico">
       <Filter>资源文件</Filter>
     </None>
     <None Include="ClassDiagram1.cd" />
-    <None Include="job.bmp">
+    <None Include="img\skill\dis_chong_wu_qiang_hua.bmp">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="res\bitmap1.bmp">
+    <None Include="img\skill\dis_tiao_jiao.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="img\skill\en_gong_ji_fan_tan.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="img\skill\en_gong_ji_xi_shou.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="img\skill\en_luan_she.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="img\skill\en_ming_jing.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="img\skill\en_qi_jue_hui_fu.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="img\skill\en_qian_kun.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="img\skill\en_yang_yan.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="img\skill\no_skill.bmp">
       <Filter>资源文件</Filter>
     </None>
     <None Include="img\job.bmp">
@@ -64,6 +85,9 @@
     <ClInclude Include="TestDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Skill.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cgx.cpp">
@@ -82,6 +106,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="TestDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Skill.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

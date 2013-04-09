@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include <iostream>
+#include "Skill.h"
 #include "cgxData.h"
 
 #define KV_1 49
@@ -38,6 +39,10 @@ public:
 	BOOL saveScreenshot2file(LPCTSTR);
 	BOOL hitMonster(int);
 	BOOL hitFitBtn(int);
+
+	BOOL choiceSkill(int);
+	int getCurrentSkillMaxLevel();
+	BOOL choiceSkillLevel(int);
 	
 	BOOL load4refresh(CString);
 	BOOL locateBMP(PTSTR, PGAME_LOCATION);
@@ -61,12 +66,13 @@ public:
 
 	BOOL autoTakeScreenshot;
 	BOOL speedUpBySpeak;
+	CSkill skills[SKILL_LENGTH];
 
 	BOOL saveGameLocation(GAME_LOCATION*, PTSTR);
 
 	PGAME_LOCATION findMonster();
 	PGAME_LOCATION findSkillWindow();
-	BOOL saveSkillPhotos();
+	BOOL saveSkillPhotos(PTSTR);
 	PGAME_LOCATION getLocation(int idx);
 	BOOL checkStatus();
 	int getStatus();
@@ -92,12 +98,14 @@ private:
 	GAME_LOCATION skillWindow;
 	GAME_LOCATION skillLocations[SKILL_LENGTH];
 
-	int searchRGB(PGAME_LOCATION l, COLORREF rgb, int deviation);
-	inline int colorDeviation(PGAME_LOCATION l, COLORREF rgb);
+	int _searchRGB(PGAME_LOCATION l, COLORREF rgb, int deviation);
+	inline int _colorDeviation(PGAME_LOCATION l, COLORREF rgb);
 	BOOL _locateBMP(CImage*, PGAME_LOCATION);
-
+	BOOL _matchImage(CImage*, PGAME_LOCATION);
+	BOOL _initSkill(int idx, PGAME_LOCATION);
 	GAME_LOCATION monsterLocations[MAX_MONSTER_LOCATION];
 	GAME_LOCATION locations[MAX_LOCATION];
 
+	
 };
 

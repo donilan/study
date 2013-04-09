@@ -23,6 +23,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	CGameManager gameManager;
+
+	inline void getCurrentCgx(PTSTR);
+
+	inline void _appendTextToEditCtrl(LPCTSTR pszText);
 public:
 	afx_msg void OnBnClickedRefreshGame();
 	afx_msg void OnBnClickedFindMonster();
@@ -35,4 +39,9 @@ public:
 	afx_msg void OnBnClickedFindSkillWindow();
 	afx_msg void OnBnClickedRefreshScreenshotList();
 	afx_msg void OnBnClickedLoadImage();
+	afx_msg void OnBnClickedSaveSkill();
+	afx_msg void OnBnClickedPrintSkill();
+	afx_msg void OnBnClickedGetCurrentSkillMaxLevel();
+	afx_msg void OnBnClickedHitSkill1();
+	afx_msg void OnBnClickedHitMaxLevelSkill();
 };

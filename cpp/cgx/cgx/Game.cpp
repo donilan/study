@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Game.h"
 #include <ctime>
+#include "resource.h"
 
 #include "log.h"
 
@@ -27,6 +28,8 @@ CGame::CGame(HWND hwnd)
 	memset(this->locations, 0, sizeof(GAME_LOCATION)*MAX_LOCATION);
 	memcpy(this->locations, ALL_LOCATIONS, sizeof(GAME_LOCATION)*MAX_LOCATION);
 	memset(this->skillLocations, 0 , sizeof(GAME_LOCATION)*SKILL_LENGTH);
+
+	memset(this->skills, 0, sizeof(CSkill)* SKILL_LENGTH);
 }
 
 
@@ -239,7 +242,7 @@ PGAME_LOCATION CGame::findMonster()
 {
 	for(int i = 0; i < MAX_MONSTER_LOCATION; ++i)
 	{
-		if(colorDeviation(&monsterLocations[i], COLOR_MONSTER_FONT) > DEVIATION_MONSTER_FONT)
+		if(_colorDeviation(&monsterLocations[i], COLOR_MONSTER_FONT) > DEVIATION_MONSTER_FONT)
 		{
 			monsterLocations[i].status = 1;
 		}else{
@@ -249,9 +252,9 @@ PGAME_LOCATION CGame::findMonster()
 	return monsterLocations;
 }
 
-int CGame::searchRGB( const PGAME_LOCATION l, COLORREF rgb, int deviation )
+int CGame::_searchRGB( PGAME_LOCATION l, COLORREF rgb, int deviation )
 {
-	LOG_DEBUG << "Searching RGB... width: " << windowWidth << " height: " << windowHeight;
+	LOG_DEBUG << "Searching RGB(" << (int)GetRValue(rgb) << "," << (int)GetGValue(rgb) << "," << (int)GetBValue(rgb) <<") x: " << l->x << " y: " << l->y;
 	if(!pImage)
 		refresh();
 
@@ -262,7 +265,7 @@ int CGame::searchRGB( const PGAME_LOCATION l, COLORREF rgb, int deviation )
 		for(unsigned int y = l->y; y <= (l->y + l->cy); ++y)
 		{
 			COLORREF color = pImage->GetPixel(x, y);
-			
+			//LOG_DEBUG << "RGB(" << (int)GetRValue(color) << "," << (int)GetGValue(color) << "," << (int)GetBValue(color) <<")";
 			if(abs(GetRValue(rgb) - GetRValue(color)) < deviation
 				&& abs(GetGValue(rgb) - GetGValue(color)) < deviation
 				&& abs(GetBValue(rgb) - GetBValue(color)) < deviation)
@@ -272,7 +275,7 @@ int CGame::searchRGB( const PGAME_LOCATION l, COLORREF rgb, int deviation )
 #ifdef DEBUG
 			if(x == l->x || x == (l->cx+l->x)
 				|| y == l->y || y == (l->cy + l->y))
-				pImage->SetPixel(x, y, RGB(255,255,255));
+				pImage->SetPixel(x, y, RGB(255,0,0));
 #endif
 		}
 	}
@@ -287,11 +290,11 @@ int CGame::getStatus()
 
 BOOL CGame::checkStatus()
 {
-	if(colorDeviation(getLocation(BTN_DUMP), COLOR_BTN_ENABLE) > DEVIATION_BTN)
+	if(_colorDeviation(getLocation(BTN_DUMP), COLOR_BTN_ENABLE) > DEVIATION_BTN)
 		status = GAME_STATUS_TRAVEL;
-	else if(colorDeviation(getLocation(FIT_BTN_RUN), COLOR_FIT_BTN_DISABLE) > DEVIATION_FIT_BTN)
+	else if(_colorDeviation(getLocation(FIT_BTN_LOCATION), COLOR_FIT_BTN_DISABLE) > DEVIATION_FIT_BTN)
 		status = GAME_STATUS_PLAYER_FIGHT;
-	else if(colorDeviation(getLocation(FIT_BTN_MONSTER_SKILL), COLOR_FIT_BTN_DISABLE) > DEVIATION_FIT_BTN)
+	else if(_colorDeviation(getLocation(FIT_BTN_MONSTER_SKILL), COLOR_FIT_BTN_DISABLE) > DEVIATION_FIT_BTN)
 		status = GAME_STATUS_MONSTER_FIGHT;
 	else
 		status = GAME_STATUS_UNKNOW;
@@ -306,9 +309,9 @@ BOOL CGame::hitMonster( int witchOne )
 
 
 
-int CGame::colorDeviation( PGAME_LOCATION l, COLORREF rgb)
+inline int CGame::_colorDeviation( PGAME_LOCATION l, COLORREF rgb )
 {
-	int count = searchRGB(l, rgb, 8);
+	int count = _searchRGB(l, rgb, 8);
 	int pixSize = l->cx * l->cy;
 	LOG_DEBUG << "size: " << pixSize << " color (" 
 		<< (int)GetRValue(rgb) << "," << (int)GetGValue(rgb) << "," << (int)GetBValue(rgb) 
@@ -318,7 +321,7 @@ int CGame::colorDeviation( PGAME_LOCATION l, COLORREF rgb)
 
 BOOL CGame::hitFitBtn(int idx)
 {
-	if(colorDeviation(getLocation(idx), COLOR_FIT_BTN_DISABLE) > DEVIATION_FIT_BTN) {
+	if(_colorDeviation(getLocation(idx), COLOR_FIT_BTN_DISABLE) > DEVIATION_FIT_BTN) {
 		return leftClick(getLocation(idx));
 	}
 	return FALSE;
@@ -368,7 +371,7 @@ BOOL CGame::locateBMP( PTSTR pszFilename, PGAME_LOCATION l)
 PGAME_LOCATION CGame::findSkillWindow()
 {
 	memset(&skillWindow, 0, sizeof(GAME_LOCATION));
-	if(locateBMP(TEXT("img\\job.bmp"), &skillWindow))
+	if(locateBMPFromResource(IDB_JOB, &skillWindow))
 	{
 		skillWindow.x += 5;
 		skillWindow.y += 36;
@@ -381,9 +384,9 @@ PGAME_LOCATION CGame::findSkillWindow()
 			skillLocations[i].y = skillWindow.y + (skillWindow.cy/SKILL_LENGTH * i);
 			skillLocations[i].cx = skillWindow.cx;
 			skillLocations[i].cy = skillWindow.cy/SKILL_LENGTH;
-			//searchRGB(&skillLocations[i], RGB(0,0,0), 5);
+			_initSkill(i, &skillLocations[i]);
 		}
-		saveSkillPhotos();
+		
 		//searchRGB(&skillWindow, RGB(0,0,0), 5);
 	}
 	
@@ -408,12 +411,12 @@ BOOL CGame::load4refresh( CString pszFilename)
 	return TRUE;
 }
 
-BOOL CGame::saveSkillPhotos()
+BOOL CGame::saveSkillPhotos(PTSTR dir)
 {
 	TCHAR buff[MAX_PATH] = {0};
 	for(int i = 0; i < SKILL_LENGTH; ++i)
 	{
-		swprintf(buff, TEXT("D:\\cgx\\skill\\skill_%d.bmp"), i);
+		swprintf(buff, TEXT("%s\\skill_%d.bmp"), dir, i);
 		saveGameLocation(&skillLocations[i], buff);
 	}
 	return TRUE;
@@ -435,6 +438,73 @@ BOOL CGame::saveGameLocation( GAME_LOCATION* l, PTSTR pszFilename)
 	}
 	image.Save(pszFilename);
 	return TRUE;
+}
+
+BOOL CGame::_matchImage( CImage* image, PGAME_LOCATION l)
+{
+	for(int x = 0; x < image->GetWidth(); ++x)
+	{
+		for(int y = 0; y < image->GetHeight(); ++y) 
+		{
+			if(pImage->GetPixel(l->x+x, l->y+y) != image->GetPixel(x, y)) 
+			{
+				return FALSE;
+			}
+		}
+	}
+	return TRUE;
+}
+
+#define INIT_SKILL(id, NAME) \
+	if(image) delete image; \
+	image = new CImage(); \
+	image->LoadFromResource(hInstance, id); \
+	if(_matchImage(image, l )){ \
+	swprintf( skills[idx].name, TEXT(#NAME)); \
+	return TRUE; \
+	}
+
+BOOL CGame::_initSkill( int idx, PGAME_LOCATION l)
+{
+	CImage* image = NULL;
+	HINSTANCE hInstance = GetModuleHandle(NULL);
+	skills[idx].index = idx;
+	memcpy(&(skills[idx].location), l, sizeof(GAME_LOCATION));
+	swprintf(skills[idx].name, TEXT("无技能"));
+
+	INIT_SKILL(IDB_SKILL_EN_YANG_YAN, 阳炎)
+	INIT_SKILL(IDB_SKILL_EN_LUAN_SHE, 乱射)
+	INIT_SKILL(IDB_SKILL_EN_MING_JING_ZHI_SHUI, 明镜止水)
+	INIT_SKILL(IDB_SKILL_EN_QIAN_KUN, 乾坤)
+	INIT_SKILL(IDB_SKILL_EN_GONG_JI_FAN_TAN, 攻击反弹)
+	INIT_SKILL(IDB_SKILL_EN_GONG_JI_XI_SHOU, 攻击吸收)
+	INIT_SKILL(IDB_SKILL_DIS_CHONG_WU_QIANG_HUA, 宠物强化)
+	INIT_SKILL(IDB_SKILL_DIS_TIAO_JIAO, 调教)
+
+	if(image) delete image;
+	return FALSE;
+}
+
+BOOL CGame::choiceSkill( int idx)
+{
+	return leftClick(&skills[idx].location);
+}
+
+int CGame::getCurrentSkillMaxLevel()
+{
+	for(int i = SKILL_LENGTH; i > 0; --i)
+	{
+		if(_colorDeviation(&(skills[i-1].location), RGB(255,255,255)) > 10)
+			return i;
+	}
+}
+
+BOOL CGame::choiceSkillLevel( int level)
+{
+	--level;
+	if(level < 0) level = 0;
+	if(level > 9) level = 9; 
+	return leftClick(&skills[level].location);
 }
 
 UINT AutoSpeedUpWalkThread(LPVOID pParam)
