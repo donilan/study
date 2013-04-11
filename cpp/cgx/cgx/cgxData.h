@@ -4,25 +4,24 @@
 #define MAX_LOCATION 100
 
 struct STRUCT_GAME_LOCATION {
-	unsigned int x;
-	unsigned int y;
-	unsigned int cx;
-	unsigned int cy;
-	unsigned int status;
+	int x;
+	int y;
+	int cx;
+	int cy;
 };
 typedef STRUCT_GAME_LOCATION GAME_LOCATION, *PGAME_LOCATION;
 
 const GAME_LOCATION MONSTER_LOCATIONS[MAX_MONSTER_LOCATION] = {
-	{6, 255, 55, 16, 0},
-	{70, 219, 55, 16, 0},
-	{134, 183, 55, 16, 0},
-	{198, 147, 55, 16, 0},
-	{262, 111, 55, 16, 0},
-	{58, 301, 55, 16, 0},
-	{122, 267, 55, 16, 0},
-	{186, 233, 55, 16, 0},
-	{250, 197, 55, 16, 0},
-	{314, 161, 55, 16, 0},
+	{6, 255, 55, 16},
+	{70, 219, 55, 16},
+	{134, 183, 55, 16},
+	{198, 147, 55, 16},
+	{262, 111, 55, 16},
+	{58, 301, 55, 16},
+	{122, 267, 55, 16},
+	{186, 233, 55, 16},
+	{250, 197, 55, 16},
+	{314, 161, 55, 16},
 };
 
 enum {BTN_PK, BTN_WATCH_PK, BTN_JOIN, BTN_EXCHANGE, BTN_MAP, BTN_DISABLE_MONSTER, BTN_SALE, BTN_DUMP, 
@@ -30,25 +29,25 @@ enum {BTN_PK, BTN_WATCH_PK, BTN_JOIN, BTN_EXCHANGE, BTN_MAP, BTN_DISABLE_MONSTER
 	FIT_BTN_DEFIND, FIT_BTN_GOODS, FIT_BTN_LOCATION, FIT_BTN_RUN,
 	FIT_BTN_MONSTER_SKILL};
 const GAME_LOCATION ALL_LOCATIONS[MAX_LOCATION] = {
-	{410, 32, 19, 19, 0},
-	{431, 32, 19, 19, 0},
-	{452, 32, 19, 19, 0},
-	{494, 32, 19, 19, 0},
-	{557, 32, 19, 19, 0},
-	{578, 32, 19, 19, 0},
-	{599, 32, 19, 19, 0},
-	{620, 32, 19, 19, 0},// t ren
+	{410, 32, 19, 19},
+	{431, 32, 19, 19},
+	{452, 32, 19, 19},
+	{494, 32, 19, 19},
+	{557, 32, 19, 19},
+	{578, 32, 19, 19},
+	{599, 32, 19, 19},
+	{620, 32, 19, 19},// t ren
 
-	{360, 52, 57, 26, 0},
-	{430, 52, 57, 26, 0},
-	{500, 52, 57, 26, 0},
+	{360, 52, 57, 26},
+	{430, 52, 57, 26},
+	{500, 52, 57, 26},
 
-	{360, 77, 57, 26, 0},
-	{430, 77, 57, 26, 0},
-	{500, 77, 57, 26, 0},
-	{570, 52, 57, 26, 0},
+	{360, 77, 57, 26},
+	{430, 77, 57, 26},
+	{500, 77, 57, 26},
+	{570, 52, 57, 26},
 
-	{563,78, 57, 22, 0},
+	{563,78, 57, 22},
 };
 
 #define G_LOCATION(idx) ALL_LOCATIONS[idx]

@@ -161,37 +161,6 @@ HCURSOR CcgxDlg::OnQueryDragIcon()
 void CcgxDlg::OnBnClickedButton1()
 {
 
-	static CStatic* texts[10] = {
-		(CStatic *)GetDlgItem(IDC_MONSTER1),
-		(CStatic *)GetDlgItem(IDC_MONSTER2),
-		(CStatic *)GetDlgItem(IDC_MONSTER3),
-		(CStatic *)GetDlgItem(IDC_MONSTER4),
-		(CStatic *)GetDlgItem(IDC_MONSTER5),
-		(CStatic *)GetDlgItem(IDC_MONSTER6),
-		(CStatic *)GetDlgItem(IDC_MONSTER7),
-		(CStatic *)GetDlgItem(IDC_MONSTER8),
-		(CStatic *)GetDlgItem(IDC_MONSTER9),
-		(CStatic *)GetDlgItem(IDC_MONSTER10),
-	};
-	
-	// TODO: 在此添加控件通知处理程序代码
-	if(this->gameManager.gameSize > 0)
-	{
-		this->gameManager.games[0]->refresh();
-		Sleep(500);
-		PGAME_LOCATION locations = this->gameManager.games[0]->findMonster();
-		this->gameManager.games[0]->saveScreenshot2file(TEXT("D:\\tmp.bmp"));
-		for(int i = 0; i < MAX_MONSTER_LOCATION; ++i)
-		{
-			if(locations[i].status > 0)
-			{
-				texts[i]->SetWindowTextW(TEXT("1"));
-
-			} else {
-				texts[i]->SetWindowTextW(TEXT("0"));
-			}
-		}
-	}
 }
 
 LRESULT CcgxDlg::OnHotkey(WPARAM wParam, LPARAM lParam)
@@ -204,39 +173,11 @@ LRESULT CcgxDlg::OnHotkey(WPARAM wParam, LPARAM lParam)
 
 void CcgxDlg::OnBnClickedTime2screenshot()
 {
-	if(this->gameManager.gameSize > 0)
-	{
-		CButton* chk = (CButton*)GetDlgItem(IDC_TIME2SCREENSHOT);
-		UINT nCheck = chk->GetState();
-		if (nCheck & BST_CHECKED)
-		{
-			this->gameManager.games[0]->startAutoRefresh();
-		}
-		else
-		{
-			this->gameManager.games[0]->stopAutoRefresh();
-		}
-	}
+	
 }
 
 
 void CcgxDlg::OnBnClickedSpeedUpWalk()
 {
-	if(this->gameManager.gameSize > 0)
-	{
-		CButton* chk = (CButton*)GetDlgItem(IDC_SPEED_UP_WALK);
-		UINT nCheck = chk->GetState();
-		if (nCheck & BST_CHECKED)
-		{
-			LOG_DEBUG << "SPEED UP START!!!";
-			//this->gameManager.games[0]->speedUpBySpeak = TRUE;
-			//this->gameManager.games[0]->startSpeedUpWalk();
-
-		}
-		else
-		{
-			LOG_DEBUG << "SPEED UP STOP!!!";
-			this->gameManager.games[0]->stopSpeedUpWalk();
-		}
-	}
+	
 }

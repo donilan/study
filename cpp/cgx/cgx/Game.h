@@ -4,9 +4,9 @@
 #include <iostream>
 #include "Skill.h"
 #include "cgxData.h"
+#include "MonsterHoler.h"
 
 #define KV_1 49
-#define SKILL_LENGTH 10
 
 UINT AutoRefreshThread( LPVOID pParam );
 UINT AutoFightingThread( LPVOID pParam );
@@ -67,20 +67,25 @@ public:
 	BOOL autoTakeScreenshot;
 	BOOL speedUpBySpeak;
 	CSkill skills[SKILL_LENGTH];
+	CMonsterHoler monsterHolder;
 
 	BOOL saveGameLocation(GAME_LOCATION*, PTSTR);
 
-	PGAME_LOCATION findMonster();
+	BOOL findMonster();
 	PGAME_LOCATION findSkillWindow();
+	BOOL isSkillInit();
 	BOOL saveSkillPhotos(PTSTR);
 	PGAME_LOCATION getLocation(int idx);
 	BOOL checkStatus();
+	void changeStatus(int);
 	int getStatus();
 
 	unsigned int interval4screenshot;
 	unsigned int interval4autoFighting;
 	unsigned int interval4speedUpWalk;
 	unsigned int interval4speedUpSpeak;
+
+	SKILL_CHOICER skillChoices;
 private:
 	HWND hwnd;
 	CImage* pImage;
@@ -103,7 +108,7 @@ private:
 	BOOL _locateBMP(CImage*, PGAME_LOCATION);
 	BOOL _matchImage(CImage*, PGAME_LOCATION);
 	BOOL _initSkill(int idx, PGAME_LOCATION);
-	GAME_LOCATION monsterLocations[MAX_MONSTER_LOCATION];
+	
 	GAME_LOCATION locations[MAX_LOCATION];
 
 	

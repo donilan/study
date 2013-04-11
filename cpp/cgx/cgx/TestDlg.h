@@ -44,4 +44,5 @@ public:
 	afx_msg void OnBnClickedGetCurrentSkillMaxLevel();
 	afx_msg void OnBnClickedHitSkill1();
 	afx_msg void OnBnClickedHitMaxLevelSkill();
+	afx_msg void OnBnClickedAutoFight();
 };

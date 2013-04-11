@@ -17,6 +17,8 @@ CGame::CGame(HWND hwnd)
 	this->autoRefresh = FALSE;
 	this->speedUpWalk = FALSE;
 	this->speedUpBySpeak = FALSE;
+	this->autoFighting = FALSE;
+	this->autoTakeScreenshot = FALSE;
 	this->status = GAME_STATUS_UNKNOW;
 	interval4screenshot = 3000;
 	interval4autoFighting = 1000;
@@ -24,12 +26,16 @@ CGame::CGame(HWND hwnd)
 	interval4speedUpSpeak = 200;
 	srand((unsigned) time(NULL));
 	this->hScreenDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
-	memcpy(this->monsterLocations, MONSTER_LOCATIONS, sizeof(GAME_LOCATION)*MAX_MONSTER_LOCATION);
+	
 	memset(this->locations, 0, sizeof(GAME_LOCATION)*MAX_LOCATION);
 	memcpy(this->locations, ALL_LOCATIONS, sizeof(GAME_LOCATION)*MAX_LOCATION);
 	memset(this->skillLocations, 0 , sizeof(GAME_LOCATION)*SKILL_LENGTH);
 
 	memset(this->skills, 0, sizeof(CSkill)* SKILL_LENGTH);
+
+	this->skillChoices.allTargetSkillIdx = -1;
+	this->skillChoices.fourTargetSkillIdx = -1;
+	this->skillChoices.signleSkillIdx = -1;
 }
 
 
@@ -74,7 +80,7 @@ BOOL CGame::sendKeyWithCtl( int key )
 BOOL CGame::leftClick(GAME_LOCATION* l)
 {
 	int x = l->x+15;
-	int y = l->y+5;
+	int y = l->y+10;
 	LOG_DEBUG << "mouse move to " << x << "," << y;
 	SetCursorPos(x, y);
 	Sleep(100);
@@ -146,7 +152,7 @@ BOOL CGame::refresh()
 		delete pImageDC;
 	if(pImage)
 		delete pImage;
-
+	
 	RECT rect;
 	getRect(&rect);
 	int width = rect.right-rect.left;
@@ -161,6 +167,7 @@ BOOL CGame::refresh()
 	windowHeight = pImage->GetHeight();
 	windowWidth = pImage->GetWidth();
 	LOG_DEBUG << "Refresh Done, image width: " << windowWidth << ", height: " << windowHeight;
+	checkStatus();
 	return TRUE;
 }
 
@@ -238,18 +245,17 @@ BOOL CGame::startSpeedUpWalk()
 	return TRUE;
 }
 
-PGAME_LOCATION CGame::findMonster()
+BOOL CGame::findMonster()
 {
+	monsterHolder.resetAlive();
 	for(int i = 0; i < MAX_MONSTER_LOCATION; ++i)
 	{
-		if(_colorDeviation(&monsterLocations[i], COLOR_MONSTER_FONT) > DEVIATION_MONSTER_FONT)
+		if(_colorDeviation(monsterHolder.get(i), COLOR_MONSTER_FONT) > DEVIATION_MONSTER_FONT)
 		{
-			monsterLocations[i].status = 1;
-		}else{
-			monsterLocations[i].status = 0;
+			monsterHolder.setAlive(i);
 		}
 	}
-	return monsterLocations;
+	return TRUE;
 }
 
 int CGame::_searchRGB( PGAME_LOCATION l, COLORREF rgb, int deviation )
@@ -260,9 +266,9 @@ int CGame::_searchRGB( PGAME_LOCATION l, COLORREF rgb, int deviation )
 
 	int result = 0;
 
-	for(unsigned int x = l->x; x <= (l->x + l->cx); ++x) 
+	for(int x = l->x; x <= (l->x + l->cx); ++x) 
 	{
-		for(unsigned int y = l->y; y <= (l->y + l->cy); ++y)
+		for(int y = l->y; y <= (l->y + l->cy); ++y)
 		{
 			COLORREF color = pImage->GetPixel(x, y);
 			//LOG_DEBUG << "RGB(" << (int)GetRValue(color) << "," << (int)GetGValue(color) << "," << (int)GetBValue(color) <<")";
@@ -292,10 +298,18 @@ BOOL CGame::checkStatus()
 {
 	if(_colorDeviation(getLocation(BTN_DUMP), COLOR_BTN_ENABLE) > DEVIATION_BTN)
 		status = GAME_STATUS_TRAVEL;
-	else if(_colorDeviation(getLocation(FIT_BTN_LOCATION), COLOR_FIT_BTN_DISABLE) > DEVIATION_FIT_BTN)
-		status = GAME_STATUS_PLAYER_FIGHT;
+	else if(_colorDeviation(getLocation(FIT_BTN_LOCATION), COLOR_FIT_BTN_DISABLE) > DEVIATION_FIT_BTN) 
+	{
+		findMonster();
+		if(this->monsterHolder.getAliveNumber() > 0)
+			status = GAME_STATUS_PLAYER_FIGHT;
+	}
 	else if(_colorDeviation(getLocation(FIT_BTN_MONSTER_SKILL), COLOR_FIT_BTN_DISABLE) > DEVIATION_FIT_BTN)
-		status = GAME_STATUS_MONSTER_FIGHT;
+	{
+		findMonster();
+		if(this->monsterHolder.getAliveNumber() > 0)
+			status = GAME_STATUS_MONSTER_FIGHT;
+	}
 	else
 		status = GAME_STATUS_UNKNOW;
 	return TRUE;
@@ -303,7 +317,9 @@ BOOL CGame::checkStatus()
 
 BOOL CGame::hitMonster( int witchOne )
 {
-	leftClick(&monsterLocations[witchOne]);
+	PGAME_LOCATION l = this->monsterHolder.get(witchOne);
+	if(l)
+		leftClick(l);
 	return TRUE;
 }
 
@@ -455,12 +471,13 @@ BOOL CGame::_matchImage( CImage* image, PGAME_LOCATION l)
 	return TRUE;
 }
 
-#define INIT_SKILL(id, NAME) \
+#define INIT_SKILL(id, NAME, attNum) \
 	if(image) delete image; \
 	image = new CImage(); \
 	image->LoadFromResource(hInstance, id); \
 	if(_matchImage(image, l )){ \
 	swprintf( skills[idx].name, TEXT(#NAME)); \
+	skills[idx].attackNumber = attNum ;\
 	return TRUE; \
 	}
 
@@ -471,17 +488,18 @@ BOOL CGame::_initSkill( int idx, PGAME_LOCATION l)
 	skills[idx].index = idx;
 	memcpy(&(skills[idx].location), l, sizeof(GAME_LOCATION));
 	swprintf(skills[idx].name, TEXT("无技能"));
+	skills[idx].attackNumber = 0;
 
-	INIT_SKILL(IDB_SKILL_EN_YANG_YAN, 阳炎)
-	INIT_SKILL(IDB_SKILL_EN_LUAN_SHE, 乱射)
-	INIT_SKILL(IDB_SKILL_EN_MING_JING_ZHI_SHUI, 明镜止水)
-	INIT_SKILL(IDB_SKILL_EN_QIAN_KUN, 乾坤)
-	INIT_SKILL(IDB_SKILL_EN_GONG_JI_FAN_TAN, 攻击反弹)
-	INIT_SKILL(IDB_SKILL_EN_GONG_JI_XI_SHOU, 攻击吸收)
-	INIT_SKILL(IDB_SKILL_DIS_CHONG_WU_QIANG_HUA, 宠物强化)
-	INIT_SKILL(IDB_SKILL_DIS_TIAO_JIAO, 调教)
+	INIT_SKILL(IDB_SKILL_EN_YANG_YAN, 阳炎, 1)
+		INIT_SKILL(IDB_SKILL_EN_LUAN_SHE, 乱射, 10)
+		INIT_SKILL(IDB_SKILL_EN_MING_JING_ZHI_SHUI, 明镜止水, 0)
+		INIT_SKILL(IDB_SKILL_EN_QIAN_KUN, 乾坤, 1)
+		INIT_SKILL(IDB_SKILL_EN_GONG_JI_FAN_TAN, 攻击反弹, 1)
+		INIT_SKILL(IDB_SKILL_EN_GONG_JI_XI_SHOU, 攻击吸收, 1)
+		INIT_SKILL(IDB_SKILL_DIS_CHONG_WU_QIANG_HUA, 宠物强化, 0)
+		INIT_SKILL(IDB_SKILL_DIS_TIAO_JIAO, 调教, 0)
 
-	if(image) delete image;
+		if(image) delete image;
 	return FALSE;
 }
 
@@ -497,6 +515,7 @@ int CGame::getCurrentSkillMaxLevel()
 		if(_colorDeviation(&(skills[i-1].location), RGB(255,255,255)) > 10)
 			return i;
 	}
+	return -1;
 }
 
 BOOL CGame::choiceSkillLevel( int level)
@@ -505,6 +524,16 @@ BOOL CGame::choiceSkillLevel( int level)
 	if(level < 0) level = 0;
 	if(level > 9) level = 9; 
 	return leftClick(&skills[level].location);
+}
+
+BOOL CGame::isSkillInit()
+{
+	return skills[0].name[0] != 0;
+}
+
+void CGame::changeStatus( int s)
+{
+	this->status = s;
 }
 
 UINT AutoSpeedUpWalkThread(LPVOID pParam)
@@ -527,9 +556,100 @@ UINT AutoSpeedUpWalkThread(LPVOID pParam)
 
 UINT AutoFightingThread(LPVOID pParam)
 {
+	int skillIdx = -1;
 	CGame* game = (CGame *)pParam;
 	while(game->isAutoFighting())
 	{
+		if(game->isFocus())
+		{
+			game->refresh();
+			int status = game->getStatus();
+			LOG_DEBUG << "Auto fighting with status: " << status;
+			if (status == CGame::GAME_STATUS_MONSTER_FIGHT
+				|| status == CGame::GAME_STATUS_PLAYER_FIGHT)
+			{
+				
+				switch (status)
+				{
+				case CGame::GAME_STATUS_PLAYER_FIGHT:
+					LOG_DEBUG << "Player fight status. monster number: " << game->monsterHolder.getAliveNumber();
+					game->hitFitBtn(FIT_BTN_SKILL);
+					Sleep(100);
+					
+					game->findSkillWindow();
+					
+					if(game->monsterHolder.getAliveNumber() < 2) 
+					{
+						skillIdx = game->skillChoices.signleSkillIdx;
+					}
+					else if(game->monsterHolder.getAliveNumber() < 4)
+					{
+						if(game->skillChoices.fourTargetSkillIdx < 0)
+						{
+							for(int i = 0; i < SKILL_LENGTH; ++i)
+							{
+								if(game->skills[i].attackNumber == SKILL_FOUR_TARGET)
+								{
+									game->skillChoices.fourTargetSkillIdx = i;
+									
+									break;
+								} else if(game->skills[i].attackNumber == SKILL_ALL_TARGET)
+									game->skillChoices.fourTargetSkillIdx = i;
+							}
+						}
+						LOG_DEBUG << "Choice four target skill number: " << game->skillChoices.fourTargetSkillIdx;
+						skillIdx = game->skillChoices.fourTargetSkillIdx;
+					} 
+					else 
+					{
+						if(game->skillChoices.allTargetSkillIdx < 0)
+						{
+							for(int i = 0; i < SKILL_LENGTH; ++i)
+							{
+								if(game->skills[i].attackNumber == SKILL_FOUR_TARGET)
+								{
+									game->skillChoices.allTargetSkillIdx = i;
+								} 
+								else if(game->skills[i].attackNumber == SKILL_ALL_TARGET)
+								{
+										game->skillChoices.allTargetSkillIdx = i;
+										break;
+								}
+							}
+						}
+						LOG_DEBUG << "Choice all target skill number: " << game->skillChoices.allTargetSkillIdx;
+						skillIdx = game->skillChoices.allTargetSkillIdx;
+					}
+					// att
+					if(skillIdx < 0)
+					{
+						game->hitFitBtn(FIT_BTN_HIT);
+					}
+					else 
+					{
+						
+						game->choiceSkill(skillIdx);
+						Sleep(200);
+						int skillLv = game->monsterHolder.getAliveNumber() - 2;
+						int skillMaxLv = game->getCurrentSkillMaxLevel();
+						if(skillLv < 1) skillLv = 1;
+						if(skillLv > skillMaxLv) skillLv = skillMaxLv;
+						game->choiceSkillLevel(skillLv);
+
+					}
+					Sleep(100);
+					game->hitMonster(game->monsterHolder.getOneAlive());
+					game->changeStatus(CGame::GAME_STATUS_MONSTER_FIGHT);
+					break;
+
+				case CGame::GAME_STATUS_MONSTER_FIGHT:
+					game->hitMonster(game->monsterHolder.getOneAlive());
+					break;
+				}
+			}
+			
+			
+		}
 		Sleep(game->interval4autoFighting);
 	}
 	return 0;

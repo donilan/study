@@ -45,6 +45,7 @@ BEGIN_MESSAGE_MAP(CTestDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_GET_CURRENT_SKILL_MAX_LEVEL, &CTestDlg::OnBnClickedGetCurrentSkillMaxLevel)
 	ON_BN_CLICKED(IDC_HIT_SKILL_1, &CTestDlg::OnBnClickedHitSkill1)
 	ON_BN_CLICKED(IDC_HIT_MAX_LEVEL_SKILL, &CTestDlg::OnBnClickedHitMaxLevelSkill)
+	ON_BN_CLICKED(IDC_AUTO_FIGHT, &CTestDlg::OnBnClickedAutoFight)
 END_MESSAGE_MAP()
 
 
@@ -79,10 +80,10 @@ void CTestDlg::OnBnClickedFindMonster()
 	if(this->gameManager.gameSize > 0)
 	{
 		
-		PGAME_LOCATION locations = this->gameManager.games[0]->findMonster();
+		this->gameManager.games[0]->findMonster();
 		for(int i = 0; i < MAX_MONSTER_LOCATION; ++i)
 		{
-			if(locations[i].status > 0)
+			if(gameManager.games[0]->monsterHolder.isAlive(i))
 			{
 				texts[i]->SetWindowTextW(TEXT("1"));
 				//this->gameManager.games[0]->leftClick(locations[i].x+30, locations[i].y);
@@ -114,10 +115,10 @@ void CTestDlg::OnBnClickedPlayerFight()
 	{
 		this->gameManager.games[0]->refresh();
 		Sleep(300);
-		PGAME_LOCATION locations = this->gameManager.games[0]->findMonster();
+		this->gameManager.games[0]->findMonster();
 		for(int i = 0; i < MAX_MONSTER_LOCATION; ++i)
 		{
-			if(locations[i].status > 0)
+			if(gameManager.games[0]->monsterHolder.isAlive(i))
 			{
 				this->gameManager.games[0]->hitMonster(i);
 				return;
@@ -245,7 +246,7 @@ void CTestDlg::OnBnClickedPrintSkill()
 		for(int i = 0; i < 10; ++i)
 		{
 			CSkill* skill =  &(this->gameManager.games[0]->skills[i]);
-			swprintf(buff, TEXT("%d, %s"), i, skill->name);
+			swprintf(buff, TEXT("%d - %-8s\t%d"), i, skill->name, skill->attackNumber);
 			_appendTextToEditCtrl(buff);
 		}
 	}
@@ -294,5 +295,15 @@ void CTestDlg::OnBnClickedHitMaxLevelSkill()
 	{
 		int maxLv = gameManager.games[0]->getCurrentSkillMaxLevel();
 		gameManager.games[0]->choiceSkillLevel(maxLv);
+	}
+}
+
+
+void CTestDlg::OnBnClickedAutoFight()
+{
+	if(this->gameManager.gameSize > 0)
+	{
+		
+		gameManager.games[0]->startAutoFighting();
 	}
 }

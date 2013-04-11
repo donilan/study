@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{A8FA51CB-3EC1-4F19-87CE-2A3224473658}</ProjectGuid>
-    <RootNamespace>cgx</RootNamespace>
+    <ProjectGuid>{3C5E63F0-A0E1-4EC6-AAF3-50FC7FB918E8}</ProjectGuid>
+    <RootNamespace>cgx02</RootNamespace>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -20,14 +20,14 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -51,7 +51,6 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -95,66 +94,42 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
-    <None Include="img\job.bmp" />
-    <None Include="img\skill\dis_chong_wu_qiang_hua.bmp" />
-    <None Include="img\skill\dis_tiao_jiao.bmp" />
-    <None Include="img\skill\en_gong_ji_fan_tan.bmp" />
-    <None Include="img\skill\en_gong_ji_xi_shou.bmp" />
-    <None Include="img\skill\en_luan_she.bmp" />
-    <None Include="img\skill\en_ming_jing.bmp" />
-    <None Include="img\skill\en_qian_kun.bmp" />
-    <None Include="img\skill\en_qi_jue_hui_fu.bmp" />
-    <None Include="img\skill\en_yang_yan.bmp" />
-    <None Include="img\skill\no_skill.bmp" />
     <None Include="ReadMe.txt" />
-    <None Include="res\cgx.ico" />
+    <None Include="res\cgx-0.2.ico" />
+    <None Include="res\cgx02.rc2" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cgx.h" />
-    <ClInclude Include="cgxData.h" />
-    <ClInclude Include="cgxDlg.h" />
+    <ClInclude Include="CgxDlg.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="GameAI.h" />
-    <ClInclude Include="GameManager.h" />
-    <ClInclude Include="log.h" />
-    <ClInclude Include="MonsterHoler.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="Skill.h" />
+    <ClInclude Include="HWNDScreen.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="System.h" />
+    <ClInclude Include="SystemTestDlg.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TestDlg.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cgx.cpp" />
-    <ClCompile Include="cgxDlg.cpp" />
+    <ClCompile Include="CgxDlg.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameAI.cpp" />
-    <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="MonsterHoler.cpp" />
-    <ClCompile Include="Skill.cpp" />
+    <ClCompile Include="HWNDScreen.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TestDlg.cpp" />
+    <ClCompile Include="System.cpp" />
+    <ClCompile Include="SystemTestDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="cgx.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
+    <ResourceCompile Include="cgx-0.2.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="cgx.rc" />
+      <UserProperties RESOURCE_FILE="cgx-0.2.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
