@@ -30,5 +30,7 @@ private:
 	static UINT flashRECTThread(LPVOID);
 	HWND hwnd;
 	CImageDC* pImageDC;
+public:
+	void refresh(void);
 };
 

@@ -23,10 +23,13 @@ CSystemTestDlg::CSystemTestDlg(CWnd* pParent /*=NULL*/)
 	goodsWindow = NULL;
 	topRightWindow = NULL;
 	petCommandWindow = NULL;
+	checkingStatus = FALSE;
+	game = NULL;
 }
 
 CSystemTestDlg::~CSystemTestDlg()
 {
+	if(game) delete game;
 }
 
 void CSystemTestDlg::DoDataExchange(CDataExchange* pDX)
@@ -59,6 +62,7 @@ BEGIN_MESSAGE_MAP(CSystemTestDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_LOCATE_PLAYER_COMMAND, &CSystemTestDlg::OnBnClickedLocatePlayerCommand)
 	ON_BN_CLICKED(IDC_LOCATE_PET_SKILL, &CSystemTestDlg::OnBnClickedLocatePetSkill)
 	ON_BN_CLICKED(IDC_LOCATE_LEVEL, &CSystemTestDlg::OnBnClickedLocateLevel)
+	ON_BN_CLICKED(IDC_CHECK_STATUS, &CSystemTestDlg::OnBnClickedCheckStatus)
 END_MESSAGE_MAP()
 
 
@@ -116,6 +120,8 @@ void CSystemTestDlg::OnBnClickedScreenshot()
 		//if(pScreen) delete pScreen;
 		//pScreen = new CHWNDScreen(hwnd);
 		_initScreen(hwnd);
+		if(game) delete game;
+		game = new CGame(hwnd);
 		TRACE("Saving screenshot.\n");
 		pScreen->screenshot(TEXT("img\\tmp.bmp"));
 	}
@@ -210,6 +216,8 @@ BOOL CSystemTestDlg::OnInitDialog()
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
+
+
 }
 
 
@@ -472,4 +480,21 @@ void CSystemTestDlg::OnBnClickedLocateLevel()
 		_locateWindowInfo(&skill, TEXT("Skill Level"));
 		
 	}
+}
+
+UINT CheckStatusThread(LPVOID lpVoid)
+{
+	CGame* game = (CGame*)lpVoid;
+	while(TRUE)
+	{
+		TRACE("Game status: %d\n", game->getStatus());
+		Sleep(500);
+	}
+	
+}
+
+void CSystemTestDlg::OnBnClickedCheckStatus()
+{
+	if(checkingStatus || !game) return;
+	AfxBeginThread(CheckStatusThread, game);
 }

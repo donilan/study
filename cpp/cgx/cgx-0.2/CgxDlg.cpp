@@ -21,6 +21,7 @@ CCgxDlg::CCgxDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CCgxDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+
 }
 
 void CCgxDlg::DoDataExchange(CDataExchange* pDX)
@@ -32,6 +33,7 @@ BEGIN_MESSAGE_MAP(CCgxDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_HOTKEY()
+	ON_BN_CLICKED(IDC_REFRESH, &CCgxDlg::OnBnClickedRefresh)
 END_MESSAGE_MAP()
 
 
@@ -52,6 +54,7 @@ BOOL CCgxDlg::OnInitDialog()
 	ShowWindow(SW_NORMAL);
 
 	// TODO: 在此添加额外的初始化代码
+	OnBnClickedRefresh();
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -109,4 +112,19 @@ void CCgxDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 		break;
 	}
 	CDialogEx::OnHotKey(nHotKeyId, nKey1, nKey2);
+}
+
+
+void CCgxDlg::OnBnClickedRefresh()
+{
+	
+	TCHAR buff[MAX_PATH] = {0};
+	gameManager.refresh();
+	CListBox* list = (CListBox*)GetDlgItem(IDC_GAME_LIST);
+	list->ResetContent();
+	for(int i = 0; i < gameManager.gameSize; ++i)
+	{
+		swprintf(buff, sizeof(TCHAR)*MAX_PATH, TEXT("游戏%d"), i);
+		list->AddString(buff);
+	}
 }

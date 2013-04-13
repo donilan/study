@@ -108,7 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cgx.h" />
-    <ClInclude Include="CgxButton.h" />
     <ClInclude Include="CgxDlg.h" />
     <ClInclude Include="CgxGoodsWindow.h" />
     <ClInclude Include="CgxMonster.h" />
@@ -118,6 +117,7 @@
     <ClInclude Include="CgxTopRightWindow.h" />
     <ClInclude Include="CgxWindow.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="HWNDScreen.h" />
     <ClInclude Include="stdafx.h" />
@@ -127,7 +127,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cgx.cpp" />
-    <ClCompile Include="CgxButton.cpp" />
     <ClCompile Include="CgxDlg.cpp" />
     <ClCompile Include="CgxGoodsWindow.cpp" />
     <ClCompile Include="CgxMonster.cpp" />
@@ -137,6 +136,7 @@
     <ClCompile Include="CgxTopRightWindow.cpp" />
     <ClCompile Include="CgxWindow.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="HWNDScreen.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

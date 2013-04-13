@@ -5,6 +5,7 @@
 #include "CgxGoodsWindow.h"
 #include "CgxPetCommandWindow.h"
 #include "CgxTopRightWindow.h"
+#include "Game.h"
 
 // CSystemTestDlg ¶Ô»°¿ò
 
@@ -27,6 +28,8 @@ protected:
 	CCgxGoodsWindow *goodsWindow;
 	CCgxTopRightWindow* topRightWindow;
 	CCgxPetCommandWindow* petCommandWindow;
+	CGame *game;
+	BOOL checkingStatus;
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedLockScreen();
@@ -63,4 +66,5 @@ public:
 	afx_msg void OnBnClickedLocatePlayerCommand();
 	afx_msg void OnBnClickedLocatePetSkill();
 	afx_msg void OnBnClickedLocateLevel();
+	afx_msg void OnBnClickedCheckStatus();
 };

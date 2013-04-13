@@ -6,28 +6,9 @@
 
 CHWNDScreen::CHWNDScreen(HWND hwnd)
 {
-	if(hwnd)
-	{
-		HDC hScreenDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
-		this->hwnd = hwnd;
-		CSystem::lockScreen(TRUE);
-		GetWindowRect(hwnd, &rect);
-		LONG width = rect.right - rect.left;
-		LONG height = rect.bottom - rect.top;
-		pImage = new CImage();
-		pImage->Create(width, height, 24);
-		pImageDC = new CImageDC(*pImage);
-		BitBlt(*pImageDC, 0, 0, width, height, hScreenDC, rect.left, rect.top, SRCCOPY);
-		CSystem::lockScreen(FALSE);
-		DeleteDC(hScreenDC);
-
-	} 
-	else 
-	{
-		pImageDC = NULL;
-		pImage = NULL;
-	}
-
+	this->hwnd = hwnd;
+	pImageDC = NULL;
+	pImage = NULL;
 }
 
 
@@ -247,4 +228,24 @@ UINT CHWNDScreen::screenPrintThread(LPVOID lpVoid)
 
 		DeleteDC(hScreenDC);
 		return 0;
+}
+
+
+void CHWNDScreen::refresh(void)
+{
+	POINT oldPoint;
+	HDC hScreenDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
+	CSystem::lockScreen(TRUE);
+	GetCursorPos(&oldPoint);
+	SetCursorPos(0, 0);
+	GetWindowRect(hwnd, &rect);
+	LONG width = rect.right - rect.left;
+	LONG height = rect.bottom - rect.top;
+	pImage = new CImage();
+	pImage->Create(width, height, 24);
+	pImageDC = new CImageDC(*pImage);
+	BitBlt(*pImageDC, 0, 0, width, height, hScreenDC, rect.left, rect.top, SRCCOPY);
+	SetCursorPos(oldPoint.x, oldPoint.y);
+	CSystem::lockScreen(FALSE);
+	DeleteDC(hScreenDC);
 }

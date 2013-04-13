@@ -4,7 +4,12 @@
 
 #pragma once
 #include "SystemTestDlg.h"
+#include "GameManager.h"
 #define HOTKEY_F2 2
+#define HOTKEY_F3 3
+#define HOTKEY_F4 4
+#define HOTKEY_F5 5
+#define MAX_GAME 10
 
 
 // CCgxDlg ¶Ô»°¿ò
@@ -35,4 +40,7 @@ public:
 	afx_msg void OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2);
 private:
 	BOOL isTestDlgOpen;
+	CGameManager gameManager;
+public:
+	afx_msg void OnBnClickedRefresh();
 };
