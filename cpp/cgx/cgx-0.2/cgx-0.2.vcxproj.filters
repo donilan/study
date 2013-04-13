@@ -31,6 +31,15 @@
     <None Include="image\window\goods.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="image\window\pet_command.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\pet_skill_window.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\right_top_buttons.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CgxDlg.h">
@@ -75,6 +84,15 @@
     <ClInclude Include="CgxGoodsWindow.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CgxPetCommandWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CgxPetSkillWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CgxTopRightWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CgxDlg.cpp">
@@ -111,6 +129,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CgxGoodsWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxPetCommandWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxPetSkillWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxTopRightWindow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -7,6 +7,7 @@
 
 #include "System.h"
 #include "CgxMonster.h"
+#include "CgxTopRightWindow.h"
 
 
 // CSystemTestDlg ¶Ô»°¿ò
@@ -19,6 +20,9 @@ CSystemTestDlg::CSystemTestDlg(CWnd* pParent /*=NULL*/)
 	pScreen = NULL;
 	skillWindow = NULL;
 	goodsWindow = NULL;
+	topRightWindow = NULL;
+	petSkillWindow = NULL;
+	petCommandWindow = NULL;
 }
 
 CSystemTestDlg::~CSystemTestDlg()
@@ -50,6 +54,7 @@ BEGIN_MESSAGE_MAP(CSystemTestDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_LOCATE_SKILL, &CSystemTestDlg::OnBnClickedLocateSkill)
 	ON_BN_CLICKED(IDC_LOCATE_GOODS, &CSystemTestDlg::OnBnClickedLocateGoods)
 	ON_BN_CLICKED(IDC_LOCATE_MONSTER, &CSystemTestDlg::OnBnClickedLocateMonster)
+	ON_BN_CLICKED(IDC_LOCATE_TOP_RIGHT_WINDOW, &CSystemTestDlg::OnBnClickedLocateTopRightWindow)
 END_MESSAGE_MAP()
 
 
@@ -334,10 +339,7 @@ void CSystemTestDlg::_initScreen(PTSTR pszFilePath)
 	if(pScreen) delete pScreen;
 	pScreen = new CHWNDScreen(NULL);
 	pScreen->loadImage(pszFilePath);
-	if(skillWindow) delete skillWindow; 
-	skillWindow = new CCgxSkillWindow(pScreen);
-	if(goodsWindow) delete goodsWindow;
-	goodsWindow = new CCgxGoodsWindow(pScreen);
+	_initWindows();
 }
 
 
@@ -345,29 +347,15 @@ void CSystemTestDlg::_initScreen(HWND hwnd)
 {
 	if(pScreen) delete pScreen;
 	pScreen = new CHWNDScreen(hwnd);
-	if(skillWindow) delete skillWindow; 
-	skillWindow = new CCgxSkillWindow(pScreen);
-	if(goodsWindow) delete goodsWindow;
-	goodsWindow = new CCgxGoodsWindow(pScreen);
 }
 
 
 void CSystemTestDlg::OnBnClickedLocateGoods()
 {
-	TCHAR buff[MAX_PATH] = {0};
 	if(pScreen)
 	{
 		if(!goodsWindow) goodsWindow = new CCgxGoodsWindow(pScreen);
-		if(goodsWindow->locate())
-		{
-			swprintf(buff, sizeof(TCHAR)*MAX_PATH, TEXT("Goods window x: %d y: %d"), goodsWindow->rect.left, goodsWindow->rect.top);
-			_out(buff);
-			CHWNDScreen::flashRECT(&goodsWindow->rect);
-		}
-		else
-		{
-			_out(TEXT("Can not locate goods window."));
-		}
+		_locateWindowInfo(goodsWindow, TEXT("Goods"));
 	}
 }
 
@@ -391,4 +379,48 @@ void CSystemTestDlg::OnBnClickedLocateMonster()
 			}
 		}
 	}
+}
+
+
+void CSystemTestDlg::OnBnClickedLocateTopRightWindow()
+{
+	if(pScreen)
+	{
+		_locateWindowInfo(topRightWindow, TEXT("Top right"));
+	}
+}
+
+
+
+void CSystemTestDlg::_locateWindowInfo(CCgxWindow* wind, PTSTR winName)
+{
+	TCHAR buff[MAX_PATH] = {0};
+	
+	if(wind->locate())
+	{
+		swprintf(buff, sizeof(TCHAR)*MAX_PATH, TEXT("Window [%s] x: %d y: %d"), winName, wind->rect.left, wind->rect.top);
+		_out(buff);
+		CHWNDScreen::flashRECT(&(wind->rect));
+	}
+	else
+	{
+		swprintf(buff, sizeof(TCHAR)*MAX_PATH, TEXT("Can not locate [%s] window"), winName);
+		_out(buff);
+	}
+}
+
+void CSystemTestDlg::_initWindows( void )
+{
+	if(skillWindow) delete skillWindow; 
+	skillWindow = new CCgxSkillWindow(pScreen);
+	if(goodsWindow) delete goodsWindow;
+	goodsWindow = new CCgxGoodsWindow(pScreen);
+
+	if(petCommandWindow) delete petCommandWindow; 
+	petCommandWindow = new CCgxPetCommandWindow(pScreen);
+	if(petSkillWindow) delete petSkillWindow;
+	petSkillWindow = new CCgxPetSkillWindow(pScreen);
+	if(topRightWindow) delete topRightWindow; 
+	topRightWindow = new CCgxTopRightWindow(pScreen);
+	
 }

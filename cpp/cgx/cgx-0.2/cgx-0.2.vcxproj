@@ -96,6 +96,9 @@
   <ItemGroup>
     <None Include="image\window\goods.bmp" />
     <None Include="image\window\job.bmp" />
+    <None Include="image\window\pet_command.bmp" />
+    <None Include="image\window\pet_skill_window.bmp" />
+    <None Include="image\window\right_top_buttons.bmp" />
     <None Include="ReadMe.txt" />
     <None Include="res\bitmap1.bmp" />
     <None Include="res\cgx-0.2.ico" />
@@ -107,7 +110,10 @@
     <ClInclude Include="CgxDlg.h" />
     <ClInclude Include="CgxGoodsWindow.h" />
     <ClInclude Include="CgxMonster.h" />
+    <ClInclude Include="CgxPetCommandWindow.h" />
+    <ClInclude Include="CgxPetSkillWindow.h" />
     <ClInclude Include="CgxSkillWindow.h" />
+    <ClInclude Include="CgxTopRightWindow.h" />
     <ClInclude Include="CgxWindow.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Resource.h" />
@@ -123,7 +129,10 @@
     <ClCompile Include="CgxDlg.cpp" />
     <ClCompile Include="CgxGoodsWindow.cpp" />
     <ClCompile Include="CgxMonster.cpp" />
+    <ClCompile Include="CgxPetCommandWindow.cpp" />
+    <ClCompile Include="CgxPetSkillWindow.cpp" />
     <ClCompile Include="CgxSkillWindow.cpp" />
+    <ClCompile Include="CgxTopRightWindow.cpp" />
     <ClCompile Include="CgxWindow.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HWNDScreen.cpp" />

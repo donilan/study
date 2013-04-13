@@ -3,6 +3,9 @@
 #include "HWNDScreen.h"
 #include "CgxSkillWindow.h"
 #include "CgxGoodsWindow.h"
+#include "CgxPetCommandWindow.h"
+#include "CgxPetSkillWindow.h"
+#include "CgxTopRightWindow.h"
 
 // CSystemTestDlg ¶Ô»°¿ò
 
@@ -23,6 +26,9 @@ protected:
 	CHWNDScreen *pScreen;
 	CCgxSkillWindow *skillWindow;
 	CCgxGoodsWindow *goodsWindow;
+	CCgxTopRightWindow* topRightWindow;
+	CCgxPetCommandWindow* petCommandWindow;
+	CCgxPetSkillWindow* petSkillWindow;
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedLockScreen();
@@ -49,4 +55,9 @@ public:
 	void _initScreen(HWND);
 	afx_msg void OnBnClickedLocateGoods();
 	afx_msg void OnBnClickedLocateMonster();
+	afx_msg void OnBnClickedLocateTopRightWindow();
+protected:
+	inline void _locateWindowInfo(CCgxWindow*, PTSTR);
+
+	inline void _initWindows(void);
 };

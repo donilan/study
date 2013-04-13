@@ -150,8 +150,9 @@ BOOL CHWNDScreen::locate(const CImage* pImageIn, RECT* rectOut)
 	int width = pImageIn->GetWidth();
 	int height = pImageIn->GetHeight();
 	memset(rectOut, 0, sizeof(RECT));
-	for(INT x = rect.left; x < rect.right; ++x)
-		for(INT y = rect.top; y < rect.bottom; ++y)
+	TRACE("Begin locate...");
+	for(INT x = rect.left; x < rect.right - width; ++x)
+		for(INT y = rect.top; y < rect.bottom - height; ++y)
 		{
 			rectOut->left = x;
 			rectOut->top = y;
@@ -177,6 +178,8 @@ BOOL CHWNDScreen::match(const CImage* pImageIn, const RECT* rectIn)
 	for(LONG x = rectIn->left; x < rectIn->right; ++x)
 		for(LONG y = rectIn->top; y < rectIn->bottom; ++y)
 		{
+			if(x > pImage->GetWidth() || y > pImage->GetHeight())
+				return FALSE;
 			rgb1 = pImageIn->GetPixel(x-rectIn->left, y-rectIn->top);
 			rgb2 = pImage->GetPixel(x, y);
 			if(abs(GetRValue(rgb1) - GetRValue(rgb2)) > 10
