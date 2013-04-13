@@ -10,5 +10,6 @@ public:
 	~CCgxPetCommandWindow(void);
 	void locateCommands(void);
 	BOOL isCommandEnable(int);
+	void clickSkillCommand(void);
 };
 

@@ -60,7 +60,7 @@ BOOL CCgxWindow::isPositionChanged(void)
 BOOL CCgxWindow::getCommand(int index, RECT* rectOut)
 {
 	int size = getCommandSize();
-	if(index >= size)
+	if(index < 0 || index >= size)
 		return FALSE;
 	memcpy(rectOut, &commandRECTs[index], sizeof(RECT));
 	return TRUE;
@@ -73,11 +73,14 @@ void CCgxWindow::leftClick(int index)
 	RECT rect;
 	int x = 0;
 	int y = 0;
+	if(isCommandEnable(index)) return;
 	getCommand(index, &rect);
+	
 	if(rect.right> 0 && rect.bottom>0)
 	{
 		x = (rect.right - rect.left) / 2 + rect.left;
 		y = (rect.bottom - rect.top) / 2 + rect.top;
+		TRACE("Doing left click index: %d (%d, %d)\n", index, x, y);
 		if(x > 0 && y > 0) 
 		{
 			CSystem::leftClick(x, y);

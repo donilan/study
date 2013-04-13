@@ -9,5 +9,12 @@ public:
 	~CCgxPlayerCommand(void);
 	void locateCommands(void);
 	BOOL isCommandEnable(int index);
+	void clickHitCommand(void);
+	void clickSkillCommand(void);
+	void clickPetCommand(void);
+	void clickDefenseCommand(void);
+	void clickGoodsCommand(void);
+	void clickPositionCommand(void);
+	void clickRunawayCommand(void);
 };
 

@@ -43,3 +43,45 @@ BOOL CCgxPlayerCommand::isCommandEnable(int index)
 	}
 	return FALSE;
 }
+
+
+void CCgxPlayerCommand::clickHitCommand(void)
+{
+	leftClick(0);
+}
+
+
+void CCgxPlayerCommand::clickSkillCommand(void)
+{
+	leftClick(1);
+}
+
+
+void CCgxPlayerCommand::clickPetCommand(void)
+{
+	leftClick(2);
+}
+
+
+void CCgxPlayerCommand::clickDefenseCommand(void)
+{
+	leftClick(3);
+}
+
+
+void CCgxPlayerCommand::clickGoodsCommand(void)
+{
+	leftClick(4);
+}
+
+
+void CCgxPlayerCommand::clickPositionCommand(void)
+{
+	leftClick(5);
+}
+
+
+void CCgxPlayerCommand::clickRunawayCommand(void)
+{
+	leftClick(6);
+}

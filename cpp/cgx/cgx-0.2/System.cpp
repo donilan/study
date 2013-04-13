@@ -18,8 +18,10 @@ BOOL CSystem::lockScreen(BOOL lock)
 
 BOOL CSystem::leftClick(int x, int y)
 {
-	POINT point = {x, y};
-	AfxBeginThread(CSystem::LeftClickThread, &point);
+	POINT* point = (POINT*)malloc(sizeof(POINT));
+	point->x = x;
+	point->y = y;
+	AfxBeginThread(CSystem::LeftClickThread, point);
 	return TRUE;
 }
 
@@ -29,6 +31,7 @@ UINT CSystem::LeftClickThread( LPVOID lPvoid)
 	POINT oldPoint;
 	GetCursorPos(&oldPoint);
 	LPPOINT p = (LPPOINT) lPvoid;
+	TRACE("Lect click: (%d, %d)\n", p->x, p->y);
 	SetCursorPos(p->x, p->y);
 	Sleep(10);
 	mouse_event(MOUSEEVENTF_LEFTDOWN, p->x, p->y, 0, 0);
@@ -36,5 +39,6 @@ UINT CSystem::LeftClickThread( LPVOID lPvoid)
 	mouse_event(MOUSEEVENTF_LEFTUP, p->x, p->y, 0, 0);
 	SetCursorPos(oldPoint.x, oldPoint.y);
 	CSystem::lockScreen(FALSE);
+	delete p;
 	return 0;
 }

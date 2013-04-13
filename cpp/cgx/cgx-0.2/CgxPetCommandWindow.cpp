@@ -32,3 +32,8 @@ BOOL CCgxPetCommandWindow::isCommandEnable(int index)
 	}
 	return FALSE;
 }
+
+void CCgxPetCommandWindow::clickSkillCommand(void)
+{
+	leftClick(0);
+}

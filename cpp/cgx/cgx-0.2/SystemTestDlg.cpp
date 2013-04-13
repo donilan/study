@@ -438,11 +438,9 @@ void CSystemTestDlg::OnBnClickedLocatePetCammand()
 	if(pScreen)
 	{
 		_locateWindowInfo(petCommandWindow, TEXT("Pet Command"));
+		
 	}
 }
-
-
-
 
 void CSystemTestDlg::OnBnClickedLocatePlayerCommand()
 {
@@ -450,7 +448,7 @@ void CSystemTestDlg::OnBnClickedLocatePlayerCommand()
 	{
 		CCgxPlayerCommand playerCommand(pScreen);
 		_locateWindowInfo(&playerCommand, TEXT("Player Command"));
-		Sleep(100);
+		playerCommand.clickHitCommand();
 	}
 }
 
