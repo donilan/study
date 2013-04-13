@@ -25,6 +25,9 @@ void CCgxPlayerCommand::locateCommands(void)
 		commandRECTs[i+3].top += 25;
 		commandRECTs[i+3].bottom += 25;
 	}
+	memcpy(&commandRECTs[6], &commandRECTs[5], sizeof(RECT));
+	commandRECTs[6].left += 70;
+	commandRECTs[6].right += 70;
 }
 
 
@@ -33,7 +36,7 @@ BOOL CCgxPlayerCommand::isCommandEnable(int index)
 	RECT tmp;
 	if(getCommand(index, &tmp))
 	{
-		if(pScreen->colorDeviation(&tmp, RGB(212, 173, 106)) > 20)
+		if(pScreen->colorDeviation(&tmp, RGB(212, 173, 106)) > 40)
 			return FALSE;
 		else
 			return TRUE;

@@ -48,7 +48,7 @@ public:
 	afx_msg void OnBnClickedRefreshMatchList();
 	afx_msg void OnLbnDblclkMatchList();
 	afx_msg void OnBnClickedLocateJobWindow();
-	afx_msg void OnBnClickedLocateSkill();
+//	afx_msg void OnBnClickedLocateSkill();
 	void _initScreen(PTSTR pszFilePath);
 	void _initScreen(HWND);
 	afx_msg void OnBnClickedLocateGoods();
@@ -61,4 +61,6 @@ protected:
 public:
 	afx_msg void OnBnClickedLocatePetCammand();
 	afx_msg void OnBnClickedLocatePlayerCommand();
+	afx_msg void OnBnClickedLocatePetSkill();
+	afx_msg void OnBnClickedLocateLevel();
 };

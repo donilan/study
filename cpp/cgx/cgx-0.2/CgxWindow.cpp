@@ -59,16 +59,9 @@ BOOL CCgxWindow::isPositionChanged(void)
 
 BOOL CCgxWindow::getCommand(int index, RECT* rectOut)
 {
-	
-	if( commandRECTs[index].left < pScreen->rect.left 
-		|| commandRECTs[index].right > pScreen->rect.right 
-		|| commandRECTs[index].top < pScreen->rect.top
-		|| commandRECTs[index].bottom > pScreen->rect.bottom
-		|| commandRECTs[index].left == commandRECTs[index].right
-		|| commandRECTs[index].top == commandRECTs[index].bottom
-		)
+	int size = getCommandSize();
+	if(index >= size)
 		return FALSE;
-
 	memcpy(rectOut, &commandRECTs[index], sizeof(RECT));
 	return TRUE;
 }
@@ -93,4 +86,24 @@ void CCgxWindow::leftClick(int index)
 	}
 	TRACE("Error: Command rect not right, (%d, %d)", rect.left, rect.right);
 	
+}
+
+
+
+int CCgxWindow::getCommandSize(void)
+{
+	int count = 0;
+	for(int i = 0; i < MAX_COMMAND; ++i)
+	{
+		if( commandRECTs[i].left < pScreen->rect.left 
+			|| commandRECTs[i].right > pScreen->rect.right 
+			|| commandRECTs[i].top < pScreen->rect.top
+			|| commandRECTs[i].bottom > pScreen->rect.bottom
+			|| commandRECTs[i].left == commandRECTs[i].right
+			|| commandRECTs[i].top == commandRECTs[i].bottom
+			)
+			continue;
+		++count;
+	}
+	return count;
 }

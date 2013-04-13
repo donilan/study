@@ -54,8 +54,8 @@ INT CHWNDScreen::colorDeviation( RECT* rect, COLORREF rgb)
 	if(!pImage) return rate;
 	INT pixSize = (rect->right-rect->left) * (rect->bottom - rect->top);
 	
-	for(x = rect->left; x <= rect->right; ++x)
-		for(y = rect->top; y <= rect->bottom; ++y)
+	for(x = rect->left; x < rect->right; ++x)
+		for(y = rect->top; y < rect->bottom; ++y)
 		{
 			COLORREF color = pImage->GetPixel(x, y);
 			if(abs(GetRValue(rgb) - GetRValue(color)) < DEVIATION

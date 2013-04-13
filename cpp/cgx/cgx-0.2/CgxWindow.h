@@ -13,6 +13,7 @@ public:
 	CImage* pLocateImage;
 	RECT rect;
 	RECT commandRECTs[MAX_COMMAND];
+	
 protected:
 	CHWNDScreen* pScreen;
 	
@@ -23,5 +24,6 @@ public:
 	virtual BOOL isCommandEnable(int){return FALSE;};
 	BOOL getCommand(int index, RECT* rectOut);
 	void leftClick(int index);
+	int getCommandSize(void);
 };
 

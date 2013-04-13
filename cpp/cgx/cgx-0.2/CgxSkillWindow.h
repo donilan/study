@@ -11,5 +11,6 @@ public:
 	// Find skill rect, start index is 1
 	//void skillRECT(INT index, RECT* skillRECTOut);
 	void locateCommands(void);
+	BOOL isCommandEnable(int);
 };
 

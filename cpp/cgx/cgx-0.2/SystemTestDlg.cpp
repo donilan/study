@@ -51,12 +51,14 @@ BEGIN_MESSAGE_MAP(CSystemTestDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_REFRESH_MATCH_LIST, &CSystemTestDlg::OnBnClickedRefreshMatchList)
 	ON_LBN_DBLCLK(IDC_MATCH_LIST, &CSystemTestDlg::OnLbnDblclkMatchList)
 	ON_BN_CLICKED(IDC_LOCATE_JOB_WINDOW, &CSystemTestDlg::OnBnClickedLocateJobWindow)
-	ON_BN_CLICKED(IDC_LOCATE_SKILL, &CSystemTestDlg::OnBnClickedLocateSkill)
+
 	ON_BN_CLICKED(IDC_LOCATE_GOODS, &CSystemTestDlg::OnBnClickedLocateGoods)
 	ON_BN_CLICKED(IDC_LOCATE_MONSTER, &CSystemTestDlg::OnBnClickedLocateMonster)
 	ON_BN_CLICKED(IDC_LOCATE_TOP_RIGHT_WINDOW, &CSystemTestDlg::OnBnClickedLocateTopRightWindow)
 	ON_BN_CLICKED(IDC_LOCATE_PET_CAMMAND, &CSystemTestDlg::OnBnClickedLocatePetCammand)
 	ON_BN_CLICKED(IDC_LOCATE_PLAYER_COMMAND, &CSystemTestDlg::OnBnClickedLocatePlayerCommand)
+	ON_BN_CLICKED(IDC_LOCATE_PET_SKILL, &CSystemTestDlg::OnBnClickedLocatePetSkill)
+	ON_BN_CLICKED(IDC_LOCATE_LEVEL, &CSystemTestDlg::OnBnClickedLocateLevel)
 END_MESSAGE_MAP()
 
 
@@ -307,33 +309,25 @@ void CSystemTestDlg::OnBnClickedLocateJobWindow()
 	TCHAR buff[MAX_PATH] = {0};
 	if(pScreen)
 	{
-		if(skillWindow->locate())
-		{
-			swprintf(buff, sizeof(TCHAR)*MAX_PATH, TEXT("Skill window x: %d y: %d"), skillWindow->rect.left, skillWindow->rect.top);
-			_out(buff);
-			CHWNDScreen::flashRECT(&skillWindow->rect);
-		}
-		else
-		{
-			_out(TEXT("Can not locate skill window."));
-		}
+		_locateWindowInfo(skillWindow, TEXT("Player Skill"));
+		
 	}
 }
 
 
-void CSystemTestDlg::OnBnClickedLocateSkill()
-{
-	RECT rect;
-	if(pScreen)
-	{
-		if(!skillWindow) skillWindow = new CCgxSkillWindow(IDB_PLAYER_SKILL, pScreen);
-		for(int i = 0; i < 10; ++i)
-		{
-			skillWindow->getCommand(i, &rect);
-			CHWNDScreen::flashRECT(&rect);
-		}
-	}
-}
+//void CSystemTestDlg::OnBnClickedLocateSkill()
+//{
+//	RECT rect;
+//	if(pScreen)
+//	{
+//		if(!skillWindow) skillWindow = new CCgxSkillWindow(IDB_PLAYER_SKILL, pScreen);
+//		for(int i = 0; i < 10; ++i)
+//		{
+//			skillWindow->getCommand(i, &rect);
+//			CHWNDScreen::flashRECT(&rect);
+//		}
+//	}
+//}
 
 
 void CSystemTestDlg::_initScreen(PTSTR pszFilePath)
@@ -457,5 +451,27 @@ void CSystemTestDlg::OnBnClickedLocatePlayerCommand()
 		CCgxPlayerCommand playerCommand(pScreen);
 		_locateWindowInfo(&playerCommand, TEXT("Player Command"));
 		Sleep(100);
+	}
+}
+
+
+void CSystemTestDlg::OnBnClickedLocatePetSkill()
+{
+	if(pScreen)
+	{
+		CCgxSkillWindow petSkill(IDB_PET_SKILL, pScreen);
+		_locateWindowInfo(&petSkill, TEXT("Player Command"));
+		
+	}
+}
+
+
+void CSystemTestDlg::OnBnClickedLocateLevel()
+{
+	if(pScreen)
+	{
+		CCgxSkillWindow skill(IDB_SKILL_LV, pScreen);
+		_locateWindowInfo(&skill, TEXT("Skill Level"));
+		
 	}
 }

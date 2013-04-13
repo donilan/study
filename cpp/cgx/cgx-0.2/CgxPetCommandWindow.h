@@ -8,5 +8,7 @@ class CCgxPetCommandWindow :
 public:
 	CCgxPetCommandWindow(CHWNDScreen* );
 	~CCgxPetCommandWindow(void);
+	void locateCommands(void);
+	BOOL isCommandEnable(int);
 };
 
