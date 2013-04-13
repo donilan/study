@@ -41,6 +41,8 @@ BOOL CCgxDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 	RegisterHotKey(this->m_hWnd, HOTKEY_F2, 0, VK_F2);
+	isTestDlgOpen = FALSE;
+
 
 	// 设置此对话框的图标。当应用程序主窗口不是对话框时，框架将自动
 	//  执行此操作
@@ -98,7 +100,12 @@ void CCgxDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 	switch(nHotKeyId)
 	{
 	case HOTKEY_F2:
-		systemTestDlg.DoModal();
+		if(!isTestDlgOpen)
+		{
+			isTestDlgOpen = TRUE;
+			systemTestDlg.DoModal();
+			isTestDlgOpen = FALSE;
+		}
 		break;
 	}
 	CDialogEx::OnHotKey(nHotKeyId, nKey1, nKey2);

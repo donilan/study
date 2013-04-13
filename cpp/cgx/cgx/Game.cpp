@@ -472,10 +472,10 @@ BOOL CGame::_matchImage( CImage* image, PGAME_LOCATION l)
 }
 
 #define INIT_SKILL(id, NAME, attNum) \
-	if(image) delete image; \
-	image = new CImage(); \
-	image->LoadFromResource(hInstance, id); \
-	if(_matchImage(image, l )){ \
+	if(pImage) delete pImage; \
+	pImage = new CImage(); \
+	pImage->LoadFromResource(hInstance, id); \
+	if(_matchImage(pImage, l )){ \
 	swprintf( skills[idx].name, TEXT(#NAME)); \
 	skills[idx].attackNumber = attNum ;\
 	return TRUE; \

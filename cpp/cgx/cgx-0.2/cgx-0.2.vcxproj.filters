@@ -22,6 +22,12 @@
     <None Include="res\cgx-0.2.ico">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\bitmap1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\job.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CgxDlg.h">
@@ -51,6 +57,18 @@
     <ClInclude Include="HWNDScreen.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CgxButton.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CgxMonster.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CgxWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CgxSkillWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CgxDlg.cpp">
@@ -72,6 +90,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="HWNDScreen.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxButton.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxMonster.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxSkillWindow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

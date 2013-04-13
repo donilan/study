@@ -94,13 +94,19 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="image\window\job.bmp" />
     <None Include="ReadMe.txt" />
+    <None Include="res\bitmap1.bmp" />
     <None Include="res\cgx-0.2.ico" />
     <None Include="res\cgx02.rc2" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cgx.h" />
+    <ClInclude Include="CgxButton.h" />
     <ClInclude Include="CgxDlg.h" />
+    <ClInclude Include="CgxMonster.h" />
+    <ClInclude Include="CgxSkillWindow.h" />
+    <ClInclude Include="CgxWindow.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="HWNDScreen.h" />
@@ -111,7 +117,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cgx.cpp" />
+    <ClCompile Include="CgxButton.cpp" />
     <ClCompile Include="CgxDlg.cpp" />
+    <ClCompile Include="CgxMonster.cpp" />
+    <ClCompile Include="CgxSkillWindow.cpp" />
+    <ClCompile Include="CgxWindow.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HWNDScreen.cpp" />
     <ClCompile Include="stdafx.cpp">

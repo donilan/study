@@ -6,28 +6,42 @@
 
 CHWNDScreen::CHWNDScreen(HWND hwnd)
 {
-	HDC hScreenDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
-	this->hwnd = hwnd;
-	CSystem::lockScreen(TRUE);
-	GetWindowRect(hwnd, &rect);
-	width = rect.right - rect.left;
-	height = rect.bottom - rect.top;
-	image.Create(width, height, 24);
-	pImageDC = new CImageDC(image);
-	BitBlt(*pImageDC, 0, 0, width, height, hScreenDC, rect.left, rect.top, SRCCOPY);
-	CSystem::lockScreen(FALSE);
-	DeleteDC(hScreenDC);
+	if(hwnd)
+	{
+		HDC hScreenDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
+		this->hwnd = hwnd;
+		CSystem::lockScreen(TRUE);
+		GetWindowRect(hwnd, &rect);
+		LONG width = rect.right - rect.left;
+		LONG height = rect.bottom - rect.top;
+		pImage = new CImage();
+		pImage->Create(width, height, 24);
+		pImageDC = new CImageDC(*pImage);
+		BitBlt(*pImageDC, 0, 0, width, height, hScreenDC, rect.left, rect.top, SRCCOPY);
+		CSystem::lockScreen(FALSE);
+		DeleteDC(hScreenDC);
+
+	} 
+	else 
+	{
+		pImageDC = NULL;
+		pImage = NULL;
+	}
+
 }
 
 
 CHWNDScreen::~CHWNDScreen(void)
 {
-	delete pImageDC;
+	if(pImageDC) delete pImageDC;
+	if(pImage) delete pImage;
 }
 
 BOOL CHWNDScreen::screenshot( PTSTR pszFileName)
 {
-	return image.Save(pszFileName);
+	if(pImage)
+		return pImage->Save(pszFileName);
+	return FALSE;
 }
 
 INT CHWNDScreen::colorDeviation( RECT* rect, COLORREF rgb)
@@ -37,13 +51,13 @@ INT CHWNDScreen::colorDeviation( RECT* rect, COLORREF rgb)
 
 	INT count = 0;
 	INT rate = -1;
-	if(!image) return rate;
+	if(!pImage) return rate;
 	INT pixSize = (rect->right-rect->left) * (rect->bottom - rect->top);
 	
 	for(x = rect->left; x <= rect->right; ++x)
 		for(y = rect->top; y <= rect->bottom; ++y)
 		{
-			COLORREF color = image.GetPixel(x, y);
+			COLORREF color = pImage->GetPixel(x, y);
 			if(abs(GetRValue(rgb) - GetRValue(color)) < DEVIATION
 				&& abs(GetGValue(rgb) - GetGValue(color)) < DEVIATION
 				&& abs(GetBValue(rgb) - GetBValue(color)) < DEVIATION)
@@ -64,7 +78,7 @@ INT CHWNDScreen::colorDeviation( RECT* rect, COLORREF rgb)
 
 void CHWNDScreen::flashRECT( RECT* rect)
 {
-	TRACE("Flash rect: %p (left: %d, right: %d, top: %d, bottom: %d)\n", rect, rect->left, rect->right, rect->top, rect->bottom);
+	//TRACE("Flash rect: %p (left: %d, right: %d, top: %d, bottom: %d)\n", rect, rect->left, rect->right, rect->top, rect->bottom);
 	RECT* tmp = (RECT*)malloc(sizeof(RECT));
 	memcpy(tmp, rect, sizeof(RECT));
 	AfxBeginThread(flashRECTThread, (LPVOID)tmp);
@@ -74,7 +88,8 @@ UINT CHWNDScreen::flashRECTThread( LPVOID lPvoid )
 {
 	
 	RECT *rect = (RECT *)lPvoid;
-	TRACE("Flash2 rect: %p (left: %d, right: %d, top: %d, bottom: %d)\n", rect, rect->left, rect->right, rect->top, rect->bottom);
+	TRACE("Flash rect: %p (left: %d, right: %d, top: %d, bottom: %d)\n",
+		rect, rect->left, rect->right, rect->top, rect->bottom);
 	HDC hScreenDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
 	LONG width = rect->right - rect->left;
 	LONG height = rect->bottom - rect->top;
@@ -114,4 +129,119 @@ UINT CHWNDScreen::flashRECTThread( LPVOID lPvoid )
 	return 0;
 }
 
+void CHWNDScreen::loadImage(PTSTR pszImagePath)
+{
+	if(pImage) delete pImage;
+	pImage = new CImage();
+	pImage->Load(pszImagePath);
+	this->rect.left = 0;
+	this->rect.right = pImage->GetWidth();
+	this->rect.top = 0;
+	this->rect.bottom = pImage->GetHeight();
+	TRACE("Load image done.\n");
+}
 
+
+
+// Locate image
+BOOL CHWNDScreen::locate(const CImage* pImageIn, RECT* rectOut)
+{
+	if(!pImage || !pImageIn || !rectOut) return FALSE;
+	int width = pImageIn->GetWidth();
+	int height = pImageIn->GetHeight();
+	memset(rectOut, 0, sizeof(RECT));
+	for(INT x = rect.left; x < rect.right; ++x)
+		for(INT y = rect.top; y < rect.bottom; ++y)
+		{
+			rectOut->left = x;
+			rectOut->top = y;
+			rectOut->right = x + width;
+			rectOut->bottom = y + height;
+			
+			if(match(pImageIn, rectOut))
+			{
+				return TRUE;
+			}
+		}
+
+	return FALSE;
+}
+
+
+// Is image match in location
+BOOL CHWNDScreen::match(const CImage* pImageIn, const RECT* rectIn)
+{
+	COLORREF rgb1;
+	COLORREF rgb2;
+	if(!pImage || !pImageIn) return FALSE;
+	for(LONG x = rectIn->left; x < rectIn->right; ++x)
+		for(LONG y = rectIn->top; y < rectIn->bottom; ++y)
+		{
+			rgb1 = pImageIn->GetPixel(x-rectIn->left, y-rectIn->top);
+			rgb2 = pImage->GetPixel(x, y);
+			if(abs(GetRValue(rgb1) - GetRValue(rgb2)) > 10
+				|| abs(GetGValue(rgb1) - GetGValue(rgb2)) > 10
+				|| abs(GetBValue(rgb1) - GetBValue(rgb2)) > 10)
+				return FALSE;
+			//TRACE("(%d, %d, %d) == (%d, %d, %d)\n", GetRValue(rgb1), 
+			//	GetGValue(rgb1), GetBValue(rgb1), GetRValue(rgb2), GetGValue(rgb2), GetBValue(rgb2));
+		}
+	TRACE("MATCHED\n");
+	return TRUE;
+}
+
+ // save rect
+BOOL CHWNDScreen::saveRECT(const RECT* rect, const PTSTR pszImagePath)
+{
+	if(!pImage) return FALSE;
+	CImage tmp;
+	COLORREF rgb;
+	tmp.Create(rect->right-rect->left, rect->bottom-rect->top, 24);
+	for(LONG x = rect->left; x < rect->right; ++x)
+		for(LONG y = rect->top; y < rect->bottom; ++y)
+		{
+			rgb = pImage->GetPixel(x, y);
+			tmp.SetPixel(x-rect->left, y-rect->top, rgb);
+		}
+	tmp.Save(pszImagePath);
+	return TRUE;
+}
+
+
+// Load image file in to CImage class
+BOOL CHWNDScreen::loadInToCImage(const PTSTR pszImagePath, CImage* pImage)
+{
+	if(pImage)
+	{
+		pImage->Load(pszImagePath);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+
+
+// Print into screen
+void CHWNDScreen::print(void)
+{
+	if(!pImage) return;
+	TRACE("print rect: %p (left: %d, right: %d, top: %d, bottom: %d)\n", rect, rect.left, rect.right, rect.top, rect.bottom);
+	AfxBeginThread(screenPrintThread, this);
+}
+
+
+UINT CHWNDScreen::screenPrintThread(LPVOID lpVoid)
+{
+	CHWNDScreen* pScreen = (CHWNDScreen*)lpVoid;
+	COLORREF rgb;
+	HDC hScreenDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
+	for(LONG x = pScreen->rect.left; x < pScreen->rect.right; ++x)
+		for(LONG y = pScreen->rect.top; y < pScreen->rect.bottom; ++y)
+		{
+			rgb = pScreen->pImage->GetPixel(x-pScreen->rect.left, y-pScreen->rect.top);
+			SetPixel(hScreenDC, x, y, rgb);
+		}
+
+		DeleteDC(hScreenDC);
+		return 0;
+}
