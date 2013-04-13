@@ -21,5 +21,6 @@ public:
 	BOOL isPositionChanged(void);
 	virtual void locateCommands(void){memset(commandRECTs, 0, sizeof(RECT)*MAX_COMMAND);};
 	BOOL getCommand(int index, RECT* rectOut);
+	void leftClick(int index);
 };
 
