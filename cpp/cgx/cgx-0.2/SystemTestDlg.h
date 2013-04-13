@@ -48,4 +48,5 @@ public:
 	void _initScreen(PTSTR pszFilePath);
 	void _initScreen(HWND);
 	afx_msg void OnBnClickedLocateGoods();
+	afx_msg void OnBnClickedLocateMonster();
 };

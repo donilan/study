@@ -6,6 +6,7 @@
 #include "afxdialogex.h"
 
 #include "System.h"
+#include "CgxMonster.h"
 
 
 // CSystemTestDlg ¶Ô»°¿ò
@@ -48,6 +49,7 @@ BEGIN_MESSAGE_MAP(CSystemTestDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_LOCATE_JOB_WINDOW, &CSystemTestDlg::OnBnClickedLocateJobWindow)
 	ON_BN_CLICKED(IDC_LOCATE_SKILL, &CSystemTestDlg::OnBnClickedLocateSkill)
 	ON_BN_CLICKED(IDC_LOCATE_GOODS, &CSystemTestDlg::OnBnClickedLocateGoods)
+	ON_BN_CLICKED(IDC_LOCATE_MONSTER, &CSystemTestDlg::OnBnClickedLocateMonster)
 END_MESSAGE_MAP()
 
 
@@ -365,6 +367,28 @@ void CSystemTestDlg::OnBnClickedLocateGoods()
 		else
 		{
 			_out(TEXT("Can not locate goods window."));
+		}
+	}
+}
+
+
+void CSystemTestDlg::OnBnClickedLocateMonster()
+{
+	TCHAR buff[MAX_PATH] = {0};
+	if(pScreen)
+	{
+		CCgxMonster monster(pScreen);
+		int alive = monster.countAlive();
+		swprintf(buff, sizeof(TCHAR)* MAX_PATH, TEXT("Found number of monster is: %d"), alive);
+		_out(buff);
+		for(int i = 0; i < NUMBER_OF_MONSTER; ++i)
+		{
+			if(monster.isAlive(i))
+			{
+				swprintf(buff, sizeof(TCHAR)*MAX_PATH, TEXT("Alive index: %d"), i);
+				_out(buff);
+				CHWNDScreen::flashRECT(&monster.monsterRECTs[i]);
+			}
 		}
 	}
 }
