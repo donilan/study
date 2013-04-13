@@ -25,9 +25,6 @@
     <None Include="res\bitmap1.bmp">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="image\window\job.bmp">
-      <Filter>资源文件</Filter>
-    </None>
     <None Include="image\window\goods.bmp">
       <Filter>资源文件</Filter>
     </None>
@@ -38,6 +35,9 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="image\window\right_top_buttons.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\player_skill.bmp">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>

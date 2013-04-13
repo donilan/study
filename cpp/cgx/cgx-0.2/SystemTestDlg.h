@@ -28,7 +28,6 @@ protected:
 	CCgxGoodsWindow *goodsWindow;
 	CCgxTopRightWindow* topRightWindow;
 	CCgxPetCommandWindow* petCommandWindow;
-	CCgxPetSkillWindow* petSkillWindow;
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedLockScreen();
@@ -60,4 +59,6 @@ protected:
 	inline void _locateWindowInfo(CCgxWindow*, PTSTR);
 
 	inline void _initWindows(void);
+public:
+	afx_msg void OnBnClickedLocatePetCammand();
 };

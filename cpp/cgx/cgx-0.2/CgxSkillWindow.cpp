@@ -4,8 +4,8 @@
 
 
 
-CCgxSkillWindow::CCgxSkillWindow(CHWNDScreen* screen)
-	: CCgxWindow(IDB_JOB, screen)
+CCgxSkillWindow::CCgxSkillWindow(int id, CHWNDScreen* screen)
+	: CCgxWindow(id, screen)
 {
 }
 

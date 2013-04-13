@@ -21,7 +21,6 @@ CSystemTestDlg::CSystemTestDlg(CWnd* pParent /*=NULL*/)
 	skillWindow = NULL;
 	goodsWindow = NULL;
 	topRightWindow = NULL;
-	petSkillWindow = NULL;
 	petCommandWindow = NULL;
 }
 
@@ -55,6 +54,7 @@ BEGIN_MESSAGE_MAP(CSystemTestDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_LOCATE_GOODS, &CSystemTestDlg::OnBnClickedLocateGoods)
 	ON_BN_CLICKED(IDC_LOCATE_MONSTER, &CSystemTestDlg::OnBnClickedLocateMonster)
 	ON_BN_CLICKED(IDC_LOCATE_TOP_RIGHT_WINDOW, &CSystemTestDlg::OnBnClickedLocateTopRightWindow)
+	ON_BN_CLICKED(IDC_LOCATE_PET_CAMMAND, &CSystemTestDlg::OnBnClickedLocatePetCammand)
 END_MESSAGE_MAP()
 
 
@@ -324,7 +324,7 @@ void CSystemTestDlg::OnBnClickedLocateSkill()
 	RECT rect;
 	if(pScreen)
 	{
-		if(!skillWindow) skillWindow = new CCgxSkillWindow(pScreen);
+		if(!skillWindow) skillWindow = new CCgxSkillWindow(IDB_PLAYER_SKILL, pScreen);
 		for(int i = 0; i < 10; ++i)
 		{
 			skillWindow->skillRECT(i+1, &rect);
@@ -412,15 +412,25 @@ void CSystemTestDlg::_locateWindowInfo(CCgxWindow* wind, PTSTR winName)
 void CSystemTestDlg::_initWindows( void )
 {
 	if(skillWindow) delete skillWindow; 
-	skillWindow = new CCgxSkillWindow(pScreen);
+	skillWindow = new CCgxSkillWindow(IDB_PLAYER_SKILL, pScreen);
 	if(goodsWindow) delete goodsWindow;
 	goodsWindow = new CCgxGoodsWindow(pScreen);
 
 	if(petCommandWindow) delete petCommandWindow; 
 	petCommandWindow = new CCgxPetCommandWindow(pScreen);
-	if(petSkillWindow) delete petSkillWindow;
-	petSkillWindow = new CCgxPetSkillWindow(pScreen);
+
 	if(topRightWindow) delete topRightWindow; 
 	topRightWindow = new CCgxTopRightWindow(pScreen);
 	
 }
+
+
+void CSystemTestDlg::OnBnClickedLocatePetCammand()
+{
+	if(pScreen)
+	{
+		_locateWindowInfo(petCommandWindow, TEXT("Pet Command"));
+	}
+}
+
+
