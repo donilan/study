@@ -88,7 +88,7 @@ void CSystemTestDlg::OnBnClickedLeftClick()
 	CSystem::leftClick(30, 30);
 }
 
-#define WINDOW_TITLE TEXT("Ä§Á¦±¦±´")
+#define WINDOW_TITLE TEXT("\u9b54\u529b\u5b9d\u8d1d")
 BOOL CALLBACK FindTitleWindowsProc (HWND hwnd, LPARAM lParam)
 {
 	TCHAR buff[MAX_PATH] = {0};
