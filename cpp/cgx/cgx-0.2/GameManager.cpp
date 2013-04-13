@@ -9,7 +9,7 @@ BOOL CALLBACK FindCrossGateWindowsProc (HWND hwnd, LPARAM lParam)
 	GetWindowText(hwnd, buff, MAX_PATH);
 	if(_tcsncmp(buff, CROSS_GATE_CN, lstrlen(CROSS_GATE_CN)) == 0)
 	{
-		gameManager->games[gameManager->gameSize++] = new CGame(hwnd);
+		gameManager->games[gameManager->gameSize++] = new CGameAI(new CGame(hwnd));
 	}
 	return TRUE;
 }
@@ -40,8 +40,8 @@ BOOL CGameManager::init( void )
 
 BOOL CGameManager::refresh( void )
 {
-	CGame* oldGames[MAX_CROSS_GATE];
-	CGame* tmpGame = NULL;
+	CGameAI* oldGames[MAX_CROSS_GATE];
+	CGameAI* tmpGame = NULL;
 	for(int i = 0; i < MAX_CROSS_GATE; ++i)
 	{
 		oldGames[i] = this->games[i];

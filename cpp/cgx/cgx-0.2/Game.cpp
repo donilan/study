@@ -28,31 +28,63 @@ CGame::~CGame()
 	delete topRightWindow;
 }
 
-void CGame::refresh(void)
+BOOL CGame::refresh(void)
 {
+	
 	if(GetForegroundWindow() == hwnd)
+	{
+		TRACE("Game window is focus, so refresh.\n");
 		pScreen->refresh();
+		return TRUE;
+	}
+	else {
+		TRACE("Game window is not focus, so no refresh.\n");
+	}
+	return FALSE;
 }
 
 CGame::GAME_STATUS CGame::getStatus(void)
 {
-	refresh();
-	if(topRightWindow->locate())
-		return TRAVEL;
-	else if(playerSkillLevelWindow->locate())
-		return PLAYER_CHOISE_SKILL_LEVEL;
-	else if(playerSkillWindow->locate())
-		return PLAYER_CHOISE_SKILL;
-	else if(playerCommandWindow->locate())
+	if(!refresh())
+		return UNKNOW;
+
+	if(playerCommandWindow->isExists())
+	{
+		if(playerSkillLevelWindow->isExists())
+		{
+			TRACE("Not TRAVEL status.\n");
+			return PLAYER_CHOISE_SKILL_LEVEL;
+		}
+		else if(playerSkillWindow->isExists())
+		{
+			TRACE("Not PLAYER_CHOISE_SKILL_LEVEL status.\n");
+			return PLAYER_CHOISE_SKILL;
+		}
+		TRACE("Not PLAYER_CHOISE_SKILL status.\n");
 		return PLAYER_FIGHT;
-	else if(petSkillWindow->locate())
-		return PET_CHOSE_SKILL;
-	else if(petCommandWindow->locate())
+	}
+	else if(petCommandWindow->isExists())
+	{
+		if(petSkillWindow->isExists())
+		{
+			TRACE("Not PLAYER_FIGHT status.\n");
+			return PET_CHOSE_SKILL;
+		}
 		return PET_FIGHT;
+	}
+	else if(topRightWindow->isExists())
+		return TRAVEL;
 	return UNKNOW;
 }
 
 HWND CGame::getHWND(void)
 {
 	return hwnd;
+}
+
+
+
+CHWNDScreen* CGame::getScreen(void)
+{
+	return this->pScreen;
 }

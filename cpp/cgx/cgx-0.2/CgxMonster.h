@@ -18,5 +18,7 @@ public:
 	// Find alive
 	BOOL isAlive(int);
 	int countAlive(void);
+	void hitOne(void);
+	void hitFour(void);
 };
 

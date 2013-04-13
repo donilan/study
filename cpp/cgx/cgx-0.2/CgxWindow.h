@@ -19,7 +19,7 @@ protected:
 	
 public:
 	BOOL locate(void);
-	BOOL isPositionChanged(void);
+	BOOL isExists(void);
 	virtual void locateCommands(void){memset(commandRECTs, 0, sizeof(RECT)*MAX_COMMAND);};
 	virtual BOOL isCommandEnable(int){return FALSE;};
 	BOOL getCommand(int index, RECT* rectOut);

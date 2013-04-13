@@ -18,7 +18,8 @@ public:
 	CGame(HWND);
 	virtual ~CGame();
 
-	void refresh(void);
+	BOOL CGame::refresh(void);
+
 	GAME_STATUS getStatus(void);
 
 	CCgxMonster* monster;
@@ -35,6 +36,7 @@ private:
 	
 public:
 	HWND getHWND(void);
+	CHWNDScreen* getScreen(void);
 };
 
 

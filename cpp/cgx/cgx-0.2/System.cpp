@@ -33,12 +33,20 @@ UINT CSystem::LeftClickThread( LPVOID lPvoid)
 	LPPOINT p = (LPPOINT) lPvoid;
 	TRACE("Lect click: (%d, %d)\n", p->x, p->y);
 	SetCursorPos(p->x, p->y);
-	Sleep(10);
+	Sleep(20);
 	mouse_event(MOUSEEVENTF_LEFTDOWN, p->x, p->y, 0, 0);
-	Sleep(10);
+	Sleep(20);
 	mouse_event(MOUSEEVENTF_LEFTUP, p->x, p->y, 0, 0);
 	SetCursorPos(oldPoint.x, oldPoint.y);
 	CSystem::lockScreen(FALSE);
 	delete p;
 	return 0;
+}
+
+
+void CSystem::leftClick(RECT* rect)
+{
+	int x = (rect->right - rect->left) / 2 + rect->left;
+	int y = (rect->bottom - rect->top) / 2 + rect->top;
+	leftClick(x, y);
 }

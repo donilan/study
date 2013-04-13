@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "CgxMonster.h"
+#include "System.h"
 
 
 CCgxMonster::CCgxMonster(CHWNDScreen* pScreen)
@@ -44,4 +45,23 @@ int CCgxMonster::countAlive(void)
 		}
 	}
 	return count;
+}
+
+
+void CCgxMonster::hitOne(void)
+{
+	for(int i = NUMBER_OF_MONSTER-1; i >= 0; --i)
+	{
+		if(isAlive(i))
+		{
+			CSystem::leftClick(&monsterRECTs[i]);
+			return;
+		}
+	}
+}
+
+
+void CCgxMonster::hitFour(void)
+{
+	hitOne();
 }

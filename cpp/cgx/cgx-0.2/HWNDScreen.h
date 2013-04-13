@@ -25,12 +25,18 @@ public:
 	// Print into screen
 	void print(void);
 
+	CMutex mutex;
 private:
 	static UINT screenPrintThread(LPVOID lpVoid);
 	static UINT flashRECTThread(LPVOID);
 	HWND hwnd;
 	CImageDC* pImageDC;
+
 public:
 	void refresh(void);
+	static UINT autoRefreshThread(LPVOID lpVoid);
+	void startAutoRefresh(void);
+	void stopAutoRefresh(void);
+	BOOL isAutoRefresh;
 };
 

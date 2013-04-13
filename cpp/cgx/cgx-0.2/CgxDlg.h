@@ -43,4 +43,6 @@ private:
 	CGameManager gameManager;
 public:
 	afx_msg void OnBnClickedRefresh();
+	
+	afx_msg void OnBnClickedAutoFight();
 };

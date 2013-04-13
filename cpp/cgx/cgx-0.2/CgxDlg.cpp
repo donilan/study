@@ -34,6 +34,7 @@ BEGIN_MESSAGE_MAP(CCgxDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_WM_HOTKEY()
 	ON_BN_CLICKED(IDC_REFRESH, &CCgxDlg::OnBnClickedRefresh)
+	ON_BN_CLICKED(IDC_AUTO_FIGHT, &CCgxDlg::OnBnClickedAutoFight)
 END_MESSAGE_MAP()
 
 
@@ -55,6 +56,39 @@ BOOL CCgxDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 	OnBnClickedRefresh();
+
+	TCHAR buff[MAX_PATH] = {0};
+	CComboBox* single = (CComboBox*)GetDlgItem(IDC_SINGLE_SKILL_LIST);
+	CComboBox* four = (CComboBox*)GetDlgItem(IDC_FOUR_SKILL_LIST);
+	CComboBox* all = (CComboBox*)GetDlgItem(IDC_ALL_SKILL_LIST);
+	CComboBox* singleLv = (CComboBox*)GetDlgItem(IDC_SINGLE_SKILL_LIST_LV);
+	CComboBox* fourLv = (CComboBox*)GetDlgItem(IDC_FOUR_SKILL_LIST_LV);
+	CComboBox* allLv = (CComboBox*)GetDlgItem(IDC_ALL_SKILL_LIST_LV);
+	CComboBox* pet = (CComboBox*)GetDlgItem(IDC_PET_SKILL);
+
+	single->AddString(TEXT("攻击"));
+	four->AddString(TEXT("攻击"));
+	all->AddString(TEXT("攻击"));
+	for(int i = 0 ; i < 10; ++i)
+	{
+		swprintf(buff, sizeof(TCHAR)*MAX_PATH, TEXT("技能%02d"), i+1);
+		single->AddString(buff);
+		four->AddString(buff);
+		all->AddString(buff);
+		pet->AddString(buff);
+		
+		swprintf(buff, sizeof(TCHAR)*MAX_PATH, TEXT("Lv%d"), i+1);
+		singleLv->AddString(buff);
+		fourLv->AddString(buff);
+		allLv->AddString(buff);
+	}
+	single->SetCurSel(0);
+	four->SetCurSel(0);
+	all->SetCurSel(0);
+	singleLv->SetCurSel(0);
+	fourLv->SetCurSel(0);
+	allLv->SetCurSel(0);
+	pet->SetCurSel(0);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -120,11 +154,31 @@ void CCgxDlg::OnBnClickedRefresh()
 	
 	TCHAR buff[MAX_PATH] = {0};
 	gameManager.refresh();
-	CListBox* list = (CListBox*)GetDlgItem(IDC_GAME_LIST);
+	CComboBox* list = (CComboBox*)GetDlgItem(IDC_GAME_LIST);
 	list->ResetContent();
 	for(int i = 0; i < gameManager.gameSize; ++i)
 	{
 		swprintf(buff, sizeof(TCHAR)*MAX_PATH, TEXT("游戏%d"), i);
 		list->AddString(buff);
+	}
+	list->SetCurSel(0);
+}
+
+
+
+void CCgxDlg::OnBnClickedAutoFight()
+{
+	CButton* chk = (CButton*)GetDlgItem(IDC_AUTO_FIGHT);
+	CComboBox* gameList = (CComboBox*)GetDlgItem(IDC_GAME_LIST);
+	int index = gameList->GetCurSel();
+	if(index > gameManager.gameSize)
+		return;
+	if(chk && chk->GetCheck())
+	{
+		gameManager.games[index]->startAutoFight();
+	}
+	else
+	{
+		gameManager.games[index]->stopAutoFight();
 	}
 }

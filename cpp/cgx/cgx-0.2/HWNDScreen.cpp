@@ -3,12 +3,14 @@
 #include "System.h"
 
 #define DEVIATION 8
+#define AUTO_REFRESH_INTERNAL 1000
 
 CHWNDScreen::CHWNDScreen(HWND hwnd)
 {
 	this->hwnd = hwnd;
 	pImageDC = NULL;
 	pImage = NULL;
+	this->isAutoRefresh = FALSE;
 }
 
 
@@ -32,6 +34,7 @@ INT CHWNDScreen::colorDeviation( RECT* rect, COLORREF rgb)
 
 	INT count = 0;
 	INT rate = -1;
+	mutex.Lock();
 	if(!pImage) return rate;
 	INT pixSize = (rect->right-rect->left) * (rect->bottom - rect->top);
 	
@@ -47,7 +50,7 @@ INT CHWNDScreen::colorDeviation( RECT* rect, COLORREF rgb)
 			}
 
 		}
-
+	mutex.Unlock();
 	rate = (100 * count) / pixSize;
 	TRACE("Size: %d found: %d RGB(%d,%d,%d) rate: %d%%\n"
 		, pixSize, count, (INT)GetRValue(rgb), (INT)GetGValue(rgb)
@@ -127,11 +130,11 @@ void CHWNDScreen::loadImage(PTSTR pszImagePath)
 // Locate image
 BOOL CHWNDScreen::locate(const CImage* pImageIn, RECT* rectOut)
 {
-	if(!pImage || !pImageIn || !rectOut) return FALSE;
+	if(!pImageIn || !rectOut) return FALSE;
 	int width = pImageIn->GetWidth();
 	int height = pImageIn->GetHeight();
 	memset(rectOut, 0, sizeof(RECT));
-	TRACE("Begin locate...");
+	
 	for(INT x = rect.left; x < rect.right - width; ++x)
 		for(INT y = rect.top; y < rect.bottom - height; ++y)
 		{
@@ -153,25 +156,38 @@ BOOL CHWNDScreen::locate(const CImage* pImageIn, RECT* rectOut)
 // Is image match in location
 BOOL CHWNDScreen::match(const CImage* pImageIn, const RECT* rectIn)
 {
+	BOOL flag = TRUE;
 	COLORREF rgb1;
 	COLORREF rgb2;
 	if(!pImage || !pImageIn) return FALSE;
+	mutex.Lock();
+	
 	for(LONG x = rectIn->left; x < rectIn->right; ++x)
+	{
 		for(LONG y = rectIn->top; y < rectIn->bottom; ++y)
 		{
 			if(x > pImage->GetWidth() || y > pImage->GetHeight())
-				return FALSE;
+			{
+				flag = FALSE;
+				break;
+			}
 			rgb1 = pImageIn->GetPixel(x-rectIn->left, y-rectIn->top);
 			rgb2 = pImage->GetPixel(x, y);
 			if(abs(GetRValue(rgb1) - GetRValue(rgb2)) > 10
 				|| abs(GetGValue(rgb1) - GetGValue(rgb2)) > 10
 				|| abs(GetBValue(rgb1) - GetBValue(rgb2)) > 10)
-				return FALSE;
+			{
+				flag = FALSE;
+				break;
+			}
 			//TRACE("(%d, %d, %d) == (%d, %d, %d)\n", GetRValue(rgb1), 
 			//	GetGValue(rgb1), GetBValue(rgb1), GetRValue(rgb2), GetGValue(rgb2), GetBValue(rgb2));
 		}
-	TRACE("MATCHED\n");
-	return TRUE;
+		if(!flag)
+			break;
+	}
+	mutex.Unlock();
+	return flag;
 }
 
  // save rect
@@ -233,19 +249,55 @@ UINT CHWNDScreen::screenPrintThread(LPVOID lpVoid)
 
 void CHWNDScreen::refresh(void)
 {
-	POINT oldPoint;
-	HDC hScreenDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
-	CSystem::lockScreen(TRUE);
-	GetCursorPos(&oldPoint);
-	SetCursorPos(0, 0);
-	GetWindowRect(hwnd, &rect);
-	LONG width = rect.right - rect.left;
-	LONG height = rect.bottom - rect.top;
-	pImage = new CImage();
-	pImage->Create(width, height, 24);
-	pImageDC = new CImageDC(*pImage);
-	BitBlt(*pImageDC, 0, 0, width, height, hScreenDC, rect.left, rect.top, SRCCOPY);
-	SetCursorPos(oldPoint.x, oldPoint.y);
-	CSystem::lockScreen(FALSE);
-	DeleteDC(hScreenDC);
+	if(GetForegroundWindow() == hwnd)
+	{
+		mutex.Lock();
+		HDC hScreenDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
+		CSystem::lockScreen(TRUE);
+		//GetCursorPos(&oldPoint);
+		//SetCursorPos(0, 0);
+		GetWindowRect(hwnd, &rect);
+		LONG width = rect.right - rect.left;
+		LONG height = rect.bottom - rect.top;
+		if(pImageDC) delete pImageDC;
+		if(pImage) delete pImage;
+		
+		pImage = new CImage();
+		pImage->Create(width, height, 24);
+		pImageDC = new CImageDC(*pImage);
+		BitBlt(*pImageDC, 0, 0, width, height, hScreenDC, rect.left, rect.top, SRCCOPY);
+		//SetCursorPos(oldPoint.x, oldPoint.y);
+		CSystem::lockScreen(FALSE);
+		mutex.Unlock();
+		DeleteDC(hScreenDC);
+	}
+}
+
+
+UINT CHWNDScreen::autoRefreshThread(LPVOID lpVoid)
+{
+	CHWNDScreen* s = (CHWNDScreen *)lpVoid;
+	while(s->isAutoRefresh)
+	{
+		
+		s->refresh();
+		Sleep(AUTO_REFRESH_INTERNAL);
+		
+	}
+	return 0;
+}
+
+
+void CHWNDScreen::startAutoRefresh(void)
+{
+	if(isAutoRefresh) return;
+	isAutoRefresh = TRUE;
+	TRACE("Start auto refresh.\n");
+	AfxBeginThread(autoRefreshThread, this);
+}
+
+
+void CHWNDScreen::stopAutoRefresh(void)
+{
+	isAutoRefresh = FALSE;
 }

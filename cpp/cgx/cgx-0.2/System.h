@@ -12,5 +12,6 @@ public:
 	static BOOL lockScreen(BOOL);
 	static BOOL leftClick(int x, int y);
 	static UINT LeftClickThread(LPVOID);
+	static void leftClick(RECT* rect);
 };
 

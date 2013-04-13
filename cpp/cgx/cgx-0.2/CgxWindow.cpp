@@ -21,40 +21,39 @@ CCgxWindow::~CCgxWindow(void)
 
 BOOL CCgxWindow::locate(void)
 {
-	TRACE("Locating window...\n");
+	//TRACE("Locating window...\n");
 	RECT newRECT;
 	BOOL found;
-	if(!isPositionChanged())
-	{
-		TRACE("Window position not changed.\n");
-		return TRUE;
-	}
+	
 	if(pScreen)
 	{
-		 found = pScreen->locate(pLocateImage, &newRECT);
-		 if(found)
-		 {
-			 TRACE("Found window position and found a new RECT.\n");
-			 memcpy(&rect, &newRECT, sizeof(RECT));
-			 locateCommands();
-			 return TRUE;
-		 }
-		 return FALSE;
+		found = pScreen->locate(pLocateImage, &newRECT);
+		if(found)
+		{
+			TRACE("Found window position and found a new RECT.\n");
+			memcpy(&rect, &newRECT, sizeof(RECT));
+			locateCommands();
+			return TRUE;
+		}
+		return FALSE;
 	}
 	return FALSE;
 }
 
 
-BOOL CCgxWindow::isPositionChanged(void)
+BOOL CCgxWindow::isExists(void)
 {
-	BOOL result = TRUE;
+	BOOL result = FALSE;
 	if(pScreen && rect.right != 0 && rect.bottom != 0)
 	{
-		result = !(pScreen->match(pLocateImage, &rect));
-		TRACE("Check is window (%d, %d) changed: %d\n", rect.left, rect.top, result);
+		result = pScreen->match(pLocateImage, &rect);
+		TRACE("Check is window (%d, %d) exist: %d\n", rect.left, rect.top, result);
+	} else {
+		locate();
 	}
 	return result;
 }
+
 
 
 BOOL CCgxWindow::getCommand(int index, RECT* rectOut)
