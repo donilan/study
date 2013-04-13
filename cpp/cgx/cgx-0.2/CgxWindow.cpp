@@ -34,6 +34,7 @@ BOOL CCgxWindow::locate(void)
 		 {
 			 TRACE("Found window position and found a new RECT.\n");
 			 memcpy(&rect, &newRECT, sizeof(RECT));
+			 locateCommands();
 			 return TRUE;
 		 }
 		 return FALSE;
@@ -51,4 +52,14 @@ BOOL CCgxWindow::isPositionChanged(void)
 		TRACE("Check is window (%d, %d) changed: %d\n", rect.left, rect.top, result);
 	}
 	return result;
+}
+
+
+BOOL CCgxWindow::getCommand(int index, RECT* rectOut)
+{
+	if(commandRECTs[index].right == 0 || commandRECTs[index].bottom == 0)
+		return FALSE;
+
+	memcpy(rectOut, &commandRECTs[index], sizeof(RECT));
+	return TRUE;
 }

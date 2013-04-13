@@ -8,6 +8,7 @@
 #include "System.h"
 #include "CgxMonster.h"
 #include "CgxTopRightWindow.h"
+#include "CgxPlayerCommand.h"
 
 
 // CSystemTestDlg ¶Ô»°¿ò
@@ -55,6 +56,7 @@ BEGIN_MESSAGE_MAP(CSystemTestDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_LOCATE_MONSTER, &CSystemTestDlg::OnBnClickedLocateMonster)
 	ON_BN_CLICKED(IDC_LOCATE_TOP_RIGHT_WINDOW, &CSystemTestDlg::OnBnClickedLocateTopRightWindow)
 	ON_BN_CLICKED(IDC_LOCATE_PET_CAMMAND, &CSystemTestDlg::OnBnClickedLocatePetCammand)
+	ON_BN_CLICKED(IDC_LOCATE_PLAYER_COMMAND, &CSystemTestDlg::OnBnClickedLocatePlayerCommand)
 END_MESSAGE_MAP()
 
 
@@ -327,7 +329,7 @@ void CSystemTestDlg::OnBnClickedLocateSkill()
 		if(!skillWindow) skillWindow = new CCgxSkillWindow(IDB_PLAYER_SKILL, pScreen);
 		for(int i = 0; i < 10; ++i)
 		{
-			skillWindow->skillRECT(i+1, &rect);
+			skillWindow->getCommand(i, &rect);
 			CHWNDScreen::flashRECT(&rect);
 		}
 	}
@@ -434,3 +436,13 @@ void CSystemTestDlg::OnBnClickedLocatePetCammand()
 }
 
 
+
+
+void CSystemTestDlg::OnBnClickedLocatePlayerCommand()
+{
+	if(pScreen)
+	{
+		CCgxPlayerCommand playerCommand(pScreen);
+		_locateWindowInfo(&playerCommand, TEXT("Player Command"));
+	}
+}

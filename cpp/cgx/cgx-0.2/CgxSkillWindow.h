@@ -9,6 +9,7 @@ public:
 	CCgxSkillWindow(int, CHWNDScreen*);
 	~CCgxSkillWindow(void);
 	// Find skill rect, start index is 1
-	void skillRECT(INT index, RECT* skillRECTOut);
+	//void skillRECT(INT index, RECT* skillRECTOut);
+	void locateCommands(void);
 };
 

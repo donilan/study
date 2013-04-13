@@ -2,6 +2,8 @@
 
 #include "HWNDScreen.h"
 
+#define MAX_COMMAND 20
+
 class CCgxWindow
 {
 public:
@@ -10,11 +12,14 @@ public:
 
 	CImage* pLocateImage;
 	RECT rect;
+	RECT commandRECTs[MAX_COMMAND];
 protected:
 	CHWNDScreen* screen;
 	
 public:
 	BOOL locate(void);
 	BOOL isPositionChanged(void);
+	virtual void locateCommands(void){memset(commandRECTs, 0, sizeof(RECT)*MAX_COMMAND);};
+	BOOL getCommand(int index, RECT* rectOut);
 };
 

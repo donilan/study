@@ -4,7 +4,6 @@
 #include "CgxSkillWindow.h"
 #include "CgxGoodsWindow.h"
 #include "CgxPetCommandWindow.h"
-#include "CgxPetSkillWindow.h"
 #include "CgxTopRightWindow.h"
 
 // CSystemTestDlg ¶Ô»°¿ò
@@ -61,4 +60,5 @@ protected:
 	inline void _initWindows(void);
 public:
 	afx_msg void OnBnClickedLocatePetCammand();
+	afx_msg void OnBnClickedLocatePlayerCommand();
 };

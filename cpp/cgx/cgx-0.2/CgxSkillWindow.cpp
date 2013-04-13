@@ -14,20 +14,13 @@ CCgxSkillWindow::~CCgxSkillWindow(void)
 {
 }
 
-
-// Find skill rect
-void CCgxSkillWindow::skillRECT(INT index, RECT* skillRECTOut)
+void CCgxSkillWindow::locateCommands(void)
 {
-	if(!skillRECTOut) return;
-	memset(skillRECTOut, 0, sizeof(RECT));
-	index--;
-	if(index < 0) index = 0;
-	if(index > 9) index = 0;
-	if(locate())
+	for(int i = 0; i < 10; ++i)
 	{
-		skillRECTOut->left = rect.left+5;
-		skillRECTOut->right = skillRECTOut->left+ 12*4;
-		skillRECTOut->top = rect.top+36 + (16*index);
-		skillRECTOut->bottom = skillRECTOut->top + 12;
+		commandRECTs[i].left = rect.left+5;
+		commandRECTs[i].right = commandRECTs[i].left+ 12*4;
+		commandRECTs[i].top = rect.top+36 + (16*i);
+		commandRECTs[i].bottom = commandRECTs[i].top + 12;
 	}
 }
