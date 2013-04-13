@@ -397,12 +397,24 @@ void CSystemTestDlg::OnBnClickedLocateTopRightWindow()
 void CSystemTestDlg::_locateWindowInfo(CCgxWindow* wind, PTSTR winName)
 {
 	TCHAR buff[MAX_PATH] = {0};
-	
+	RECT rect;
 	if(wind->locate())
 	{
+		CHWNDScreen::flashRECT(&(wind->rect));
 		swprintf(buff, sizeof(TCHAR)*MAX_PATH, TEXT("Window [%s] x: %d y: %d"), winName, wind->rect.left, wind->rect.top);
 		_out(buff);
-		CHWNDScreen::flashRECT(&(wind->rect));
+		for(int i = 0; i < MAX_COMMAND; ++i)
+		{
+			if(wind->getCommand(i, &rect))
+			{
+				CHWNDScreen::flashRECT(&rect);
+				if(wind->isCommandEnable(i))
+					TRACE("Command[%d] is enabled.\n", i);
+				else
+					TRACE("Command[%d] is diabled.\n", i);
+			}
+		}
+		
 	}
 	else
 	{
@@ -444,5 +456,6 @@ void CSystemTestDlg::OnBnClickedLocatePlayerCommand()
 	{
 		CCgxPlayerCommand playerCommand(pScreen);
 		_locateWindowInfo(&playerCommand, TEXT("Player Command"));
+		Sleep(100);
 	}
 }

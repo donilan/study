@@ -7,5 +7,7 @@ class CCgxPlayerCommand :
 public:
 	CCgxPlayerCommand(CHWNDScreen*);
 	~CCgxPlayerCommand(void);
+	void locateCommands(void);
+	BOOL isCommandEnable(int index);
 };
 

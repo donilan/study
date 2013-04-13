@@ -109,7 +109,7 @@ UINT CHWNDScreen::flashRECTThread( LPVOID lPvoid )
 			SetPixel(hScreenDC, rect->left, rect->top+i, rgb);
 			SetPixel(hScreenDC, rect->right, rect->top+i, rgb);
 		}
-		Sleep(200);
+		Sleep(100);
 		rgb = RGB(0, 0, 255);
 		for(i = 0; i <= width; ++i)
 		{
@@ -121,7 +121,7 @@ UINT CHWNDScreen::flashRECTThread( LPVOID lPvoid )
 			SetPixel(hScreenDC, rect->left, rect->top+i, rgb);
 			SetPixel(hScreenDC, rect->right, rect->top+i, rgb);
 		}
-		Sleep(200);
+		Sleep(100);
 	}
 	
 	DeleteDC(hScreenDC);

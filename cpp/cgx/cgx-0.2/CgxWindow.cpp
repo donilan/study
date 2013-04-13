@@ -5,10 +5,11 @@
 
 CCgxWindow::CCgxWindow(UINT resourceId, CHWNDScreen* screen)
 {
-	this->screen = screen;
+	this->pScreen = screen;
 	pLocateImage = new CImage();
 	pLocateImage->LoadFromResource(GetModuleHandle(NULL), resourceId);
 	memset(&rect, 0, sizeof(RECT));
+	memset(commandRECTs, 0, sizeof(RECT)*MAX_COMMAND);
 }
 
 
@@ -28,9 +29,9 @@ BOOL CCgxWindow::locate(void)
 		TRACE("Window position not changed.\n");
 		return TRUE;
 	}
-	if(screen)
+	if(pScreen)
 	{
-		 found = screen->locate(pLocateImage, &newRECT);
+		 found = pScreen->locate(pLocateImage, &newRECT);
 		 if(found)
 		 {
 			 TRACE("Found window position and found a new RECT.\n");
@@ -47,9 +48,9 @@ BOOL CCgxWindow::locate(void)
 BOOL CCgxWindow::isPositionChanged(void)
 {
 	BOOL result = TRUE;
-	if(screen && rect.right != 0 && rect.bottom != 0)
+	if(pScreen && rect.right != 0 && rect.bottom != 0)
 	{
-		result = !(screen->match(pLocateImage, &rect));
+		result = !(pScreen->match(pLocateImage, &rect));
 		TRACE("Check is window (%d, %d) changed: %d\n", rect.left, rect.top, result);
 	}
 	return result;
@@ -58,7 +59,14 @@ BOOL CCgxWindow::isPositionChanged(void)
 
 BOOL CCgxWindow::getCommand(int index, RECT* rectOut)
 {
-	if(commandRECTs[index].right == 0 || commandRECTs[index].bottom == 0)
+	
+	if( commandRECTs[index].left < pScreen->rect.left 
+		|| commandRECTs[index].right > pScreen->rect.right 
+		|| commandRECTs[index].top < pScreen->rect.top
+		|| commandRECTs[index].bottom > pScreen->rect.bottom
+		|| commandRECTs[index].left == commandRECTs[index].right
+		|| commandRECTs[index].top == commandRECTs[index].bottom
+		)
 		return FALSE;
 
 	memcpy(rectOut, &commandRECTs[index], sizeof(RECT));

@@ -14,12 +14,13 @@ public:
 	RECT rect;
 	RECT commandRECTs[MAX_COMMAND];
 protected:
-	CHWNDScreen* screen;
+	CHWNDScreen* pScreen;
 	
 public:
 	BOOL locate(void);
 	BOOL isPositionChanged(void);
 	virtual void locateCommands(void){memset(commandRECTs, 0, sizeof(RECT)*MAX_COMMAND);};
+	virtual BOOL isCommandEnable(int){return FALSE;};
 	BOOL getCommand(int index, RECT* rectOut);
 	void leftClick(int index);
 };
