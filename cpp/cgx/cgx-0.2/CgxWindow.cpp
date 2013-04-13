@@ -13,7 +13,7 @@ CCgxWindow::CCgxWindow(UINT resourceId, CHWNDScreen* screen)
 
 CCgxWindow::~CCgxWindow(void)
 {
-	delete pLocateImage;
+	if(pLocateImage) delete pLocateImage;
 }
 
 

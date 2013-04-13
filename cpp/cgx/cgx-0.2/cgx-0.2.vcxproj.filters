@@ -28,6 +28,9 @@
     <None Include="image\window\job.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="image\window\goods.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CgxDlg.h">
@@ -69,6 +72,9 @@
     <ClInclude Include="CgxSkillWindow.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CgxGoodsWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CgxDlg.cpp">
@@ -102,6 +108,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CgxSkillWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxGoodsWindow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

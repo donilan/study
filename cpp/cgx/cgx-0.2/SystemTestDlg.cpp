@@ -17,6 +17,7 @@ CSystemTestDlg::CSystemTestDlg(CWnd* pParent /*=NULL*/)
 {
 	pScreen = NULL;
 	skillWindow = NULL;
+	goodsWindow = NULL;
 }
 
 CSystemTestDlg::~CSystemTestDlg()
@@ -46,6 +47,7 @@ BEGIN_MESSAGE_MAP(CSystemTestDlg, CDialogEx)
 	ON_LBN_DBLCLK(IDC_MATCH_LIST, &CSystemTestDlg::OnLbnDblclkMatchList)
 	ON_BN_CLICKED(IDC_LOCATE_JOB_WINDOW, &CSystemTestDlg::OnBnClickedLocateJobWindow)
 	ON_BN_CLICKED(IDC_LOCATE_SKILL, &CSystemTestDlg::OnBnClickedLocateSkill)
+	ON_BN_CLICKED(IDC_LOCATE_GOODS, &CSystemTestDlg::OnBnClickedLocateGoods)
 END_MESSAGE_MAP()
 
 
@@ -332,6 +334,8 @@ void CSystemTestDlg::_initScreen(PTSTR pszFilePath)
 	pScreen->loadImage(pszFilePath);
 	if(skillWindow) delete skillWindow; 
 	skillWindow = new CCgxSkillWindow(pScreen);
+	if(goodsWindow) delete goodsWindow;
+	goodsWindow = new CCgxGoodsWindow(pScreen);
 }
 
 
@@ -341,4 +345,26 @@ void CSystemTestDlg::_initScreen(HWND hwnd)
 	pScreen = new CHWNDScreen(hwnd);
 	if(skillWindow) delete skillWindow; 
 	skillWindow = new CCgxSkillWindow(pScreen);
+	if(goodsWindow) delete goodsWindow;
+	goodsWindow = new CCgxGoodsWindow(pScreen);
+}
+
+
+void CSystemTestDlg::OnBnClickedLocateGoods()
+{
+	TCHAR buff[MAX_PATH] = {0};
+	if(pScreen)
+	{
+		if(!goodsWindow) goodsWindow = new CCgxGoodsWindow(pScreen);
+		if(goodsWindow->locate())
+		{
+			swprintf(buff, sizeof(TCHAR)*MAX_PATH, TEXT("Goods window x: %d y: %d"), goodsWindow->rect.left, goodsWindow->rect.top);
+			_out(buff);
+			CHWNDScreen::flashRECT(&goodsWindow->rect);
+		}
+		else
+		{
+			_out(TEXT("Can not locate goods window."));
+		}
+	}
 }

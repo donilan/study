@@ -2,6 +2,7 @@
 #include "cgx.h"
 #include "HWNDScreen.h"
 #include "CgxSkillWindow.h"
+#include "CgxGoodsWindow.h"
 
 // CSystemTestDlg ¶Ô»°¿ò
 
@@ -21,7 +22,7 @@ protected:
 
 	CHWNDScreen *pScreen;
 	CCgxSkillWindow *skillWindow;
-
+	CCgxGoodsWindow *goodsWindow;
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedLockScreen();
@@ -46,4 +47,5 @@ public:
 	afx_msg void OnBnClickedLocateSkill();
 	void _initScreen(PTSTR pszFilePath);
 	void _initScreen(HWND);
+	afx_msg void OnBnClickedLocateGoods();
 };

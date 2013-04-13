@@ -94,6 +94,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="image\window\goods.bmp" />
     <None Include="image\window\job.bmp" />
     <None Include="ReadMe.txt" />
     <None Include="res\bitmap1.bmp" />
@@ -104,6 +105,7 @@
     <ClInclude Include="cgx.h" />
     <ClInclude Include="CgxButton.h" />
     <ClInclude Include="CgxDlg.h" />
+    <ClInclude Include="CgxGoodsWindow.h" />
     <ClInclude Include="CgxMonster.h" />
     <ClInclude Include="CgxSkillWindow.h" />
     <ClInclude Include="CgxWindow.h" />
@@ -119,6 +121,7 @@
     <ClCompile Include="cgx.cpp" />
     <ClCompile Include="CgxButton.cpp" />
     <ClCompile Include="CgxDlg.cpp" />
+    <ClCompile Include="CgxGoodsWindow.cpp" />
     <ClCompile Include="CgxMonster.cpp" />
     <ClCompile Include="CgxSkillWindow.cpp" />
     <ClCompile Include="CgxWindow.cpp" />
