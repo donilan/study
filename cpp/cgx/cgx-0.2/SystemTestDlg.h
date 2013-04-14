@@ -67,4 +67,5 @@ public:
 	afx_msg void OnBnClickedLocatePetSkill();
 	afx_msg void OnBnClickedLocateLevel();
 	afx_msg void OnBnClickedCheckStatus();
+	afx_msg void OnBnClickedLocateMapWindow();
 };

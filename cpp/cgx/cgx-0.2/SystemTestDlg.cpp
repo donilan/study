@@ -9,6 +9,7 @@
 #include "CgxMonster.h"
 #include "CgxTopRightWindow.h"
 #include "CgxPlayerCommand.h"
+#include "CgxMapWindow.h"
 
 
 // CSystemTestDlg ¶Ô»°¿ò
@@ -63,6 +64,7 @@ BEGIN_MESSAGE_MAP(CSystemTestDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_LOCATE_PET_SKILL, &CSystemTestDlg::OnBnClickedLocatePetSkill)
 	ON_BN_CLICKED(IDC_LOCATE_LEVEL, &CSystemTestDlg::OnBnClickedLocateLevel)
 	ON_BN_CLICKED(IDC_CHECK_STATUS, &CSystemTestDlg::OnBnClickedCheckStatus)
+	ON_BN_CLICKED(IDC_LOCATE_MAP_WINDOW, &CSystemTestDlg::OnBnClickedLocateMapWindow)
 END_MESSAGE_MAP()
 
 
@@ -497,4 +499,16 @@ void CSystemTestDlg::OnBnClickedCheckStatus()
 {
 	if(checkingStatus || !game) return;
 	AfxBeginThread(CheckStatusThread, game);
+}
+
+
+void CSystemTestDlg::OnBnClickedLocateMapWindow()
+{
+	if(pScreen)
+	{
+		CCgxMapWindow map(pScreen);
+		_locateWindowInfo(&map, TEXT("Map"));
+		pScreen->flashRECT(&map.xRECT);
+		pScreen->flashRECT(&map.yRECT);
+	}
 }

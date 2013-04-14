@@ -95,6 +95,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="image\window\goods.bmp" />
+    <None Include="image\window\map.bmp" />
     <None Include="image\window\player_command.bmp" />
     <None Include="image\window\player_skill.bmp" />
     <None Include="image\window\pet_command.bmp" />
@@ -110,6 +111,7 @@
     <ClInclude Include="cgx.h" />
     <ClInclude Include="CgxDlg.h" />
     <ClInclude Include="CgxGoodsWindow.h" />
+    <ClInclude Include="CgxMapWindow.h" />
     <ClInclude Include="CgxMonster.h" />
     <ClInclude Include="CgxPetCommandWindow.h" />
     <ClInclude Include="CgxPlayerCommand.h" />
@@ -130,6 +132,7 @@
     <ClCompile Include="cgx.cpp" />
     <ClCompile Include="CgxDlg.cpp" />
     <ClCompile Include="CgxGoodsWindow.cpp" />
+    <ClCompile Include="CgxMapWindow.cpp" />
     <ClCompile Include="CgxMonster.cpp" />
     <ClCompile Include="CgxPetCommandWindow.cpp" />
     <ClCompile Include="CgxPlayerCommand.cpp" />

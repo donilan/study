@@ -29,10 +29,9 @@ UINT CGameAI::gameAIAutoFightThread(LPVOID lpVoid)
 {
 	CGameAI *ai = (CGameAI *) lpVoid;
 	CGame* leader = ai->getLeader();
-	//leader->getScreen()->startAutoRefresh();
+	/leader->getScreen()->startAutoRefresh();
 	while(ai->isAutoFighting)
 	{
-		
 		if(leader->playerCommandWindow->isExists())
 		{
 			ai->playerFight();

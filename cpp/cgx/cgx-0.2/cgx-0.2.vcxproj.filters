@@ -46,6 +46,9 @@
     <None Include="image\window\skill_level.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="image\window\map.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CgxDlg.h">
@@ -102,6 +105,9 @@
     <ClInclude Include="GameAI.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CgxMapWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CgxDlg.cpp">
@@ -150,6 +156,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GameAI.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxMapWindow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
