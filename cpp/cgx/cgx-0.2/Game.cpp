@@ -14,6 +14,7 @@ CGame::CGame(HWND hwnd)
 	playerSkillLevelWindow = new CCgxSkillWindow(IDB_SKILL_LV, pScreen);
 	petSkillWindow = new CCgxSkillWindow(IDB_PET_SKILL, pScreen);
 	topRightWindow = new CCgxTopRightWindow(pScreen);
+	mapWindow = new CCgxMapWindow(pScreen);
 }
 
 CGame::~CGame()

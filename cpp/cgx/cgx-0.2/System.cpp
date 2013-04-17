@@ -50,3 +50,12 @@ void CSystem::leftClick(RECT* rect)
 	int y = (rect->bottom - rect->top) / 2 + rect->top;
 	leftClick(x, y);
 }
+
+
+int CSystem::ansi2unicode(char* in, size_t inSize, TCHAR* out, size_t outSize)
+{
+	int size = 0;
+	size = MultiByteToWideChar(CP_ACP, NULL, in, inSize, out, outSize);
+	out[outSize] = '\0';
+	return size;
+}

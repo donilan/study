@@ -125,6 +125,7 @@ void CSystemTestDlg::OnBnClickedScreenshot()
 		if(game) delete game;
 		game = new CGame(hwnd);
 		TRACE("Saving screenshot.\n");
+		pScreen->refresh();
 		pScreen->screenshot(TEXT("img\\tmp.bmp"));
 	}
 }
@@ -508,7 +509,10 @@ void CSystemTestDlg::OnBnClickedLocateMapWindow()
 	{
 		CCgxMapWindow map(pScreen);
 		_locateWindowInfo(&map, TEXT("Map"));
-		pScreen->flashRECT(&map.xRECT);
-		pScreen->flashRECT(&map.yRECT);
+		//pScreen->flashRECT(&map.xRECT);
+		//pScreen->flashRECT(&map.yRECT);
+		int x = pScreen->toNumber(&map.xRECT);
+		int y = pScreen->toNumber(&map.yRECT);
+		TRACE("%d, %d\n", x, y);
 	}
 }

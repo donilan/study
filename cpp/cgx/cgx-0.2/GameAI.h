@@ -2,7 +2,8 @@
 
 #include "Game.h"
 #define MAX_GAMER 5
-
+#define SCRIPT_LENGTH 4098
+#include "Script.h"
 
 class CGameAI
 {
@@ -21,18 +22,20 @@ public:
 	int allSkillLv;
 	int petSkill;
 
-	BOOL isAutoFighting;
+	BOOL isAIStart;
+
+	CScript script;
 private:
 	
 	int gamerNumber;
 	CGameAI* gamer[MAX_GAMER];
 	CGame* leader;
 
-	static UINT gameAIAutoFightThread(LPVOID);
+	static UINT gameAIThread(LPVOID);
 public:
 	HWND getHWND(void);
-	void startAutoFight(void);
-	void stopAutoFight(void);
+	void startAI(void);
+	void stopAI(void);
 	CGame* getLeader(void);
 	void playerFight(void);
 	void petFight(void);

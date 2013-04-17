@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{3C5E63F0-A0E1-4EC6-AAF3-50FC7FB918E8}</ProjectGuid>
-    <RootNamespace>cgx02</RootNamespace>
+    <ProjectGuid>{A921FACB-065C-4AD2-A4D0-9E08FA99879E}</ProjectGuid>
+    <RootNamespace>digitRec</RootNamespace>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -20,14 +20,14 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Static</UseOfMfc>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Static</UseOfMfc>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -41,6 +41,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -51,10 +53,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>Z:\share\tesseract-3.02.02-win32-lib-include-dirs\tesseract-3.02.02-win32-lib-include-dirs\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -94,77 +100,38 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="image\window\goods.bmp" />
-    <None Include="image\window\map.bmp" />
-    <None Include="image\window\player_command.bmp" />
-    <None Include="image\window\player_skill.bmp" />
-    <None Include="image\window\pet_command.bmp" />
-    <None Include="image\window\pet_skill_window.bmp" />
-    <None Include="image\window\right_top_buttons.bmp" />
-    <None Include="image\window\skill_level.bmp" />
     <None Include="ReadMe.txt" />
     <None Include="res\bitmap1.bmp" />
-    <None Include="res\cgx-0.2.ico" />
-    <None Include="res\cgx02.rc2" />
+    <None Include="res\digitRec.ico" />
+    <None Include="res\digitRec.rc2" />
+    <None Include="res\idb_digi.bin" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cgx.h" />
-    <ClInclude Include="CgxDlg.h" />
-    <ClInclude Include="CgxGoodsWindow.h" />
-    <ClInclude Include="CgxMapWindow.h" />
-    <ClInclude Include="CgxMonster.h" />
-    <ClInclude Include="CgxPetCommandWindow.h" />
-    <ClInclude Include="CgxPlayerCommand.h" />
-    <ClInclude Include="CgxSkillWindow.h" />
-    <ClInclude Include="CgxTopRightWindow.h" />
-    <ClInclude Include="CgxWindow.h" />
+    <ClInclude Include="digitRec.h" />
+    <ClInclude Include="digitRecDlg.h" />
     <ClInclude Include="FindNum.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="GameAI.h" />
-    <ClInclude Include="GameManager.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="HWNDScreen.h" />
-    <ClInclude Include="Script.h" />
-    <ClInclude Include="ScriptStep.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="System.h" />
-    <ClInclude Include="SystemTestDlg.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cgx.cpp" />
-    <ClCompile Include="CgxDlg.cpp" />
-    <ClCompile Include="CgxGoodsWindow.cpp" />
-    <ClCompile Include="CgxMapWindow.cpp" />
-    <ClCompile Include="CgxMonster.cpp" />
-    <ClCompile Include="CgxPetCommandWindow.cpp" />
-    <ClCompile Include="CgxPlayerCommand.cpp" />
-    <ClCompile Include="CgxSkillWindow.cpp" />
-    <ClCompile Include="CgxTopRightWindow.cpp" />
-    <ClCompile Include="CgxWindow.cpp" />
+    <ClCompile Include="digitRec.cpp" />
+    <ClCompile Include="digitRecDlg.cpp" />
     <ClCompile Include="FindNum.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameAI.cpp" />
-    <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="HWNDScreen.cpp" />
-    <ClCompile Include="Script.cpp" />
-    <ClCompile Include="ScriptStep.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="System.cpp" />
-    <ClCompile Include="SystemTestDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="cgx-0.2.rc" />
+    <ResourceCompile Include="digitRec.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="cgx-0.2.rc" />
+      <UserProperties RESOURCE_FILE="digitRec.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

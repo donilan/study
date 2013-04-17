@@ -31,12 +31,15 @@ private:
 	static UINT flashRECTThread(LPVOID);
 	HWND hwnd;
 	CImageDC* pImageDC;
-
+	HDC hScreenDC;
 public:
 	void refresh(void);
 	static UINT autoRefreshThread(LPVOID lpVoid);
 	void startAutoRefresh(void);
 	void stopAutoRefresh(void);
 	BOOL isAutoRefresh;
+	int toNumber(const RECT* pRECT);
+	void toCImage(const RECT* rectIn, CImage* pImageOut);
+	BOOL isFocus(void);
 };
 

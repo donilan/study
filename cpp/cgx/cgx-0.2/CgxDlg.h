@@ -45,4 +45,8 @@ public:
 	afx_msg void OnBnClickedRefresh();
 	
 	afx_msg void OnBnClickedAutoFight();
+	afx_msg void OnBnClickedStart();
+	virtual void OnOK();
+	afx_msg void OnCbnSelchangeScriptList();
+	afx_msg void OnCbnSetfocusScriptList();
 };

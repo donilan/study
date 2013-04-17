@@ -21,7 +21,7 @@ CCgxWindow::~CCgxWindow(void)
 
 BOOL CCgxWindow::locate(void)
 {
-	//TRACE("Locating window...\n");
+	TRACE("Locating window...\n");
 	RECT newRECT;
 	BOOL found;
 	
@@ -49,6 +49,7 @@ BOOL CCgxWindow::isExists(void)
 		result = pScreen->match(pLocateImage, &rect);
 		TRACE("Check is window (%d, %d) exist: %d\n", rect.left, rect.top, result);
 	} else {
+		//pScreen->refresh();
 		locate();
 	}
 	return result;

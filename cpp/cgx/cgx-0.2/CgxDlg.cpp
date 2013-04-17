@@ -34,7 +34,9 @@ BEGIN_MESSAGE_MAP(CCgxDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_WM_HOTKEY()
 	ON_BN_CLICKED(IDC_REFRESH, &CCgxDlg::OnBnClickedRefresh)
-	ON_BN_CLICKED(IDC_AUTO_FIGHT, &CCgxDlg::OnBnClickedAutoFight)
+	ON_BN_CLICKED(IDC_START, &CCgxDlg::OnBnClickedStart)
+	ON_CBN_SELCHANGE(IDC_SCRIPT_LIST, &CCgxDlg::OnCbnSelchangeScriptList)
+	ON_CBN_SETFOCUS(IDC_SCRIPT_LIST, &CCgxDlg::OnCbnSetfocusScriptList)
 END_MESSAGE_MAP()
 
 
@@ -57,38 +59,6 @@ BOOL CCgxDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	OnBnClickedRefresh();
 
-	TCHAR buff[MAX_PATH] = {0};
-	CComboBox* single = (CComboBox*)GetDlgItem(IDC_SINGLE_SKILL_LIST);
-	CComboBox* four = (CComboBox*)GetDlgItem(IDC_FOUR_SKILL_LIST);
-	CComboBox* all = (CComboBox*)GetDlgItem(IDC_ALL_SKILL_LIST);
-	CComboBox* singleLv = (CComboBox*)GetDlgItem(IDC_SINGLE_SKILL_LIST_LV);
-	CComboBox* fourLv = (CComboBox*)GetDlgItem(IDC_FOUR_SKILL_LIST_LV);
-	CComboBox* allLv = (CComboBox*)GetDlgItem(IDC_ALL_SKILL_LIST_LV);
-	CComboBox* pet = (CComboBox*)GetDlgItem(IDC_PET_SKILL);
-
-	single->AddString(TEXT("攻击"));
-	four->AddString(TEXT("攻击"));
-	all->AddString(TEXT("攻击"));
-	for(int i = 0 ; i < 10; ++i)
-	{
-		swprintf(buff, sizeof(TCHAR)*MAX_PATH, TEXT("技能%02d"), i+1);
-		single->AddString(buff);
-		four->AddString(buff);
-		all->AddString(buff);
-		pet->AddString(buff);
-		
-		swprintf(buff, sizeof(TCHAR)*MAX_PATH, TEXT("Lv%d"), i+1);
-		singleLv->AddString(buff);
-		fourLv->AddString(buff);
-		allLv->AddString(buff);
-	}
-	single->SetCurSel(0);
-	four->SetCurSel(0);
-	all->SetCurSel(0);
-	singleLv->SetCurSel(0);
-	fourLv->SetCurSel(0);
-	allLv->SetCurSel(0);
-	pet->SetCurSel(0);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -166,19 +136,86 @@ void CCgxDlg::OnBnClickedRefresh()
 
 
 
-void CCgxDlg::OnBnClickedAutoFight()
+void CCgxDlg::OnBnClickedStart()
 {
-	CButton* chk = (CButton*)GetDlgItem(IDC_AUTO_FIGHT);
 	CComboBox* gameList = (CComboBox*)GetDlgItem(IDC_GAME_LIST);
+	CButton* startBtn = (CButton *)GetDlgItem(IDC_START);
+	CEdit* script = (CEdit *)GetDlgItem(IDC_SCRIPT);
+	CString strLine;
+	CStringArray arr;
+
 	int index = gameList->GetCurSel();
-	if(index > gameManager.gameSize)
+	if(gameManager.gameSize == 0 || index > gameManager.gameSize)
 		return;
-	if(chk && chk->GetCheck())
+	if(gameManager.games[index]->isAIStart)
 	{
-		gameManager.games[index]->startAutoFight();
-	}
+		gameManager.games[index]->stopAI();
+		startBtn->SetWindowTextW(TEXT("启动"));
+	} 
 	else
 	{
-		gameManager.games[index]->stopAutoFight();
+		for(int i = 0; i < script->GetLineCount(); ++i)
+		{
+			int len = script->LineLength(script->LineIndex(i));
+			script->GetLine(i, strLine.GetBuffer(len), len);
+			strLine.ReleaseBuffer(len);
+			arr.Add(strLine);
+		}
+		
+		gameManager.games[index]->script.loadScript(arr.GetData()->GetBuffer(arr.GetSize()), arr.GetSize());
+		
+		gameManager.games[index]->startAI();
+		startBtn->SetWindowTextW(TEXT("停止"));
+	}
+}
+
+
+void CCgxDlg::OnOK()
+{
+	// Do nothing
+}
+
+
+void CCgxDlg::OnCbnSelchangeScriptList()
+{
+	TCHAR fileName[MAX_PATH] = {0};
+	TCHAR path[MAX_PATH] = {0};
+	CComboBox* scriptList = (CComboBox *)GetDlgItem(IDC_SCRIPT_LIST);
+	CEdit* script = (CEdit *)GetDlgItem(IDC_SCRIPT);
+	int idx = scriptList->GetCurSel();
+	scriptList->GetLBText(idx, fileName);
+	swprintf(path, sizeof(TCHAR)*MAX_PATH, TEXT("script\\%s"), fileName);
+	CFile file;
+	file.Open(path, CFile::modeRead);
+	if(file.GetLength() < 1)
+	{
+		return;
+	}
+	ULONGLONG fileSize = file.GetLength();
+	char* buff = new char[fileSize];
+	file.Read(buff, fileSize);
+	
+	int size = MultiByteToWideChar(CP_ACP, NULL, buff, fileSize, NULL, 0);
+	TCHAR* text = new TCHAR[size+1];
+	MultiByteToWideChar(CP_ACP, NULL, buff, fileSize, text, size);
+	text[size] = '\0';
+	script->SetWindowTextW(text);
+	TRACE(text);
+	delete[] buff;
+	delete[] text;
+	file.Close();
+}
+
+
+void CCgxDlg::OnCbnSetfocusScriptList()
+{
+	CFileFind find;
+	BOOL isWorking = find.FindFile(TEXT("script/*.txt"));
+	CComboBox* scriptList = (CComboBox *)GetDlgItem(IDC_SCRIPT_LIST);
+	scriptList->ResetContent();
+	while(isWorking)
+	{
+		isWorking = find.FindNextFile();
+		scriptList->AddString(find.GetFileName());
 	}
 }

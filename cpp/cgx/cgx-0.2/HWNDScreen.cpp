@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "HWNDScreen.h"
 #include "System.h"
+#include "FindNum.h"
 
 #define DEVIATION 8
 #define AUTO_REFRESH_INTERNAL 1000
@@ -11,6 +12,7 @@ CHWNDScreen::CHWNDScreen(HWND hwnd)
 	pImageDC = NULL;
 	pImage = NULL;
 	this->isAutoRefresh = FALSE;
+	hScreenDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
 }
 
 
@@ -18,6 +20,7 @@ CHWNDScreen::~CHWNDScreen(void)
 {
 	if(pImageDC) delete pImageDC;
 	if(pImage) delete pImage;
+	DeleteDC(hScreenDC);
 }
 
 BOOL CHWNDScreen::screenshot( PTSTR pszFileName)
@@ -130,13 +133,17 @@ void CHWNDScreen::loadImage(PTSTR pszImagePath)
 // Locate image
 BOOL CHWNDScreen::locate(const CImage* pImageIn, RECT* rectOut)
 {
-	if(!pImageIn || !rectOut) return FALSE;
+	if(!pImageIn || !rectOut|| !isFocus()) return FALSE;
+	RECT rect;
 	int width = pImageIn->GetWidth();
 	int height = pImageIn->GetHeight();
 	memset(rectOut, 0, sizeof(RECT));
 	
-	for(INT x = rect.left; x < rect.right - width; ++x)
-		for(INT y = rect.top; y < rect.bottom - height; ++y)
+	GetWindowRect(hwnd, &rect);
+	rect.top += 28;
+	//TRACE("Screen locating...\n");
+	for(INT y = rect.top; y < rect.bottom - height; ++y)
+		for(INT x = rect.left; x < rect.right - width; ++x)
 		{
 			rectOut->left = x;
 			rectOut->top = y;
@@ -156,23 +163,21 @@ BOOL CHWNDScreen::locate(const CImage* pImageIn, RECT* rectOut)
 // Is image match in location
 BOOL CHWNDScreen::match(const CImage* pImageIn, const RECT* rectIn)
 {
+	if(!isFocus())
+		return FALSE;
 	BOOL flag = TRUE;
 	COLORREF rgb1;
 	COLORREF rgb2;
-	if(!pImage || !pImageIn) return FALSE;
-	mutex.Lock();
-	
-	for(LONG x = rectIn->left; x < rectIn->right; ++x)
+	CImage pImage;
+	toCImage(rectIn, &pImage);
+	//TRACE("Screen do matching...\n");
+	for(LONG x = 0; x < pImage.GetWidth(); ++x)
 	{
-		for(LONG y = rectIn->top; y < rectIn->bottom; ++y)
+		for(LONG y = 0; y < pImage.GetHeight(); ++y)
 		{
-			if(x > pImage->GetWidth() || y > pImage->GetHeight())
-			{
-				flag = FALSE;
-				break;
-			}
-			rgb1 = pImageIn->GetPixel(x-rectIn->left, y-rectIn->top);
-			rgb2 = pImage->GetPixel(x, y);
+			
+			rgb1 = pImageIn->GetPixel(x, y);
+			rgb2 = pImage.GetPixel(x, y);
 			if(abs(GetRValue(rgb1) - GetRValue(rgb2)) > 10
 				|| abs(GetGValue(rgb1) - GetGValue(rgb2)) > 10
 				|| abs(GetBValue(rgb1) - GetBValue(rgb2)) > 10)
@@ -180,13 +185,12 @@ BOOL CHWNDScreen::match(const CImage* pImageIn, const RECT* rectIn)
 				flag = FALSE;
 				break;
 			}
-			//TRACE("(%d, %d, %d) == (%d, %d, %d)\n", GetRValue(rgb1), 
-			//	GetGValue(rgb1), GetBValue(rgb1), GetRValue(rgb2), GetGValue(rgb2), GetBValue(rgb2));
+			//TRACE("[%d,%d] (%d, %d, %d) == (%d, %d, %d)\n", x, y, GetRValue(rgb1), 
+				//GetGValue(rgb1), GetBValue(rgb1), GetRValue(rgb2), GetGValue(rgb2), GetBValue(rgb2));
 		}
 		if(!flag)
 			break;
 	}
-	mutex.Unlock();
 	return flag;
 }
 
@@ -226,19 +230,20 @@ void CHWNDScreen::print(void)
 {
 	if(!pImage) return;
 	TRACE("print rect: %p (left: %d, right: %d, top: %d, bottom: %d)\n", rect, rect.left, rect.right, rect.top, rect.bottom);
-	AfxBeginThread(screenPrintThread, this);
+	AfxBeginThread(screenPrintThread, pImage);
 }
+
 
 
 UINT CHWNDScreen::screenPrintThread(LPVOID lpVoid)
 {
-	CHWNDScreen* pScreen = (CHWNDScreen*)lpVoid;
+	CImage* pImg = (CImage*)lpVoid;
 	COLORREF rgb;
 	HDC hScreenDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
-	for(LONG x = pScreen->rect.left; x < pScreen->rect.right; ++x)
-		for(LONG y = pScreen->rect.top; y < pScreen->rect.bottom; ++y)
+	for(LONG x =0; x < pImg->GetWidth(); ++x)
+		for(LONG y = 0; y < pImg->GetHeight(); ++y)
 		{
-			rgb = pScreen->pImage->GetPixel(x-pScreen->rect.left, y-pScreen->rect.top);
+			rgb = pImg->GetPixel(x, y);
 			SetPixel(hScreenDC, x, y, rgb);
 		}
 
@@ -252,7 +257,7 @@ void CHWNDScreen::refresh(void)
 	if(GetForegroundWindow() == hwnd)
 	{
 		mutex.Lock();
-		HDC hScreenDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
+	
 		CSystem::lockScreen(TRUE);
 		//GetCursorPos(&oldPoint);
 		//SetCursorPos(0, 0);
@@ -269,7 +274,6 @@ void CHWNDScreen::refresh(void)
 		//SetCursorPos(oldPoint.x, oldPoint.y);
 		CSystem::lockScreen(FALSE);
 		mutex.Unlock();
-		DeleteDC(hScreenDC);
 	}
 }
 
@@ -300,4 +304,36 @@ void CHWNDScreen::startAutoRefresh(void)
 void CHWNDScreen::stopAutoRefresh(void)
 {
 	isAutoRefresh = FALSE;
+}
+
+
+
+
+int CHWNDScreen::toNumber(const RECT* pRECT)
+{
+	CImage pImg;
+	toCImage(pRECT, &pImg);
+	//TRACE("P Image width: %d, height: %d\n", pImg.GetWidth(), pImg.GetHeight());
+	pImg.Save(TEXT("img\\map_tmp.bmp"));
+	CFindNum finder(&pImg);
+	return finder.allNum();
+}
+
+
+void CHWNDScreen::toCImage(const RECT* rectIn, CImage* pImageOut)
+{
+	CSystem::lockScreen(TRUE);
+	LONG width = rectIn->right - rectIn->left;
+	LONG height = rectIn->bottom - rectIn->top;
+	pImageOut->Create(width, height, 24);
+	CImageDC pImgDC(*pImageOut);
+	BitBlt(pImgDC, 0, 0, width, height, hScreenDC, rectIn->left, rectIn->top, SRCCOPY);
+	CSystem::lockScreen(FALSE);
+	
+}
+
+
+BOOL CHWNDScreen::isFocus(void)
+{
+	return GetForegroundWindow() == hwnd;
 }

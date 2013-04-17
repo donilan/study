@@ -7,7 +7,8 @@
 CGameAI::CGameAI( CGame* game)
 {
 	this->leader = game;
-	isAutoFighting = FALSE;
+	isAIStart = FALSE;
+
 }
 
 CGameAI::~CGameAI()
@@ -25,42 +26,42 @@ HWND CGameAI::getHWND(void)
 	return this->leader->getHWND();
 }
 
-UINT CGameAI::gameAIAutoFightThread(LPVOID lpVoid)
+UINT CGameAI::gameAIThread(LPVOID lpVoid)
 {
 	CGameAI *ai = (CGameAI *) lpVoid;
 	CGame* leader = ai->getLeader();
+	int command;
+	int nextX = 0;
+	int nextY = 0;
 	//leader->getScreen()->startAutoRefresh();
-	while(ai->isAutoFighting)
+	while(ai->isAIStart)
 	{
-		
-		if(leader->playerCommandWindow->isExists())
+		if(leader->mapWindow->isExists())
 		{
-			ai->playerFight();
-			Sleep(FIGHT_INTERVAL);
-			ai->petFight();
-		}
-		if(leader->petCommandWindow->isExists())
-		{
-			ai->petFight();
+			if(nextX == 0) {
+				ai->script.nextStep(&command, &nextX, &nextY);
+			}
+
+			TRACE("%d, %d  ==   %d,%d\n", nextX, nextY, leader->mapWindow->getX(), leader->mapWindow->getY());
 		}
 		Sleep(500);
 	}
 	return 0;
 }
 
-void CGameAI::startAutoFight(void)
+void CGameAI::startAI(void)
 {
-	TRACE("Start auto fight.\n");
-	if(isAutoFighting) return;
-	isAutoFighting = TRUE;
-	AfxBeginThread(gameAIAutoFightThread, this);
+	TRACE("Start AI.\n");
+	if(isAIStart) return;
+	isAIStart = TRUE;
+	AfxBeginThread(gameAIThread, this);
 }
 
 
-void CGameAI::stopAutoFight(void)
+void CGameAI::stopAI(void)
 {
-	TRACE("Stop auto fight.\n");
-	isAutoFighting = FALSE;
+	TRACE("Stop AI.\n");
+	isAIStart = FALSE;
 }
 
 

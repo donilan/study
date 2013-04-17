@@ -5,6 +5,7 @@
 #include "CgxPetCommandWindow.h"
 #include "CgxSkillWindow.h"
 #include "CgxTopRightWindow.h"
+#include "CgxMapWindow.h"
 
 class CGame
 {
@@ -29,6 +30,7 @@ public:
 	CCgxSkillWindow* playerSkillLevelWindow;
 	CCgxSkillWindow* petSkillWindow;
 	CCgxTopRightWindow* topRightWindow;
+	CCgxMapWindow* mapWindow;
 
 private:
 	HWND hwnd;

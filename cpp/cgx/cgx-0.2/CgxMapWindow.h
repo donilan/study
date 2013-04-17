@@ -11,5 +11,7 @@ public:
 
 	RECT xRECT;
 	RECT yRECT;
+	int getX(void);
+	int getY(void);
 };
 

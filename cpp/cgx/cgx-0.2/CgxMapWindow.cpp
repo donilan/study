@@ -26,3 +26,16 @@ void CCgxMapWindow::locateCommands(void)
 	yRECT.left = rect.left+84;
 	yRECT.right = yRECT.left + 24;
 }
+
+
+
+int CCgxMapWindow::getX(void)
+{
+	return pScreen->toNumber(&xRECT);
+}
+
+
+int CCgxMapWindow::getY(void)
+{
+	return pScreen->toNumber(&yRECT);
+}
