@@ -25,5 +25,6 @@ public:
 	BOOL getCommand(int index, RECT* rectOut);
 	void leftClick(int index);
 	int getCommandSize(void);
+	void centerXY(int* centerX, int* centerY);
 };
 

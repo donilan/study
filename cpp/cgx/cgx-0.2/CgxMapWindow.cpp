@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "CgxMapWindow.h"
 #include "resource.h"
+#include "System.h"
 
 CCgxMapWindow::CCgxMapWindow(CHWNDScreen* pScreen)
 	: CCgxWindow(IDB_MAP, pScreen)
@@ -38,4 +39,37 @@ int CCgxMapWindow::getX(void)
 int CCgxMapWindow::getY(void)
 {
 	return pScreen->toNumber(&yRECT);
+}
+
+
+void CCgxMapWindow::goEast(int step)
+{
+	go(1, -1, step);
+}
+
+
+void CCgxMapWindow::goSouth(int step)
+{
+	go(1, 1, step);
+}
+
+
+void CCgxMapWindow::goWest(int step)
+{
+	go(-1, 1, step);
+}
+
+
+void CCgxMapWindow::goNorth(int step)
+{
+	go(-1, -1, step);
+}
+
+
+void CCgxMapWindow::go(const int flagX, const int flagY, const int step)
+{
+	int centerX = 0;
+	int centerY = 0;
+	centerXY(&centerX, &centerY);
+	CSystem::leftClick(centerX + flagX * step * 38, centerY + flagY * step * 28);
 }

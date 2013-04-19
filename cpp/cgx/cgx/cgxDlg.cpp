@@ -29,6 +29,9 @@ public:
 // й╣ож
 protected:
 	DECLARE_MESSAGE_MAP()
+//	void _init(void);
+public:
+//	BOOL parseCommand(void);
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
@@ -181,3 +184,13 @@ void CcgxDlg::OnBnClickedSpeedUpWalk()
 {
 	
 }
+
+
+//void CAboutDlg::_init(void)
+//{
+//}
+
+
+//BOOL CAboutDlg::parseCommand(void)
+//{
+//}

@@ -26,10 +26,11 @@ public:
 	void print(void);
 
 	CMutex mutex;
+	HWND hwnd;
 private:
 	static UINT screenPrintThread(LPVOID lpVoid);
 	static UINT flashRECTThread(LPVOID);
-	HWND hwnd;
+	
 	CImageDC* pImageDC;
 	HDC hScreenDC;
 public:

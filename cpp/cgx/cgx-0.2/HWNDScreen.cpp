@@ -307,8 +307,6 @@ void CHWNDScreen::stopAutoRefresh(void)
 }
 
 
-
-
 int CHWNDScreen::toNumber(const RECT* pRECT)
 {
 	CImage pImg;

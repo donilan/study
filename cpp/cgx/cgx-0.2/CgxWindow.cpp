@@ -110,3 +110,12 @@ int CCgxWindow::getCommandSize(void)
 	}
 	return count;
 }
+
+
+void CCgxWindow::centerXY(int* centerX, int* centerY)
+{
+	RECT rect;
+	GetWindowRect(pScreen->hwnd, &rect);
+	*centerX = rect.left + (rect.right - rect.left) / 2;
+	*centerY = rect.top + (rect.bottom - rect.top) / 2;
+}

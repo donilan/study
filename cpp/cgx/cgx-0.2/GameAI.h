@@ -1,9 +1,15 @@
 #pragma once
 
 #include "Game.h"
+#include "Script.h"
+
 #define MAX_GAMER 5
 #define SCRIPT_LENGTH 4098
-#include "Script.h"
+#define FIGHT_SKILL TEXT("战斗技能")
+#define NUMBER_OF_MONSTER_SKILL TEXT("%d个怪物技能")
+#define NUMBER_OF_MONSTER_SKILL_LV TEXT("%d个怪物技能等级")
+#define CONFIG_FILE TEXT(".\\config.ini")
+
 
 class CGameAI
 {
@@ -39,5 +45,6 @@ public:
 	CGame* getLeader(void);
 	void playerFight(void);
 	void petFight(void);
+	BOOL choiceSkill(const int monsterNumber, int* skillIndex, int* skillLv);
 };
 

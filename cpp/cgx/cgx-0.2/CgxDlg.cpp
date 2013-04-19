@@ -45,8 +45,7 @@ END_MESSAGE_MAP()
 BOOL CCgxDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
-	RegisterHotKey(this->m_hWnd, HOTKEY_F2, 0, VK_F2);
-	isTestDlgOpen = FALSE;
+	
 
 
 	// 设置此对话框的图标。当应用程序主窗口不是对话框时，框架将自动
@@ -57,8 +56,13 @@ BOOL CCgxDlg::OnInitDialog()
 	ShowWindow(SW_NORMAL);
 
 	// TODO: 在此添加额外的初始化代码
+#ifdef DEBUG
+	RegisterHotKey(this->m_hWnd, HOTKEY_F2, 0, VK_F2);
+	isTestDlgOpen = FALSE;
+#endif
+	
 	OnBnClickedRefresh();
-
+	_initConfigFile();
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -161,8 +165,8 @@ void CCgxDlg::OnBnClickedStart()
 			strLine.ReleaseBuffer(len);
 			arr.Add(strLine);
 		}
+		gameManager.games[index]->script.loadScript(arr.GetData()->GetBuffer(arr.GetSize()));
 		
-		gameManager.games[index]->script.loadScript(arr.GetData()->GetBuffer(arr.GetSize()), arr.GetSize());
 		
 		gameManager.games[index]->startAI();
 		startBtn->SetWindowTextW(TEXT("停止"));
@@ -217,5 +221,32 @@ void CCgxDlg::OnCbnSetfocusScriptList()
 	{
 		isWorking = find.FindNextFile();
 		scriptList->AddString(find.GetFileName());
+	}
+}
+
+void CCgxDlg::_initConfigFile(void)
+{
+	CString keySk;
+	CString valSk;
+	CString keyLv;
+	CString valLv;
+
+	CFileFind finder;
+	BOOL isExists = finder.FindFile(CONFIG_FILE);
+	
+	if(!isExists)
+	{
+		TRACE("Init config\n");
+		for(int i = 1; i < 11; ++i)
+		{
+			keySk.Format(NUMBER_OF_MONSTER_SKILL, i);
+			valSk.Format(TEXT("%d"), i == 1? 0: 1);
+			keyLv.Format(NUMBER_OF_MONSTER_SKILL_LV, i);
+			valLv.Format(TEXT("%d"), i < 3? 1: i-1);
+			WritePrivateProfileString(FIGHT_SKILL, keySk.GetBuffer(20),
+				valSk.GetBuffer(10), CONFIG_FILE);
+			WritePrivateProfileString(FIGHT_SKILL, keyLv.GetBuffer(20),
+				valLv.GetBuffer(10), CONFIG_FILE);
+		}
 	}
 }

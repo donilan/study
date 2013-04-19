@@ -114,9 +114,6 @@
     <ClInclude Include="Script.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ScriptStep.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CgxDlg.cpp">
@@ -174,9 +171,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Script.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptStep.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -39,7 +39,7 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 		if(leader->mapWindow->isExists())
 		{
 			if(nextX == 0) {
-				ai->script.nextStep(&command, &nextX, &nextY);
+				//ai->script.nextStep(&command, &nextX, &nextY);
 			}
 
 			TRACE("%d, %d  ==   %d,%d\n", nextX, nextY, leader->mapWindow->getX(), leader->mapWindow->getY());
@@ -85,4 +85,16 @@ void CGameAI::petFight(void)
 	leader->petSkillWindow->leftClick(0);
 	Sleep(FIGHT_INTERVAL);
 	leader->monster->hitOne();
+}
+
+
+BOOL CGameAI::choiceSkill(const int monsterNumber, int* skillIndex, int* skillLv)
+{
+	CString skillStr;
+	CString skillLvStr;
+	skillStr.Format(NUMBER_OF_MONSTER_SKILL, monsterNumber);
+	skillLvStr.Format(NUMBER_OF_MONSTER_SKILL_LV, monsterNumber);
+	*skillIndex = GetPrivateProfileInt(FIGHT_SKILL, skillStr.GetBuffer(20), 0, CONFIG_FILE);
+	*skillLv = GetPrivateProfileInt(FIGHT_SKILL, skillLvStr.GetBuffer(20), 10, CONFIG_FILE);
+	return TRUE;
 }

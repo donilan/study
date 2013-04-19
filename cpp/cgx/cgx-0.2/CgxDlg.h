@@ -49,4 +49,6 @@ public:
 	virtual void OnOK();
 	afx_msg void OnCbnSelchangeScriptList();
 	afx_msg void OnCbnSetfocusScriptList();
+protected:
+	void _initConfigFile(void);
 };
