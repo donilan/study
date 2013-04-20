@@ -66,10 +66,38 @@ void CCgxMapWindow::goNorth(int step)
 }
 
 
-void CCgxMapWindow::go(const int flagX, const int flagY, const int step)
+void CCgxMapWindow::go(const int flagX, const int flagY, int step)
 {
+	if(step < 1)
+		step = 0;
+	if(step > 2)
+		step = 2;
 	int centerX = 0;
 	int centerY = 0;
 	centerXY(&centerX, &centerY);
 	CSystem::leftClick(centerX + flagX * step * 38, centerY + flagY * step * 28);
+}
+
+
+
+int CCgxMapWindow::goNext(int nextX, int nextY)
+{
+	if(nextX > 0)
+	{
+		goEast(nextX);
+		return nextX;
+	} 
+	else if(nextX < 0)
+	{
+		goWest(abs(nextX));
+		return abs(nextX);
+	} else if(nextY > 0)
+	{
+		goSouth(nextY);
+		return nextY;
+	} else
+	{
+		goNorth(abs(nextY));
+		return abs(nextY);
+	}
 }

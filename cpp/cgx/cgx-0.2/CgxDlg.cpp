@@ -146,7 +146,6 @@ void CCgxDlg::OnBnClickedStart()
 	CButton* startBtn = (CButton *)GetDlgItem(IDC_START);
 	CEdit* script = (CEdit *)GetDlgItem(IDC_SCRIPT);
 	CString strLine;
-	CStringArray arr;
 
 	int index = gameList->GetCurSel();
 	if(gameManager.gameSize == 0 || index > gameManager.gameSize)
@@ -158,16 +157,8 @@ void CCgxDlg::OnBnClickedStart()
 	} 
 	else
 	{
-		for(int i = 0; i < script->GetLineCount(); ++i)
-		{
-			int len = script->LineLength(script->LineIndex(i));
-			script->GetLine(i, strLine.GetBuffer(len), len);
-			strLine.ReleaseBuffer(len);
-			arr.Add(strLine);
-		}
-		gameManager.games[index]->script.loadScript(arr.GetData()->GetBuffer(arr.GetSize()));
-		
-		
+		script->GetWindowTextW(strLine);
+		gameManager.games[index]->script.loadScript((LPCWSTR)strLine);
 		gameManager.games[index]->startAI();
 		startBtn->SetWindowTextW(TEXT("ֹͣ"));
 	}

@@ -131,17 +131,22 @@ void CHWNDScreen::loadImage(PTSTR pszImagePath)
 
 
 // Locate image
-BOOL CHWNDScreen::locate(const CImage* pImageIn, RECT* rectOut)
+BOOL CHWNDScreen::locate(const CImage* pImageIn, RECT* rectOut, RECT* condition)
 {
 	if(!pImageIn || !rectOut|| !isFocus()) return FALSE;
 	RECT rect;
 	int width = pImageIn->GetWidth();
 	int height = pImageIn->GetHeight();
 	memset(rectOut, 0, sizeof(RECT));
-	
-	GetWindowRect(hwnd, &rect);
-	rect.top += 28;
-	//TRACE("Screen locating...\n");
+	if(condition == NULL)
+	{
+		GetWindowRect(hwnd, &rect);
+		rect.top += 28;
+	}
+	else
+	{
+		memcpy(&rect, condition, sizeof(RECT));
+	}
 	for(INT y = rect.top; y < rect.bottom - height; ++y)
 		for(INT x = rect.left; x < rect.right - width; ++x)
 		{

@@ -16,7 +16,7 @@ public:
 
 	void loadImage(PTSTR pszImagePath);
 	// Locate image
-	BOOL locate(const CImage* pImage, RECT* rect);
+	BOOL locate(const CImage* pImage, RECT* rect, RECT* condition = NULL);
 	// Is image match in location
 	BOOL match(const CImage* pImage, const RECT* rect);
 	BOOL saveRECT(const RECT* rect, const PTSTR pszImagePath);

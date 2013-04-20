@@ -5,6 +5,7 @@ const TCHAR* _NUMBERS = TEXT("0123456789");
 const TCHAR* CN_HEAL = TEXT("治疗");
 const TCHAR* CN_CHANGE = TEXT("转图");
 const TCHAR* CN_TALK = TEXT("对话");
+const TCHAR* CN_AGAIN = TEXT("重来");
 
 CScript::CScript()
 {
@@ -49,7 +50,7 @@ int CScript::readNextLine()
 	memset(nextLine, 0, sizeof(TCHAR)*LINE_LENGTH);
 	TCHAR ch = 0;
 	int i = 0;
-	while((ch = script[pos++])!= '\n' && pos < scriptSize)
+	while((ch = script[pos++])!= '\n' && pos <= scriptSize)
 	{
 		nextLine[i++] = ch;
 	}
@@ -102,6 +103,15 @@ BOOL CScript::parseCommand(void)
 		//没有找到中文命令
 		if(parseChineseCommand(tmp, &command))
 		{
+			if(command == CHANGE_MAP)
+			{
+				//第一个是走路坐标，第二个是转图后坐标
+				if(split(nextLine, &cmdIdx, tmp))
+				{
+					parseCoordinate(tmp, &x, &y);
+				}
+			}
+
 			//如果是对话或者治疗
 			if(command == TALK || command == HEAL || command == CHANGE_MAP)
 			{
@@ -111,6 +121,7 @@ BOOL CScript::parseCommand(void)
 					return parseCoordinate(tmp, &targetX, &targetY);
 				}
 			}
+			return TRUE;
 		}
 	}
 
@@ -161,7 +172,11 @@ BOOL CScript::parseChineseCommand(const TCHAR* pChar, COMMANDS* commandOut)
 	else if(_tcsncmp(pChar, CN_TALK, wcslen(CN_TALK)) == 0)
 	{
 		*commandOut = TALK;
-	} 
+	}
+	else if(_tcsncmp(pChar, CN_AGAIN, wcslen(CN_AGAIN)) == 0)
+	{
+		*commandOut = AGAIN;
+	}
 	else 
 	{
 		*commandOut = UNKNOW;

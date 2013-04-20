@@ -6,7 +6,7 @@ class CScript
 {
 public:
 	enum COMMANDS {
-		UNKNOW, WALK, HEAL, TALK, CHANGE_MAP
+		UNKNOW, WALK, HEAL, TALK, CHANGE_MAP, AGAIN
 	};
 	CScript();
 	CScript(TCHAR*);

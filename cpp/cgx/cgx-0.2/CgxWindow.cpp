@@ -24,15 +24,24 @@ BOOL CCgxWindow::locate(void)
 	TRACE("Locating window...\n");
 	RECT newRECT;
 	BOOL found;
-	
+	RECT condition;
+
 	if(pScreen)
 	{
-		found = pScreen->locate(pLocateImage, &newRECT);
+		getLocateRECT(&condition);
+		found = pScreen->locate(pLocateImage, &newRECT, &condition);
 		if(found)
 		{
 			TRACE("Found window position and found a new RECT.\n");
 			memcpy(&rect, &newRECT, sizeof(RECT));
 			locateCommands();
+#ifdef DEBUG
+			for(int i = 0; i < MAX_COMMAND; ++i)
+			{
+				TRACE("[i] left: %d, right: %d, top: %d, height: %d\n", 
+					commandRECTs[i].left, commandRECTs[i].right, commandRECTs[i].top, commandRECTs[i].bottom);
+			}
+#endif
 			return TRUE;
 		}
 		return FALSE;
@@ -50,7 +59,7 @@ BOOL CCgxWindow::isExists(void)
 		TRACE("Check is window (%d, %d) exist: %d\n", rect.left, rect.top, result);
 	} else {
 		//pScreen->refresh();
-		locate();
+		result = locate();
 	}
 	return result;
 }
@@ -73,10 +82,12 @@ void CCgxWindow::leftClick(int index)
 	RECT rect;
 	int x = 0;
 	int y = 0;
-	if(isCommandEnable(index)) return;
+	BOOL isCommandEabled = isCommandEnable(index);
+	TRACE("Is this command enabled: %d\n", isCommandEabled);
+	if(isCommandEabled) return;
 	getCommand(index, &rect);
 	
-	if(rect.right> 0 && rect.bottom>0)
+	if(rect.right > 0 && rect.bottom > 0)
 	{
 		x = (rect.right - rect.left) / 2 + rect.left;
 		y = (rect.bottom - rect.top) / 2 + rect.top;
@@ -87,7 +98,7 @@ void CCgxWindow::leftClick(int index)
 			return;
 		}
 	}
-	TRACE("Error: Command rect not right, (%d, %d)", rect.left, rect.right);
+	TRACE("Error: Command [%d] rect not right, (%d, %d)", index, rect.left, rect.right);
 	
 }
 
@@ -98,10 +109,8 @@ int CCgxWindow::getCommandSize(void)
 	int count = 0;
 	for(int i = 0; i < MAX_COMMAND; ++i)
 	{
-		if( commandRECTs[i].left < pScreen->rect.left 
-			|| commandRECTs[i].right > pScreen->rect.right 
-			|| commandRECTs[i].top < pScreen->rect.top
-			|| commandRECTs[i].bottom > pScreen->rect.bottom
+		if(	commandRECTs[i].right < 1
+			|| commandRECTs[i].bottom < 1
 			|| commandRECTs[i].left == commandRECTs[i].right
 			|| commandRECTs[i].top == commandRECTs[i].bottom
 			)
@@ -118,4 +127,15 @@ void CCgxWindow::centerXY(int* centerX, int* centerY)
 	GetWindowRect(pScreen->hwnd, &rect);
 	*centerX = rect.left + (rect.right - rect.left) / 2;
 	*centerY = rect.top + (rect.bottom - rect.top) / 2;
+}
+
+
+
+
+void CCgxWindow::getLocateRECT(RECT* rectOut)
+{
+	rectOut->left = 346;
+	rectOut->top = 30;
+	rectOut->right = 620;
+	rectOut->bottom = 234;
 }

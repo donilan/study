@@ -2,6 +2,7 @@
 #include "GameAI.h"
 
 #define FIGHT_INTERVAL 400
+#define HIT_INTERNAL 200
 
 
 CGameAI::CGameAI( CGame* game)
@@ -30,21 +31,93 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 {
 	CGameAI *ai = (CGameAI *) lpVoid;
 	CGame* leader = ai->getLeader();
-	int command;
+
+	int currX;
+	int currY;
 	int nextX = 0;
 	int nextY = 0;
 	//leader->getScreen()->startAutoRefresh();
+	ai->script.command = CScript::UNKNOW;
+	ai->script.resetPos();
 	while(ai->isAIStart)
 	{
+		if(!leader->getScreen()->isFocus())
+			continue;
+		Sleep(200);
 		if(leader->mapWindow->isExists())
 		{
-			if(nextX == 0) {
-				//ai->script.nextStep(&command, &nextX, &nextY);
+			
+			currX = leader->mapWindow->getX();
+			currY = leader->mapWindow->getY();
+			if(ai->script.command == CScript::UNKNOW) {
+				ai->script.nextStep();
 			}
-
-			TRACE("%d, %d  ==   %d,%d\n", nextX, nextY, leader->mapWindow->getX(), leader->mapWindow->getY());
-		}
-		Sleep(500);
+			switch(ai->script.command)
+			{
+			case CScript::CHANGE_MAP:
+				if(abs(ai->script.targetX -currX) < 5 && abs(ai->script.targetY - currY) < 5)
+				{
+					ai->script.nextStep();
+					break;
+				}
+			case CScript::WALK:
+				if(currX == ai->script.x && currY == ai->script.y)
+				{
+					ai->script.nextStep();
+					break;
+				}
+				nextX = ai->script.x - currX;
+				nextY = ai->script.y - currY;
+				
+				leader->mapWindow->goNext(nextX, nextY);
+				break;
+			case CScript::HEAL:
+				// TODO
+				break;
+			case CScript::AGAIN:
+				ai->script.resetPos();
+				ai->script.nextStep();
+				TRACE("===============  Again  ==================\n");
+				break;
+			case CScript::UNKNOW:
+				Sleep(500);
+				break;
+			} // end switch
+			TRACE("command: %d, current (%d,%d), next: (%d,%d), target: (%d, %d)\n",
+				ai->script.command, currX, currY, 
+				ai->script.x, ai->script.y, ai->script.targetX, ai->script.targetY);
+		}// Travel
+		else if(leader->playerCommandWindow->isExists())
+		{
+			int monsterNum = leader->monster->countAlive();
+			if(monsterNum < 2)
+			{
+				leader->playerCommandWindow->clickHitCommand();
+				Sleep(HIT_INTERNAL);
+				leader->monster->hitOne();
+				Sleep(HIT_INTERNAL);
+				leader->monster->hitOne();
+			} else {
+				TRACE("Hit skill command!\n");
+				leader->playerCommandWindow->clickSkillCommand();
+				Sleep(HIT_INTERNAL);
+				while(!leader->playerCommandWindow->isExists())
+				{
+					Sleep(HIT_INTERNAL);
+				}
+				leader->playerSkillWindow->leftClick(1);
+				while(!leader->playerSkillLevelWindow->isExists())
+				{
+					Sleep(HIT_INTERNAL);
+				}
+				leader->playerSkillLevelWindow->leftClick(monsterNum-1);
+				Sleep(HIT_INTERNAL);
+				leader->monster->hitOne();
+				Sleep(HIT_INTERNAL);
+				leader->monster->hitOne();
+			}
+		}// fight
+		
 	}
 	return 0;
 }

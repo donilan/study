@@ -49,7 +49,7 @@ int CScript::readNextLine()
 	memset(nextLine, 0, sizeof(TCHAR)*LINE_LENGTH);
 	TCHAR ch = 0;
 	int i = 0;
-	while((ch = script[pos++])!= '\n' && pos < scriptSize)
+	while((ch = script[pos++])!= '\n' && pos <= scriptSize)
 	{
 		nextLine[i++] = ch;
 	}
@@ -102,6 +102,15 @@ BOOL CScript::parseCommand(void)
 		//没有找到中文命令
 		if(parseChineseCommand(tmp, &command))
 		{
+			if(command == CHANGE_MAP)
+			{
+				//第一个是走路坐标，第二个是转图后坐标
+				if(split(nextLine, &cmdIdx, tmp))
+				{
+					parseCoordinate(tmp, &x, &y);
+				}
+			}
+
 			//如果是对话或者治疗
 			if(command == TALK || command == HEAL || command == CHANGE_MAP)
 			{
