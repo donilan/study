@@ -85,3 +85,13 @@ void CCgxPlayerCommand::clickRunawayCommand(void)
 {
 	leftClick(6);
 }
+
+
+
+void CCgxPlayerCommand::getLocateRECT(RECT* rectOut)
+{
+	rectOut->left = 252;
+	rectOut->top = 31;
+	rectOut->right = 448;
+	rectOut->bottom = 46;
+}

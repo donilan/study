@@ -50,8 +50,10 @@ int CCgxMonster::countAlive(void)
 
 void CCgxMonster::hitOne(void)
 {
+	TRACE("Hit one..\n");
 	for(int i = NUMBER_OF_MONSTER-1; i >= 0; --i)
 	{
+		//TRACE("is %d alive? %d\n", i, isAlive(i));
 		if(isAlive(i))
 		{
 			CSystem::leftClick(&monsterRECTs[i]);

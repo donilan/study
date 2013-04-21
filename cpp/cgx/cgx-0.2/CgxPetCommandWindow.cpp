@@ -37,3 +37,11 @@ void CCgxPetCommandWindow::clickSkillCommand(void)
 {
 	leftClick(0);
 }
+
+void CCgxPetCommandWindow::getLocateRECT(RECT* rectOut)
+{
+	rectOut->left = 252;
+	rectOut->top = 31;
+	rectOut->right = 448;
+	rectOut->bottom = 46;
+}

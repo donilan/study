@@ -9,6 +9,7 @@
 #define HOTKEY_F3 3
 #define HOTKEY_F4 4
 #define HOTKEY_F5 5
+#define HOTKEY_F6 6
 #define MAX_GAME 10
 
 

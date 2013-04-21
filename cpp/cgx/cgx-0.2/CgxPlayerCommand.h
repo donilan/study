@@ -16,5 +16,6 @@ public:
 	void clickGoodsCommand(void);
 	void clickPositionCommand(void);
 	void clickRunawayCommand(void);
+	void getLocateRECT(RECT* rectOut);
 };
 

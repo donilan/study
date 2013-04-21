@@ -1,8 +1,11 @@
 #include "StdAfx.h"
 #include "GameAI.h"
+#include "System.h"
+#include "resource.h"
 
-#define FIGHT_INTERVAL 400
+#define FIGHT_INTERVAL 800
 #define HIT_INTERNAL 200
+#define TALK_INTERVAL 800
 
 
 CGameAI::CGameAI( CGame* game)
@@ -42,8 +45,11 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 	while(ai->isAIStart)
 	{
 		if(!leader->getScreen()->isFocus())
+		{
+			Sleep(500);
 			continue;
-		Sleep(200);
+		}
+		Sleep(500);
 		if(leader->mapWindow->isExists())
 		{
 			
@@ -72,7 +78,7 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 				leader->mapWindow->goNext(nextX, nextY);
 				break;
 			case CScript::HEAL:
-				// TODO
+				ai->doHeal();
 				break;
 			case CScript::AGAIN:
 				ai->script.resetPos();
@@ -89,35 +95,17 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 		}// Travel
 		else if(leader->playerCommandWindow->isExists())
 		{
-			int monsterNum = leader->monster->countAlive();
-			if(monsterNum < 2)
-			{
-				leader->playerCommandWindow->clickHitCommand();
-				Sleep(HIT_INTERNAL);
-				leader->monster->hitOne();
-				Sleep(HIT_INTERNAL);
-				leader->monster->hitOne();
-			} else {
-				TRACE("Hit skill command!\n");
-				leader->playerCommandWindow->clickSkillCommand();
-				Sleep(HIT_INTERNAL);
-				while(!leader->playerCommandWindow->isExists())
-				{
-					Sleep(HIT_INTERNAL);
-				}
-				leader->playerSkillWindow->leftClick(1);
-				while(!leader->playerSkillLevelWindow->isExists())
-				{
-					Sleep(HIT_INTERNAL);
-				}
-				leader->playerSkillLevelWindow->leftClick(monsterNum-1);
-				Sleep(HIT_INTERNAL);
-				leader->monster->hitOne();
-				Sleep(HIT_INTERNAL);
-				leader->monster->hitOne();
-			}
+			
+			ai->playerFight();
 		}// fight
-		
+		else if(leader->petCommandWindow->isExists())
+		{
+			ai->petFight();
+		}
+		else
+		{
+			Sleep(1000);
+		}
 	}
 	return 0;
 }
@@ -144,10 +132,37 @@ CGame* CGameAI::getLeader(void)
 }
 
 
-void CGameAI::playerFight(void)
+void CGameAI::playerFight()
 {
-	TRACE("Player fighting start...\n");
-	leader->playerCommandWindow->clickHitCommand();
+	int skill = -1;
+	int level = -1;
+	int numOfMonster = leader->monster->countAlive();
+	choiceSkill(numOfMonster, &skill, &level);
+	TRACE("Player fighting start skill index [%d] level [%d]...\n", skill, level);
+	if(skill == 0)
+	{
+		if(!leader->playerCommandWindow->isCommandEnable(0))
+			leader->playerCommandWindow->clickHitCommand();
+	}
+	else
+	{
+		if(!leader->playerCommandWindow->isCommandEnable(1))
+		{
+			leader->playerCommandWindow->clickSkillCommand();
+			Sleep(FIGHT_INTERVAL);
+		}
+		if(leader->playerSkillWindow->isExists())
+		{
+			
+			leader->playerSkillWindow->leftClick(skill-1);
+			Sleep(FIGHT_INTERVAL);
+		}
+		
+		if(leader->playerSkillLevelWindow->isExists())
+		{
+			leader->playerSkillLevelWindow->leftClick(level-1);
+		}
+	}
 	Sleep(FIGHT_INTERVAL);
 	leader->monster->hitOne();
 }
@@ -155,7 +170,6 @@ void CGameAI::playerFight(void)
 
 void CGameAI::petFight(void)
 {
-	leader->petSkillWindow->leftClick(0);
 	Sleep(FIGHT_INTERVAL);
 	leader->monster->hitOne();
 }
@@ -170,4 +184,72 @@ BOOL CGameAI::choiceSkill(const int monsterNumber, int* skillIndex, int* skillLv
 	*skillIndex = GetPrivateProfileInt(FIGHT_SKILL, skillStr.GetBuffer(20), 0, CONFIG_FILE);
 	*skillLv = GetPrivateProfileInt(FIGHT_SKILL, skillLvStr.GetBuffer(20), 10, CONFIG_FILE);
 	return TRUE;
+}
+
+void CGameAI::doHeal()
+{
+	rightClickTager(script.targetX, script.targetY);
+	Sleep(TALK_INTERVAL);
+	RECT rect = {309, 218, 323, 233};
+	RECT condition1 = {220, 340, 260, 356}; // yes
+	RECT condition2 = {290, 340, 255, 356}; // sure
+	if(leader->getScreen()->colorDeviation(&rect, RGB(255,255,255)> 5))
+	{
+		CSystem::leftClick(&rect);
+		Sleep(TALK_INTERVAL);
+	}
+	if(leader->getScreen()->locate(IDB_SURE, &rect, &condition1))
+	{
+		CSystem::leftClick(&rect);
+		Sleep(TALK_INTERVAL);
+	}
+	else if(leader->getScreen()->locate(IDB_SURE, &rect, &condition2))
+	{
+		CSystem::leftClick(&rect);
+		Sleep(TALK_INTERVAL);
+	}
+
+	rect.left = 325;
+	rect.top = 298;
+	rect.right = 340;
+	rect.bottom = 313;
+	if(leader->getScreen()->colorDeviation(&rect, RGB(255,255,255)> 5))
+	{
+		CSystem::leftClick(&rect);
+		Sleep(TALK_INTERVAL);
+	}
+
+	if(leader->getScreen()->locate(IDB_SURE, &rect, &condition1))
+	{
+		CSystem::leftClick(&rect);
+		Sleep(TALK_INTERVAL);
+	}
+	if(leader->getScreen()->locate(IDB_SURE, &rect, &condition2))
+	{
+		CSystem::leftClick(&rect);
+		Sleep(TALK_INTERVAL);
+	}
+}
+
+void CGameAI::rightClickTager(int x, int y){
+	int centerX = 0, centerY = 0;
+	int tmpX = leader->mapWindow->getX() - x;
+	int tmpY = leader->mapWindow->getY() - y;
+	leader->mapWindow->centerXY(&centerX, &centerY);
+	if(tmpX > 0)
+	{
+		CSystem::rightClick(centerX -38, centerY + 28);
+	} 
+	else if(tmpX < 0)
+	{
+		CSystem::rightClick(centerX + 38, centerY - 28);
+	}
+	else if(tmpY > 0)
+	{
+		CSystem::rightClick(centerX - 38, centerY - 28);
+	}
+	else if(tmpX < 0)
+	{
+		CSystem::rightClick(centerX + 38, centerY + 28);
+	}
 }

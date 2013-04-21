@@ -11,5 +11,6 @@ public:
 	void locateCommands(void);
 	BOOL isCommandEnable(int);
 	void clickSkillCommand(void);
+	void getLocateRECT(RECT* rectOut);
 };
 

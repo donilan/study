@@ -49,6 +49,15 @@
     <None Include="image\window\map.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="image\window\yes.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\sure.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\no.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CgxDlg.h">

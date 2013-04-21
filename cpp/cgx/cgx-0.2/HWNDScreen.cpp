@@ -37,14 +37,15 @@ INT CHWNDScreen::colorDeviation( RECT* rect, COLORREF rgb)
 
 	INT count = 0;
 	INT rate = -1;
-	mutex.Lock();
-	if(!pImage) return rate;
-	INT pixSize = (rect->right-rect->left) * (rect->bottom - rect->top);
 	
-	for(x = rect->left; x < rect->right; ++x)
-		for(y = rect->top; y < rect->bottom; ++y)
+	CImage img;
+	toCImage(rect, &img);
+	INT pixSize = img.GetHeight()*img.GetWidth();
+	
+	for(x = 0; x < img.GetWidth(); ++x)
+		for(y = 0; y < img.GetHeight(); ++y)
 		{
-			COLORREF color = pImage->GetPixel(x, y);
+			COLORREF color = img.GetPixel(x, y);
 			if(abs(GetRValue(rgb) - GetRValue(color)) < DEVIATION
 				&& abs(GetGValue(rgb) - GetGValue(color)) < DEVIATION
 				&& abs(GetBValue(rgb) - GetBValue(color)) < DEVIATION)
@@ -53,7 +54,7 @@ INT CHWNDScreen::colorDeviation( RECT* rect, COLORREF rgb)
 			}
 
 		}
-	mutex.Unlock();
+	
 	rate = (100 * count) / pixSize;
 	TRACE("Size: %d found: %d RGB(%d,%d,%d) rate: %d%%\n"
 		, pixSize, count, (INT)GetRValue(rgb), (INT)GetGValue(rgb)
@@ -339,4 +340,12 @@ void CHWNDScreen::toCImage(const RECT* rectIn, CImage* pImageOut)
 BOOL CHWNDScreen::isFocus(void)
 {
 	return GetForegroundWindow() == hwnd;
+}
+
+
+BOOL CHWNDScreen::locate(const int resourceId, RECT* rectOut, RECT* condition)
+{
+	CImage img;
+	img.LoadFromResource(GetModuleHandle(NULL), resourceId);
+	return locate(&img, rectOut, condition);
 }

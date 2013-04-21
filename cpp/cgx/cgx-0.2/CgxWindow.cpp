@@ -79,17 +79,21 @@ BOOL CCgxWindow::getCommand(int index, RECT* rectOut)
 
 void CCgxWindow::leftClick(int index)
 {
+	static int randomNum = -10;
+	randomNum += 3;
+	if(randomNum > 10)
+		randomNum = -10;
 	RECT rect;
 	int x = 0;
 	int y = 0;
-	BOOL isCommandEabled = isCommandEnable(index);
-	TRACE("Is this command enabled: %d\n", isCommandEabled);
-	if(isCommandEabled) return;
+	//BOOL isCommandEabled = isCommandEnable(index);
+	//TRACE("Is this command enabled: %d\n", isCommandEabled);
+	//if(isCommandEabled) return;
 	getCommand(index, &rect);
 	
 	if(rect.right > 0 && rect.bottom > 0)
 	{
-		x = (rect.right - rect.left) / 2 + rect.left;
+		x = (rect.right - rect.left) / 2 + rect.left + randomNum;
 		y = (rect.bottom - rect.top) / 2 + rect.top;
 		TRACE("Doing left click index: %d (%d, %d)\n", index, x, y);
 		if(x > 0 && y > 0) 
@@ -98,7 +102,7 @@ void CCgxWindow::leftClick(int index)
 			return;
 		}
 	}
-	TRACE("Error: Command [%d] rect not right, (%d, %d)", index, rect.left, rect.right);
+	TRACE("Error: Command [%d] rect not right, (%d, %d)\n", index, rect.left, rect.right);
 	
 }
 

@@ -38,13 +38,17 @@ private:
 	CGame* leader;
 
 	static UINT gameAIThread(LPVOID);
+	inline void rightClickTager(int x, int y);
 public:
 	HWND getHWND(void);
 	void startAI(void);
 	void stopAI(void);
 	CGame* getLeader(void);
-	void playerFight(void);
+	void playerFight();
 	void petFight(void);
 	BOOL choiceSkill(const int monsterNumber, int* skillIndex, int* skillLv);
+	void doHeal();
+
+	
 };
 

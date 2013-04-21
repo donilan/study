@@ -42,5 +42,6 @@ public:
 	int toNumber(const RECT* pRECT);
 	void toCImage(const RECT* rectIn, CImage* pImageOut);
 	BOOL isFocus(void);
+	BOOL locate(const int resourceId, RECT* rectOut, RECT* condition);
 };
 

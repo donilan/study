@@ -60,7 +60,8 @@ BOOL CCgxDlg::OnInitDialog()
 	RegisterHotKey(this->m_hWnd, HOTKEY_F2, 0, VK_F2);
 	isTestDlgOpen = FALSE;
 #endif
-	
+	RegisterHotKey(this->m_hWnd, HOTKEY_F5, 0, VK_F5);
+	RegisterHotKey(this->m_hWnd, HOTKEY_F6, 0, VK_F6);
 	OnBnClickedRefresh();
 	_initConfigFile();
 
@@ -107,7 +108,8 @@ HCURSOR CCgxDlg::OnQueryDragIcon()
 
 void CCgxDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 {
-
+	CComboBox* gameList = (CComboBox*)GetDlgItem(IDC_GAME_LIST);
+	int index = gameList->GetCurSel();
 	switch(nHotKeyId)
 	{
 	case HOTKEY_F2:
@@ -117,6 +119,12 @@ void CCgxDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 			systemTestDlg.DoModal();
 			isTestDlgOpen = FALSE;
 		}
+		break;
+	case HOTKEY_F5:
+		OnBnClickedStart();
+		break;
+	case HOTKEY_F6:
+		gameManager.games[index]->stopAI();
 		break;
 	}
 	CDialogEx::OnHotKey(nHotKeyId, nKey1, nKey2);

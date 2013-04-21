@@ -96,12 +96,15 @@
   <ItemGroup>
     <None Include="image\window\goods.bmp" />
     <None Include="image\window\map.bmp" />
+    <None Include="image\window\no.bmp" />
     <None Include="image\window\player_command.bmp" />
     <None Include="image\window\player_skill.bmp" />
     <None Include="image\window\pet_command.bmp" />
     <None Include="image\window\pet_skill_window.bmp" />
     <None Include="image\window\right_top_buttons.bmp" />
     <None Include="image\window\skill_level.bmp" />
+    <None Include="image\window\sure.bmp" />
+    <None Include="image\window\yes.bmp" />
     <None Include="ReadMe.txt" />
     <None Include="res\bitmap1.bmp" />
     <None Include="res\cgx-0.2.ico" />
