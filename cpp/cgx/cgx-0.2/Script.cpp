@@ -6,6 +6,13 @@ const TCHAR* CN_HEAL = TEXT("治疗");
 const TCHAR* CN_CHANGE = TEXT("转图");
 const TCHAR* CN_TALK = TEXT("对话");
 const TCHAR* CN_AGAIN = TEXT("重来");
+const TCHAR* CN_FIND_ENEMY = TEXT("遇敌");
+const TCHAR* CN_LOGOUT = TEXT("登出");
+const TCHAR* CN_MAZE = TEXT("迷宫");
+const TCHAR* CN_YES = TEXT("是");
+const TCHAR* CN_NO = TEXT("否");
+const TCHAR* CN_SURE = TEXT("确定");
+const TCHAR* CN_CANCEL = TEXT("取消");
 
 CScript::CScript()
 {
@@ -70,6 +77,7 @@ void CScript::_init(void)
 	targetX = 0;
 	targetY = 0;
 	command = UNKNOW;
+	lastCommand = UNKNOW;
 }
 
 
@@ -177,6 +185,18 @@ BOOL CScript::parseChineseCommand(const TCHAR* pChar, COMMANDS* commandOut)
 	{
 		*commandOut = AGAIN;
 	}
+	else if(_tcsncmp(pChar, CN_FIND_ENEMY, wcslen(CN_FIND_ENEMY)) == 0)
+	{
+		*commandOut = FIND_ENEMY;
+	}
+	else if(_tcsncmp(pChar, CN_LOGOUT, wcslen(CN_LOGOUT)) == 0)
+	{
+		*commandOut = LOGOUT;
+	}
+	else if(_tcsncmp(pChar, CN_MAZE, wcslen(CN_MAZE)) == 0)
+	{
+		*commandOut = MAZE;
+	}
 	else 
 	{
 		*commandOut = UNKNOW;
@@ -211,6 +231,7 @@ BOOL CScript::split(const TCHAR* org, UINT* idx, TCHAR* out)
 
 void CScript::resetCommand(void)
 {
+	lastCommand = command;
 	lastX = x;
 	lastY = y;
 	x = 0;

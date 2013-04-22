@@ -19,7 +19,6 @@ BOOL CSystem::lockScreen(BOOL lock)
 BOOL CSystem::leftClick(int x, int y)
 {
 	POINT* point = (POINT*)malloc(sizeof(POINT));
-	POINT oldPoint;
 	point->x = x;
 	point->y = y;
 	AfxBeginThread(CSystem::LeftClickThread, point);
@@ -39,8 +38,8 @@ UINT CSystem::LeftClickThread( LPVOID lPvoid)
 	Sleep(50);
 	mouse_event(MOUSEEVENTF_LEFTUP, p->x, p->y, 0, 0);
 	Sleep(50);
-	SetCursorPos(30, 400);
-	Sleep(50);
+	//SetCursorPos(30, 400);
+	//Sleep(50);
 	SetCursorPos(oldPoint.x, oldPoint.y);
 	CSystem::lockScreen(FALSE);
 	delete p;
@@ -68,7 +67,6 @@ int CSystem::ansi2unicode(char* in, size_t inSize, TCHAR* out, size_t outSize)
 void CSystem::rightClick(int x, int y)
 {
 	POINT* point = (POINT*)malloc(sizeof(POINT));
-	POINT oldPoint;
 	point->x = x;
 	point->y = y;
 	AfxBeginThread(CSystem::rightClickThread, point);
@@ -93,4 +91,21 @@ UINT CSystem::rightClickThread( LPVOID lPvoid)
 	CSystem::lockScreen(FALSE);
 	delete p;
 	return 0;
+}
+
+
+
+void CSystem::leftPress(int x, int y)
+{
+	POINT p = {x, y};
+	POINT oldPoint = {0};
+	CSystem::lockScreen(TRUE);
+	GetCursorPos(&oldPoint);
+	if(p.x == 0 && p.y == 0)
+		memcpy(&p, &oldPoint, sizeof(POINT));
+	Sleep(100);
+	mouse_event(MOUSEEVENTF_LEFTDOWN, p.x, p.y, 0, 0);
+	Sleep(1000);
+	//SetCursorPos(oldPoint.x, oldPoint.y);
+	CSystem::lockScreen(FALSE);
 }

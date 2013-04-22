@@ -94,6 +94,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="image\window\cancel.bmp" />
     <None Include="image\window\goods.bmp" />
     <None Include="image\window\map.bmp" />
     <None Include="image\window\no.bmp" />

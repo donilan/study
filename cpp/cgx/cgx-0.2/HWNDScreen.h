@@ -12,11 +12,11 @@ public:
 
 	BOOL screenshot(PTSTR);
 	INT colorDeviation(RECT*, COLORREF);
-	static void flashRECT(RECT*);
+	static void flashRECT(const RECT*);
 
 	void loadImage(PTSTR pszImagePath);
 	// Locate image
-	BOOL locate(const CImage* pImage, RECT* rect, RECT* condition = NULL);
+	BOOL locate(const CImage* pImage, RECT* rect, const RECT* condition = NULL);
 	// Is image match in location
 	BOOL match(const CImage* pImage, const RECT* rect);
 	BOOL saveRECT(const RECT* rect, const PTSTR pszImagePath);
@@ -42,6 +42,6 @@ public:
 	int toNumber(const RECT* pRECT);
 	void toCImage(const RECT* rectIn, CImage* pImageOut);
 	BOOL isFocus(void);
-	BOOL locate(const int resourceId, RECT* rectOut, RECT* condition);
+	BOOL locate(const int resourceId, RECT* rectOut, const RECT* condition);
 };
 

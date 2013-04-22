@@ -92,3 +92,8 @@ BOOL CCgxApp::InitInstance()
 	return FALSE;
 }
 
+
+
+//void CCgxApp::leftClickCenter(void)
+//{
+//}

@@ -27,6 +27,7 @@ public:
 // й╣ож
 
 	DECLARE_MESSAGE_MAP()
+//	void leftClickCenter(void);
 };
 
 extern CCgxApp theApp;

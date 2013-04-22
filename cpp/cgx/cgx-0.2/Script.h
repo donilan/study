@@ -6,7 +6,8 @@ class CScript
 {
 public:
 	enum COMMANDS {
-		UNKNOW, WALK, HEAL, TALK, CHANGE_MAP, AGAIN
+		UNKNOW, WALK, HEAL, TALK, CHANGE_MAP, AGAIN, 
+		FIND_ENEMY, LOGOUT, MAZE
 	};
 	CScript();
 	CScript(TCHAR*);
@@ -20,6 +21,7 @@ public:
 	int y;
 	int targetX;
 	int targetY;
+	COMMANDS lastCommand;
 	COMMANDS command;
 private:
 	TCHAR* script;

@@ -48,7 +48,8 @@ public:
 	void petFight(void);
 	BOOL choiceSkill(const int monsterNumber, int* skillIndex, int* skillLv);
 	void doHeal();
+	void doTalk();
+	void doFindEnemy();
 
-	
 };
 

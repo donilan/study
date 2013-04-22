@@ -41,63 +41,72 @@ int CCgxMapWindow::getY(void)
 	return pScreen->toNumber(&yRECT);
 }
 
-
-void CCgxMapWindow::goEast(int step)
+int CCgxMapWindow::_calcNextPoint(const int nextX, const int nextY, PPOINT pPoint)
 {
-	go(1, -1, step);
-}
+	int walkStep = 0;
+	int flagX = 0;
+	int flagY = 0;
+	if(nextX > 0)
+	{
+		flagX = 1;
+		flagY = -1;
+		walkStep = nextX;
+	} 
+	else if(nextX < 0)
+	{
+		flagX = -1;
+		flagY = 1;
+		walkStep = abs(nextX);
+	} else if(nextY > 0)
+	{
+		flagX = 1;
+		flagY = 1;
+		walkStep = nextY;
+	} else
+	{
+		flagX = -1;
+		flagY = -1;
+		walkStep = abs(nextY);
+	}
 
+	
 
-void CCgxMapWindow::goSouth(int step)
-{
-	go(1, 1, step);
-}
-
-
-void CCgxMapWindow::goWest(int step)
-{
-	go(-1, 1, step);
-}
-
-
-void CCgxMapWindow::goNorth(int step)
-{
-	go(-1, -1, step);
-}
-
-
-void CCgxMapWindow::go(const int flagX, const int flagY, int step)
-{
-	if(step < 1)
-		step = 0;
-	if(step > 2)
-		step = 2;
+	if(walkStep < 0)
+		walkStep = 0;
+	if(walkStep > 6)
+		walkStep = 6;
 	int centerX = 0;
 	int centerY = 0;
 	centerXY(&centerX, &centerY);
-	CSystem::leftClick(centerX + flagX * step * 38, centerY + flagY * step * 28);
+	pPoint->x = centerX + flagX * walkStep * 32;
+	pPoint->y = centerY + flagY * walkStep * 25;
+	return walkStep;
 }
 
 
 
 int CCgxMapWindow::goNext(int nextX, int nextY)
 {
-	if(nextX > 0)
-	{
-		goEast(nextX);
-		return nextX;
-	} 
-	else if(nextX < 0)
-	{
-		goWest(abs(nextX));
-		return abs(nextX);
-	} else if(nextY > 0)
-	{
-		goSouth(nextY);
-		return nextY;
-	} else
-	{
-		goNorth(abs(nextY));
-		return abs(nextY);
-	}
+	POINT p = {0};
+	int walkStep = _calcNextPoint(nextX, nextY, &p);
+	CSystem::leftClick(p.x, p.y);
+	return walkStep;
+}
+
+
+void CCgxMapWindow::leftClickCenter(void)
+{
+	int x;
+	int y;
+	centerXY(&x, &y);
+	CSystem::leftClick(x, y);
+}
+
+
+int CCgxMapWindow::moveMouse(int nextX, int nextY)
+{
+	POINT p = {0};
+	int walkStep = _calcNextPoint(nextX, nextY, &p);
+	SetCursorPos(p.x, p.y);
+	return walkStep;
 }

@@ -64,7 +64,7 @@ INT CHWNDScreen::colorDeviation( RECT* rect, COLORREF rgb)
 	return rate;
 }
 
-void CHWNDScreen::flashRECT( RECT* rect)
+void CHWNDScreen::flashRECT(const RECT* rect)
 {
 	//TRACE("Flash rect: %p (left: %d, right: %d, top: %d, bottom: %d)\n", rect, rect->left, rect->right, rect->top, rect->bottom);
 	RECT* tmp = (RECT*)malloc(sizeof(RECT));
@@ -132,9 +132,8 @@ void CHWNDScreen::loadImage(PTSTR pszImagePath)
 
 
 // Locate image
-BOOL CHWNDScreen::locate(const CImage* pImageIn, RECT* rectOut, RECT* condition)
+BOOL CHWNDScreen::locate(const CImage* pImageIn, RECT* rectOut, const RECT* condition)
 {
-	if(!pImageIn || !rectOut|| !isFocus()) return FALSE;
 	RECT rect;
 	int width = pImageIn->GetWidth();
 	int height = pImageIn->GetHeight();
@@ -148,6 +147,7 @@ BOOL CHWNDScreen::locate(const CImage* pImageIn, RECT* rectOut, RECT* condition)
 	{
 		memcpy(&rect, condition, sizeof(RECT));
 	}
+	TRACE("locating image: left %d, right %d, top %d, bottom %d\n", rect.left, rect.right, rect.top, rect.bottom);
 	for(INT y = rect.top; y < rect.bottom - height; ++y)
 		for(INT x = rect.left; x < rect.right - width; ++x)
 		{
@@ -343,9 +343,10 @@ BOOL CHWNDScreen::isFocus(void)
 }
 
 
-BOOL CHWNDScreen::locate(const int resourceId, RECT* rectOut, RECT* condition)
+BOOL CHWNDScreen::locate(const int resourceId, RECT* rectOut,const RECT* condition)
 {
 	CImage img;
 	img.LoadFromResource(GetModuleHandle(NULL), resourceId);
+	TRACE("Locate for image: width: %d height: %d\n", img.GetWidth(), img.GetHeight());
 	return locate(&img, rectOut, condition);
 }

@@ -5,7 +5,7 @@ class CCgxMapWindow :
 	public CCgxWindow
 {
 private:
-	inline void go(const int flagX, const int flagY, int step);
+	inline int _calcNextPoint(const int nextX, const int nextY, PPOINT pPoint);
 public:
 	CCgxMapWindow(CHWNDScreen* );
 	~CCgxMapWindow(void);
@@ -15,11 +15,9 @@ public:
 	RECT yRECT;
 	int getX(void);
 	int getY(void);
-	void goEast(int step);
-	void goSouth(int step);
-	void goWest(int step);
-	void goNorth(int step);
 	
 	int goNext(int nextX, int nextY);
+	void leftClickCenter(void);
+	int moveMouse(int nextX, int nextY);
 };
 
