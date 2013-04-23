@@ -21,7 +21,7 @@ def reg(request):
     sess = _getSession()
     token = sess.obtain_request_token()
     url = sess.build_authorize_url(
-        token, 'http://%s/callback?key=%s&secret=%s' % 
+        token, 'https://%s/callback?key=%s&secret=%s' % 
         (request.get_host(), token.key, token.secret))
 
     return HttpResponseRedirect(url)
