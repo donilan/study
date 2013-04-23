@@ -25,3 +25,9 @@ install_manifest.txt
 .classpath
 .project
 .settings
+
+## .NET
+Debug
+*.sdf
+*.bmp
+ipch

@@ -1,0 +1,116 @@
+#pragma once
+
+#include <windows.h>
+#include <iostream>
+#include "Skill.h"
+#include "cgxData.h"
+#include "MonsterHoler.h"
+
+#define KV_1 49
+
+UINT AutoRefreshThread( LPVOID pParam );
+UINT AutoFightingThread( LPVOID pParam );
+UINT AutoSpeedUpWalkThread( LPVOID pParam );
+
+class CGame
+{
+public:
+	enum STATUS {GAME_STATUS_UNKNOW, 
+		GAME_STATUS_TRAVEL, 
+		GAME_STATUS_PLAYER_FIGHT, 
+		GAME_STATUS_MONSTER_FIGHT};
+	enum {FACE_SIT, FACE_HELLO};
+
+	CGame(HWND);
+	~CGame(void);
+
+	BOOL doFace(int);
+	BOOL doRandomFace();
+	BOOL sendKey(int);
+	BOOL sendKeyWithCtl(int);
+	BOOL leftClick(GAME_LOCATION*);
+	BOOL rightClick(GAME_LOCATION*);
+	BOOL say(const char*);
+	BOOL reSay();
+	BOOL focus();
+	BOOL isFocus();
+	BOOL getRect(RECT*);
+	BOOL refresh();
+	BOOL saveScreenshot2file(LPCTSTR);
+	BOOL hitMonster(int);
+	BOOL hitFitBtn(int);
+
+	BOOL choiceSkill(int);
+	int getCurrentSkillMaxLevel();
+	BOOL choiceSkillLevel(int);
+	
+	BOOL load4refresh(CString);
+	BOOL locateBMP(PTSTR, PGAME_LOCATION);
+	BOOL locateBMPFromResource(UINT, PGAME_LOCATION);
+	
+
+	// auto refresh
+	BOOL startAutoRefresh();
+	BOOL stopAutoRefresh();
+	BOOL isAutoRefresh();
+
+	// auto fighting
+	BOOL startAutoFighting();
+	BOOL stopAutoFighting();
+	BOOL isAutoFighting();
+
+	// auto speed up walk
+	BOOL startSpeedUpWalk();
+	BOOL stopSpeedUpWalk();
+	BOOL isSpeedUpWalk();
+
+	BOOL autoTakeScreenshot;
+	BOOL speedUpBySpeak;
+	CSkill skills[SKILL_LENGTH];
+	CMonsterHoler monsterHolder;
+
+	BOOL saveGameLocation(GAME_LOCATION*, PTSTR);
+
+	BOOL findMonster();
+	PGAME_LOCATION findSkillWindow();
+	BOOL isSkillInit();
+	BOOL saveSkillPhotos(PTSTR);
+	PGAME_LOCATION getLocation(int idx);
+	BOOL checkStatus();
+	void changeStatus(int);
+	int getStatus();
+
+	unsigned int interval4screenshot;
+	unsigned int interval4autoFighting;
+	unsigned int interval4speedUpWalk;
+	unsigned int interval4speedUpSpeak;
+
+	SKILL_CHOICER skillChoices;
+private:
+	HWND hwnd;
+	CImage* pImage;
+	HDC hScreenDC;
+	CImageDC* pImageDC;
+	BOOL autoRefresh;
+	BOOL autoFighting;
+	BOOL speedUpWalk;
+
+	int windowWidth;
+	int windowHeight;
+
+	int status;
+	
+	GAME_LOCATION skillWindow;
+	GAME_LOCATION skillLocations[SKILL_LENGTH];
+
+	int _searchRGB(PGAME_LOCATION l, COLORREF rgb, int deviation);
+	inline int _colorDeviation(PGAME_LOCATION l, COLORREF rgb);
+	BOOL _locateBMP(CImage*, PGAME_LOCATION);
+	BOOL _matchImage(CImage*, PGAME_LOCATION);
+	BOOL _initSkill(int idx, PGAME_LOCATION);
+	
+	GAME_LOCATION locations[MAX_LOCATION];
+
+	
+};
+

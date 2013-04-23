@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="res\cgx02.rc2">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\cgx-0.2.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bitmap1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\goods.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\pet_command.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\pet_skill_window.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\right_top_buttons.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\player_skill.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\player_command.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\skill_level.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\map.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\yes.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\sure.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\no.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\cancel.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CgxDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="cgx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="System.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemTestDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HWNDScreen.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CgxMonster.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CgxWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CgxSkillWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CgxGoodsWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CgxPetCommandWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CgxTopRightWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CgxPlayerCommand.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GameAI.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CgxMapWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FindNum.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Script.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CgxDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="cgx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="System.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemTestDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HWNDScreen.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxMonster.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxSkillWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxGoodsWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxPetCommandWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxTopRightWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxPlayerCommand.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GameAI.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxMapWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FindNum.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Script.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="cgx-0.2.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
