@@ -28,6 +28,7 @@ install_manifest.txt
 
 ## .NET
 Debug
+Release
 *.sdf
 *.bmp
 ipch

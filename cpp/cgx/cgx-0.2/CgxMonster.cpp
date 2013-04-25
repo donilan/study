@@ -51,6 +51,7 @@ int CCgxMonster::countAlive(void)
 void CCgxMonster::hitOne(void)
 {
 	TRACE("Hit one..\n");
+	
 	for(int i = NUMBER_OF_MONSTER-1; i >= 0; --i)
 	{
 		//TRACE("is %d alive? %d\n", i, isAlive(i));
@@ -62,6 +63,20 @@ void CCgxMonster::hitOne(void)
 	}
 }
 
+void CCgxMonster::hitBackOne(void)
+{
+	TRACE("Hit back one..\n");
+
+	for(int i = 0; i < NUMBER_OF_MONSTER; ++i)
+	{
+		TRACE("is %d(%d,%d) alive? %d\n", i,monsterRECTs[i].left, monsterRECTs[i].top, isAlive(i));
+		if(isAlive(i))
+		{
+			CSystem::leftClick(&monsterRECTs[i]);
+			return;
+		}
+	}
+}
 
 void CCgxMonster::hitFour(void)
 {

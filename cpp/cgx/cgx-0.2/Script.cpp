@@ -1,13 +1,19 @@
 #include "StdAfx.h"
 #include "Script.h"
 
+#define TO_COMMAND(val, T) \
+	else if(_tcsncmp(pChar, CN_##T, wcslen(CN_##T)) == 0)\
+	*##val = ##T;
+
 const TCHAR* _NUMBERS = TEXT("0123456789");
 const TCHAR* CN_HEAL = TEXT("治疗");
-const TCHAR* CN_CHANGE = TEXT("转图");
+const TCHAR* CN_CHANGE_MAP = TEXT("转图");
 const TCHAR* CN_TALK = TEXT("对话");
 const TCHAR* CN_AGAIN = TEXT("重来");
 const TCHAR* CN_FIND_ENEMY = TEXT("遇敌");
+const TCHAR* CN_AUTO_FIGHT = TEXT("自动战斗");
 const TCHAR* CN_LOGOUT = TEXT("登出");
+const TCHAR* CN_BACK_TO_CITY = TEXT("回城");
 const TCHAR* CN_MAZE = TEXT("迷宫");
 const TCHAR* CN_YES = TEXT("是");
 const TCHAR* CN_NO = TEXT("否");
@@ -111,9 +117,10 @@ BOOL CScript::parseCommand(void)
 		//没有找到中文命令
 		if(parseChineseCommand(tmp, &command))
 		{
-			if(command == CHANGE_MAP)
+			if(command == CHANGE_MAP || command == FIND_ENEMY)
 			{
-				//第一个是走路坐标，第二个是转图后坐标
+				//CHANGE_MAP 第一个是走路坐标，第二个是转图后坐标
+				//FIND_ENEMY 限制坐标
 				if(split(nextLine, &cmdIdx, tmp))
 				{
 					parseCoordinate(tmp, &x, &y);
@@ -121,7 +128,7 @@ BOOL CScript::parseCommand(void)
 			}
 
 			//如果是对话或者治疗
-			if(command == TALK || command == HEAL || command == CHANGE_MAP)
+			if(command == TALK || command == HEAL || command == CHANGE_MAP || command == FIND_ENEMY)
 			{
 				if(split(nextLine, &cmdIdx, tmp))
 				{
@@ -169,7 +176,9 @@ BOOL CScript::parseCoordinate(TCHAR* pChar, int* _x, int* _y)
 
 BOOL CScript::parseChineseCommand(const TCHAR* pChar, COMMANDS* commandOut)
 {
-	if(_tcsncmp(pChar, CN_CHANGE, wcslen(CN_CHANGE)) == 0)
+	
+
+	if(_tcsncmp(pChar, CN_CHANGE_MAP, wcslen(CN_CHANGE_MAP)) == 0)
 	{
 		*commandOut = CHANGE_MAP;
 	}
