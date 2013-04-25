@@ -66,12 +66,6 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 			Sleep(500);
 		}
 
-		if(leader->bottomWindow->isExists())
-		{
-			leader->bottomWindow->openGoodWindow();
-			Sleep(5000);
-		}
-
 		if(leader->mapWindow->isExists())
 		{
 			mapWindowCheckCount = 0;
@@ -208,7 +202,7 @@ void CGameAI::playerFight()
 	}
 	Sleep(FIGHT_INTERVAL);
 	leader->monster->hitOne();
-	Sleep(FIGHT_INTERVAL*2);
+	Sleep(FIGHT_INTERVAL/2);
 }
 
 
@@ -407,12 +401,12 @@ void CGameAI::doFindEnemy()
 					Sleep(walkStep* WALK_INTERVAL);
 				} else
 				{
-					TRACE("All found\n");
+					//TRACE("All found\n");
 					if(currY <= endOfNorth+1)
 						walkStep = pMap->moveMouse(0, 8);
 					else if(currY >= endOfSouth-1)
 						walkStep = pMap->moveMouse(0, -8);
-					if(!isPress || lastY == currY)
+					if(!isPress)
 					{
 						isPress = TRUE;
 						CSystem::leftPress(0, 0);
