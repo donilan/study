@@ -8,6 +8,7 @@
 #include "CgxMapWindow.h"
 #include "CgxTopLeftWindow.h"
 #include "CgxGoodsWindow.h"
+#include "CgxBottomWindow.h"
 
 class CGame
 {
@@ -35,6 +36,8 @@ public:
 	CCgxMapWindow* mapWindow;
 	CCgxTopLeftWindow* topLeftWindow;
 	CCgxGoodsWindow* goodsWindows;
+	CCgxBottomWindow* bottomWindow;
+
 private:
 	HWND hwnd;
 	CHWNDScreen* pScreen;

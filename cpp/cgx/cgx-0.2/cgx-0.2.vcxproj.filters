@@ -64,6 +64,9 @@
     <None Include="image\window\top_left_window.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="image\window\bottom_window.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CgxDlg.h">
@@ -132,6 +135,9 @@
     <ClInclude Include="CgxTopLeftWindow.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CgxBottomWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CgxDlg.cpp">
@@ -192,6 +198,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CgxTopLeftWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxBottomWindow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

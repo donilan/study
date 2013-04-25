@@ -94,6 +94,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="image\window\bottom_window.bmp" />
     <None Include="image\window\cancel.bmp" />
     <None Include="image\window\goods.bmp" />
     <None Include="image\window\map.bmp" />
@@ -114,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cgx.h" />
+    <ClInclude Include="CgxBottomWindow.h" />
     <ClInclude Include="CgxDlg.h" />
     <ClInclude Include="CgxGoodsWindow.h" />
     <ClInclude Include="CgxMapWindow.h" />
@@ -138,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cgx.cpp" />
+    <ClCompile Include="CgxBottomWindow.cpp" />
     <ClCompile Include="CgxDlg.cpp" />
     <ClCompile Include="CgxGoodsWindow.cpp" />
     <ClCompile Include="CgxMapWindow.cpp" />

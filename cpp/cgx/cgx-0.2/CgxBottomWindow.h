@@ -8,5 +8,7 @@ public:
 	~CCgxBottomWindow(void);
 	void getLocateRECT(RECT* rectOut);
 	void locateCommands( void );
+	BOOL isCommandEnable(int index);
+	void openGoodWindow();
 };
 

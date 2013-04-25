@@ -7,5 +7,9 @@ class CCgxTopRightWindow :
 public:
 	CCgxTopRightWindow(CHWNDScreen*);
 	~CCgxTopRightWindow(void);
+	void getLocateRECT(RECT* rectOut);
+	void locateCommands( void );
+	BOOL isCommandEnable(int index);
+	void openMap();
 };
 

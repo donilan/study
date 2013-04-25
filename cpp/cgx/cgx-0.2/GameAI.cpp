@@ -46,6 +46,7 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 	int nextX = 0;
 	int nextY = 0;
 	int walkStep;
+	BOOL isMapOpened = FALSE;
 	BOOL hasNextStep = TRUE;
 	//leader->getScreen()->startAutoRefresh();
 	ai->script.command = CScript::UNKNOW;
@@ -57,7 +58,20 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 			Sleep(500);
 			continue;
 		}
-		
+		if(!isMapOpened && leader->topRightWindow->isExists())
+		{
+			leader->topRightWindow->openMap();
+			isMapOpened = TRUE;
+			TRACE("Map is opened!\n");
+			Sleep(500);
+		}
+
+		if(leader->bottomWindow->isExists())
+		{
+			leader->bottomWindow->openGoodWindow();
+			Sleep(5000);
+		}
+
 		if(leader->mapWindow->isExists())
 		{
 			mapWindowCheckCount = 0;
