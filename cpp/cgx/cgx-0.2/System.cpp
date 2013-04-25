@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "System.h"
-
+#include <time.h>
+#include <stdlib.h>
 
 CSystem::CSystem(void)
 {
@@ -18,6 +19,10 @@ BOOL CSystem::lockScreen(BOOL lock)
 
 BOOL CSystem::leftClick(int x, int y)
 {
+#ifdef DEBUG
+	static int leftClickCount = 0;
+	TRACE("**Left click counter: %d\n", ++leftClickCount);
+#endif
 	POINT* point = (POINT*)malloc(sizeof(POINT));
 	point->x = x;
 	point->y = y;
@@ -27,6 +32,7 @@ BOOL CSystem::leftClick(int x, int y)
 
 UINT CSystem::LeftClickThread( LPVOID lPvoid)
 {
+	//srand(time(NULL));
 	CSystem::lockScreen(TRUE);
 	POINT oldPoint;
 	GetCursorPos(&oldPoint);
@@ -97,6 +103,10 @@ UINT CSystem::rightClickThread( LPVOID lPvoid)
 
 void CSystem::leftPress(int x, int y)
 {
+#ifdef DEBUG
+	static int leftPressCount = 0;
+	TRACE("*Left press counter: %d\n", ++leftPressCount);
+#endif 
 	POINT p = {x, y};
 	POINT oldPoint = {0};
 	CSystem::lockScreen(TRUE);

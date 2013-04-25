@@ -7,7 +7,7 @@ class CScript
 public:
 	enum COMMANDS {
 		UNKNOW, WALK, HEAL, TALK, CHANGE_MAP, AGAIN, 
-		FIND_ENEMY, LOGOUT, MAZE
+		FIND_ENEMY, LOGOUT, MAZE, AUTO_FIGHT, BACK_TO_CITY
 	};
 	CScript();
 	CScript(TCHAR*);

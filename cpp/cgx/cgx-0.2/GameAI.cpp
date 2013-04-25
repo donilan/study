@@ -8,7 +8,7 @@
 #define FIGHT_INTERVAL 800
 #define HIT_INTERNAL 200
 #define TALK_INTERVAL 1300
-#define WALK_INTERVAL 300
+#define WALK_INTERVAL 250
 
 const RECT YES_CONDITION = {200, 320, 270, 370}; // yes
 const RECT SURE_CONDITION = {200, 320, 400, 370}; // sure
@@ -69,7 +69,9 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 			switch(ai->script.command)
 			{
 			case CScript::CHANGE_MAP:
-				if(abs(ai->script.targetX -currX) < 2 && abs(ai->script.targetY - currY) < 2)
+				if((abs(ai->script.targetX -currX) < 2 && abs(ai->script.targetY - currY) < 2)
+				|| (ai->script.targetX == 0 && ai->script.targetY == 0 && 
+				(abs(currX - ai->script.x) > 4 || abs(currY - ai->script.y) > 4)))
 				{
 					hasNextStep = ai->script.nextStep();
 					break;
@@ -88,7 +90,7 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 					|| (nextY != 0 && abs(nextY) < 10))
 				{
 					TRACE("Sleep more................................\n");
-					Sleep(WALK_INTERVAL*walkStep);
+					Sleep(WALK_INTERVAL*walkStep/2);
 				}
 				Sleep(walkStep*WALK_INTERVAL);
 				break;
@@ -198,6 +200,7 @@ void CGameAI::playerFight()
 	}
 	Sleep(FIGHT_INTERVAL);
 	leader->monster->hitOne();
+	Sleep(FIGHT_INTERVAL);
 }
 
 
@@ -206,9 +209,10 @@ void CGameAI::petFight(void)
 	if(leader->petSkillWindow->isExists())
 	{
 		leader->petSkillWindow->leftClick(0);
+		Sleep(FIGHT_INTERVAL);
 	}
-	Sleep(FIGHT_INTERVAL);
-	leader->monster->hitOne();
+	
+	leader->monster->hitBackOne();
 }
 
 
@@ -339,12 +343,12 @@ void CGameAI::doFindEnemy()
 	int endOfNorth = 0;
 	int endOfSouth = 0;
 	int walkStep = 0;
+	BOOL stepFlag = TRUE;
 	int currX = 0;
 	int currY = 0;
 	int notExistCounter = 0;
 	BOOL isEndOfWest = FALSE;
 	BOOL isPress = FALSE;
-	srand(time(NULL));
 	
 	while(isAIStart)
 	{
@@ -355,55 +359,82 @@ void CGameAI::doFindEnemy()
 				Sleep(200);
 				pMap->leftClickCenter();
 				notExistCounter = 0;
-				Sleep(200);
+				Sleep(1000);
 			}
 			currX = pMap->getX();
 			currY = pMap->getY();
-			if(!isEndOfWest)
+			// 无限制遇敌
+			if(script.x == 0 && script.y == 0)
 			{
-				if(lastX == currX)
+				if(!isEndOfWest)
 				{
-					isEndOfWest = TRUE;
-					lastY = 0;
-					continue;
+					if(lastX == currX)
+					{
+						isEndOfWest = TRUE;
+						lastY = 0;
+						continue;
+					}
+					walkStep = pMap->goNext(-10, 0);
+					Sleep(walkStep* WALK_INTERVAL);
+				} 
+				else if(endOfSouth == 0)
+				{
+					if(lastY == currY)
+					{
+						endOfSouth = currY;
+						lastY = 0;
+						continue;
+					}
+					walkStep = pMap->goNext(0, 8);
+					Sleep(walkStep* WALK_INTERVAL);
 				}
-				walkStep = pMap->goNext(-10, 0);
-				Sleep(walkStep* WALK_INTERVAL);
+				else if(endOfNorth == 0)
+				{
+					if(lastY == currY)
+					{
+						endOfNorth = currY;
+						continue;
+					}
+					walkStep = pMap->goNext(0, -8);
+					Sleep(walkStep* WALK_INTERVAL);
+				} else
+				{
+					TRACE("All found\n");
+					if(currY <= endOfNorth+1)
+						walkStep = pMap->moveMouse(0, 8);
+					else if(currY >= endOfSouth-1)
+						walkStep = pMap->moveMouse(0, -8);
+					if(!isPress || lastY == currY)
+					{
+						isPress = TRUE;
+						CSystem::leftPress(0, 0);
+					}
+					
+				}
 			} 
-			else if(endOfSouth == 0)
+			else // 限制遇敌
 			{
-				if(lastY == currY)
+				
+				if(stepFlag)
 				{
-					endOfSouth = currY;
-					lastY = 0;
-					continue;
+					TRACE("(%d,%d)(%d,%d)\n", currX, currY, script.x, script.y);
+					if(currX == script.x && currY == script.y)
+						stepFlag = FALSE;
+					else
+						walkStep = pMap->goNext(script.x-currX, script.y-currY);
+					
 				}
-				walkStep = pMap->goNext(0, 8);
-				Sleep(walkStep* WALK_INTERVAL);
+				else
+				{
+					if(currX == script.targetX && currY == script.targetY)
+						stepFlag = TRUE;
+					else
+						walkStep = pMap->goNext(script.targetX-currX, script.targetY-currY);
+					
+				}
+				
 			}
-			else if(endOfNorth == 0)
-			{
-				if(lastY == currY)
-				{
-					endOfNorth = currY;
-					continue;
-				}
-				walkStep = pMap->goNext(0, -8);
-				Sleep(walkStep* WALK_INTERVAL);
-			} else
-			{
-				TRACE("All found\n");
-				if(currY <= endOfNorth)
-					walkStep = pMap->moveMouse(0, 8);
-				else if(currY >= endOfSouth)
-					walkStep = pMap->moveMouse(0, -8);
-				if(!isPress || lastY == currY)
-				{
-					isPress = TRUE;
-					CSystem::leftPress(0, 0);
-				}
-				Sleep(WALK_INTERVAL);
-			}
+			Sleep(WALK_INTERVAL);
 			lastX = currX;
 			lastY = currY;
 			continue;
@@ -425,6 +456,7 @@ void CGameAI::doFindEnemy()
 		else if(leader->petCommandWindow->isExists())
 		{
 			petFight();
+			Sleep(5000);
 		}
 		else
 		{

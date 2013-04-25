@@ -19,6 +19,7 @@ public:
 	BOOL isAlive(int);
 	int countAlive(void);
 	void hitOne(void);
+	void hitBackOne(void);
 	void hitFour(void);
 };
 
