@@ -111,8 +111,12 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 				ai->doTalk();
 				hasNextStep = ai->script.nextStep();
 				break;
-			case CScript::UNKNOW:
-				Sleep(500);
+			case CScript::AUTO_FIGHT:
+				while(ai->isAIStart)
+					autoFight();
+				break;
+			case CScript::BACK_TO_CITY:
+				//TODO 
 				break;
 			} // end switch
 			TRACE("command: %d, current (%d,%d), next: (%d,%d), target: (%d, %d)\n",
@@ -129,18 +133,7 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 				continue;
 			}
 		}
-		if(leader->playerCommandWindow->isExists())
-		{
-			ai->playerFight();
-		}// fight
-		else if(leader->petCommandWindow->isExists())
-		{
-			ai->petFight();
-		}
-		else
-		{
-			Sleep(500);
-		}
+		autoFight();
 	}
 	return 0;
 }
@@ -315,23 +308,23 @@ void CGameAI::doTalk()
 	BOOL done = FALSE;
 	rightClickTager(script.targetX, script.targetY);
 	Sleep(TALK_INTERVAL);
-	leader->getScreen()->flashRECT(&rect);
-		while(!done)
+	//leader->getScreen()->flashRECT(&rect);
+	while(!done)
+	{
+		if(leader->getScreen()->locate(IDB_YES, &rect, &YES_CONDITION))
 		{
-			if(leader->getScreen()->locate(IDB_YES, &rect, &YES_CONDITION))
-			{
-				CSystem::leftClick(&rect);
-				Sleep(TALK_INTERVAL);
-			} 
-			else if(leader->getScreen()->locate(IDB_SURE, &rect, &SURE_CONDITION))
-			{
-				CSystem::leftClick(&rect);
-				Sleep(TALK_INTERVAL);
-			} 
-			else{
-				done = TRUE;
-			}
+			CSystem::leftClick(&rect);
+			Sleep(TALK_INTERVAL);
+		} 
+		else if(leader->getScreen()->locate(IDB_SURE, &rect, &SURE_CONDITION))
+		{
+			CSystem::leftClick(&rect);
+			Sleep(TALK_INTERVAL);
+		} 
+		else{
+			done = TRUE;
 		}
+	}
 	
 }
 
@@ -449,18 +442,25 @@ void CGameAI::doFindEnemy()
 				continue;
 			}
 		}
-		if(leader->playerCommandWindow->isExists())
-		{
-			playerFight();
-		}// fight
-		else if(leader->petCommandWindow->isExists())
-		{
-			petFight();
-			Sleep(5000);
-		}
-		else
-		{
-			Sleep(1000);
-		}
+		autoFight();
+	}
+}
+
+
+
+void CGameAI::autoFight(void)
+{
+	if(leader->playerCommandWindow->isExists())
+	{
+		playerFight();
+	}// fight
+	else if(leader->petCommandWindow->isExists())
+	{
+		petFight();
+		Sleep(5000);
+	}
+	else
+	{
+		Sleep(1000);
 	}
 }

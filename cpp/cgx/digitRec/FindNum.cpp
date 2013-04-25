@@ -43,11 +43,12 @@ BOOL CFindNum::findNext(RECT* rectOut)
 		for(posY = 0; posY < height; ++posY)
 		{
 			rgb = pImg->GetPixel(posX, posY);
-			//TRACE("[%d,%d] width: %d, height: %d (%d,%d,%d) == (%d,%d,%d)\n"
-			//	, posX, posY , width, height, GetRValue(fstColor), GetGValue(fstColor)
-			//	,GetBValue(fstColor), GetRValue(rgb), GetGValue(rgb), GetBValue(rgb));
+			
 			if(NEQ_COLOR(fstColor, rgb))
 			{
+				//TRACE("[%d,%d] First: (%d,%d,%d) != Found: (%d,%d,%d)\n"
+				//	, posX, posY , GetRValue(fstColor), GetGValue(fstColor)
+				//	,GetBValue(fstColor), GetRValue(rgb), GetGValue(rgb), GetBValue(rgb));
 				found = TRUE;
 				if(fstFound)
 				{
@@ -105,11 +106,6 @@ int CFindNum::toNum(const RECT* rectIn)
 	// not a number
 	if(w < 1 || h < 1)
 		return -1;
-	
-	// 1
-	if(w*100 / h < 40)
-		return 1;
-
 	for(int i = rectIn->left; i < rectIn->right; ++i)
 	{
 		rgb = pImg->GetPixel(i, rectIn->top);
@@ -151,9 +147,18 @@ int CFindNum::toNum(const RECT* rectIn)
 		}
 		
 	}
-	//TRACE("%d, %d, %d, %d\n", leftLength, rightLength, topLength, bottomLength);
+	
+	//TRACE("width: %d, height: %d, left: %d, right: %d, top: %d, bottom: %d\n"
+	//	, w, h, leftLength, rightLength, topLength, bottomLength);
+
+	// 1
+	if(w*100 / h < 35)
+		return 1;
 	// 4
-	if(topLength < w / 2)
+	//TRACE("(topLength: %d, %d)",topLength,  w/2);
+	if(topLength < w / 2 
+		|| (w == 4 && h == 8 && leftLength == 4 && rightLength == 2
+		&& topLength == 3 && bottomLength == 2))
 	{
 		return 4;
 	}
@@ -188,11 +193,14 @@ int CFindNum::toNum(const RECT* rectIn)
 
 int CFindNum::allNum(void)
 {
+	//int count = 0;
 	int result = 0;
 	RECT rect;
 	while(findNext(&rect))
 	{
 		result = toNum(&rect) + result * 10;
+		//++count;
 	}
+	//TRACE("number counter: %d\n", count);
 	return result;
 }

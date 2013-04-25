@@ -297,7 +297,7 @@ void analysis(CImage* pImg)
 
 
 
-#define IMG_NUM 9
+#define IMG_NUM 11
 void CdigitRecDlg::OnBnClickedButton2()
 {
 	TCHAR buff[MAX_PATH] = {0};

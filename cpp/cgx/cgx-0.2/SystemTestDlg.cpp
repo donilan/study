@@ -65,6 +65,7 @@ BEGIN_MESSAGE_MAP(CSystemTestDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_LOCATE_LEVEL, &CSystemTestDlg::OnBnClickedLocateLevel)
 	ON_BN_CLICKED(IDC_CHECK_STATUS, &CSystemTestDlg::OnBnClickedCheckStatus)
 	ON_BN_CLICKED(IDC_LOCATE_MAP_WINDOW, &CSystemTestDlg::OnBnClickedLocateMapWindow)
+	ON_BN_CLICKED(IDC_LOCATE_HP_MP, &CSystemTestDlg::OnBnClickedLocateHpMp)
 END_MESSAGE_MAP()
 
 
@@ -514,5 +515,20 @@ void CSystemTestDlg::OnBnClickedLocateMapWindow()
 		int x = pScreen->toNumber(&map.xRECT);
 		int y = pScreen->toNumber(&map.yRECT);
 		TRACE("%d, %d\n", x, y);
+	}
+}
+
+
+void CSystemTestDlg::OnBnClickedLocateHpMp()
+{
+	RECT hpRect = {60, 46, 90, 57};
+	RECT mpRect = {25, 58, 50, 70};
+	if(pScreen)
+	{
+		//pScreen->flashRECT(&hpRect);
+		//pScreen->flashRECT(&mpRect);
+		int hp = pScreen->toNumber(&hpRect);
+		int mp = pScreen->toNumber(&mpRect);
+		TRACE("HP: %d, MP: %d\n", hp, mp);
 	}
 }

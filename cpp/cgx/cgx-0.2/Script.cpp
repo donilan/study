@@ -5,21 +5,6 @@
 	else if(_tcsncmp(pChar, CN_##T, wcslen(CN_##T)) == 0)\
 	*##val = ##T;
 
-const TCHAR* _NUMBERS = TEXT("0123456789");
-const TCHAR* CN_HEAL = TEXT("治疗");
-const TCHAR* CN_CHANGE_MAP = TEXT("转图");
-const TCHAR* CN_TALK = TEXT("对话");
-const TCHAR* CN_AGAIN = TEXT("重来");
-const TCHAR* CN_FIND_ENEMY = TEXT("遇敌");
-const TCHAR* CN_AUTO_FIGHT = TEXT("自动战斗");
-const TCHAR* CN_LOGOUT = TEXT("登出");
-const TCHAR* CN_BACK_TO_CITY = TEXT("回城");
-const TCHAR* CN_MAZE = TEXT("迷宫");
-const TCHAR* CN_YES = TEXT("是");
-const TCHAR* CN_NO = TEXT("否");
-const TCHAR* CN_SURE = TEXT("确定");
-const TCHAR* CN_CANCEL = TEXT("取消");
-
 CScript::CScript()
 {
 	_init();
@@ -117,10 +102,12 @@ BOOL CScript::parseCommand(void)
 		//没有找到中文命令
 		if(parseChineseCommand(tmp, &command))
 		{
-			if(command == CHANGE_MAP || command == FIND_ENEMY)
+			if(command == CHANGE_MAP || command == FIND_ENEMY
+				|| command == BACK_TO_CITY)
 			{
 				//CHANGE_MAP 第一个是走路坐标，第二个是转图后坐标
 				//FIND_ENEMY 限制坐标
+				//BACK_TO_CITY 登出目标坐标
 				if(split(nextLine, &cmdIdx, tmp))
 				{
 					parseCoordinate(tmp, &x, &y);
@@ -176,36 +163,15 @@ BOOL CScript::parseCoordinate(TCHAR* pChar, int* _x, int* _y)
 
 BOOL CScript::parseChineseCommand(const TCHAR* pChar, COMMANDS* commandOut)
 {
-	
-
-	if(_tcsncmp(pChar, CN_CHANGE_MAP, wcslen(CN_CHANGE_MAP)) == 0)
-	{
-		*commandOut = CHANGE_MAP;
-	}
-	else if(_tcsncmp(pChar, CN_HEAL, wcslen(CN_HEAL)) == 0)
-	{
-		*commandOut = HEAL;
-	}
-	else if(_tcsncmp(pChar, CN_TALK, wcslen(CN_TALK)) == 0)
-	{
-		*commandOut = TALK;
-	}
-	else if(_tcsncmp(pChar, CN_AGAIN, wcslen(CN_AGAIN)) == 0)
-	{
-		*commandOut = AGAIN;
-	}
-	else if(_tcsncmp(pChar, CN_FIND_ENEMY, wcslen(CN_FIND_ENEMY)) == 0)
-	{
-		*commandOut = FIND_ENEMY;
-	}
-	else if(_tcsncmp(pChar, CN_LOGOUT, wcslen(CN_LOGOUT)) == 0)
-	{
-		*commandOut = LOGOUT;
-	}
-	else if(_tcsncmp(pChar, CN_MAZE, wcslen(CN_MAZE)) == 0)
-	{
-		*commandOut = MAZE;
-	}
+	if(FALSE);
+	TO_COMMAND(commandOut, CHANGE_MAP)
+	TO_COMMAND(commandOut, HEAL)
+	TO_COMMAND(commandOut, TALK)
+	TO_COMMAND(commandOut, AGAIN)
+	TO_COMMAND(commandOut, FIND_ENEMY)
+	TO_COMMAND(commandOut, LOGOUT)
+	TO_COMMAND(commandOut, BACK_TO_CITY)
+	TO_COMMAND(commandOut, AUTO_FIGHT)
 	else 
 	{
 		*commandOut = UNKNOW;

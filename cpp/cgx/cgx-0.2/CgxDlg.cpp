@@ -125,6 +125,7 @@ void CCgxDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 		break;
 	case HOTKEY_F6:
 		gameManager.games[index]->stopAI();
+		((CButton *)GetDlgItem(IDC_START))->SetWindowText(TEXT("Æô¶¯"));
 		break;
 	}
 	CDialogEx::OnHotKey(nHotKeyId, nKey1, nKey2);
@@ -246,6 +247,13 @@ void CCgxDlg::_initConfigFile(void)
 				valSk.GetBuffer(10), CONFIG_FILE);
 			WritePrivateProfileString(FIGHT_SKILL, keyLv.GetBuffer(20),
 				valLv.GetBuffer(10), CONFIG_FILE);
+			
 		}
+		WritePrivateProfileString(SCRIPT_CONTROLL, WHEN_HP_STOP_FIND_ENEMY, TEXT("150"), CONFIG_FILE);
+		WritePrivateProfileString(SCRIPT_CONTROLL, WHEN_MP_STOP_FIND_ENEMY, TEXT("100"), CONFIG_FILE);
+		WritePrivateProfileString(SCRIPT_CONTROLL, WHEN_LOW_MP_SKILL, TEXT("50"), CONFIG_FILE);
+		WritePrivateProfileString(SCRIPT_CONTROLL, WHEN_FULL_GOODS_STOP_FIND_ENEMY, CN_YES, CONFIG_FILE);
+		WritePrivateProfileString(SCRIPT_CONTROLL, DROP_CARD, CN_YES, CONFIG_FILE);
+		WritePrivateProfileString(SCRIPT_CONTROLL, DROP_CRYSTAL, CN_YES, CONFIG_FILE);
 	}
 }

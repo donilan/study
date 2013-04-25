@@ -68,4 +68,5 @@ public:
 	afx_msg void OnBnClickedLocateLevel();
 	afx_msg void OnBnClickedCheckStatus();
 	afx_msg void OnBnClickedLocateMapWindow();
+	afx_msg void OnBnClickedLocateHpMp();
 };
