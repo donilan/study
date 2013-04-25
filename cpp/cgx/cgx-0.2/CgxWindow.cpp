@@ -32,14 +32,15 @@ BOOL CCgxWindow::locate(void)
 		found = pScreen->locate(pLocateImage, &newRECT, &condition);
 		if(found)
 		{
-			TRACE("Found window position and found a new RECT.\n");
+			//TRACE("Found window position and found a new RECT.\n");
 			memcpy(&rect, &newRECT, sizeof(RECT));
 			locateCommands();
 #ifdef DEBUG
 			for(int i = 0; i < MAX_COMMAND; ++i)
 			{
-				TRACE("[i] left: %d, right: %d, top: %d, height: %d\n", 
-					commandRECTs[i].left, commandRECTs[i].right, commandRECTs[i].top, commandRECTs[i].bottom);
+				if(commandRECTs[i].left > 0)
+					TRACE("[%d] left: %d, right: %d, top: %d, height: %d\n", i,
+						commandRECTs[i].left, commandRECTs[i].right, commandRECTs[i].top, commandRECTs[i].bottom);
 			}
 #endif
 			return TRUE;

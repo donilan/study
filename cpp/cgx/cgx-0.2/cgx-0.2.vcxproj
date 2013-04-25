@@ -105,6 +105,7 @@
     <None Include="image\window\right_top_buttons.bmp" />
     <None Include="image\window\skill_level.bmp" />
     <None Include="image\window\sure.bmp" />
+    <None Include="image\window\top_left_window.bmp" />
     <None Include="image\window\yes.bmp" />
     <None Include="ReadMe.txt" />
     <None Include="res\bitmap1.bmp" />
@@ -120,6 +121,7 @@
     <ClInclude Include="CgxPetCommandWindow.h" />
     <ClInclude Include="CgxPlayerCommand.h" />
     <ClInclude Include="CgxSkillWindow.h" />
+    <ClInclude Include="CgxTopLeftWindow.h" />
     <ClInclude Include="CgxTopRightWindow.h" />
     <ClInclude Include="CgxWindow.h" />
     <ClInclude Include="FindNum.h" />
@@ -143,6 +145,7 @@
     <ClCompile Include="CgxPetCommandWindow.cpp" />
     <ClCompile Include="CgxPlayerCommand.cpp" />
     <ClCompile Include="CgxSkillWindow.cpp" />
+    <ClCompile Include="CgxTopLeftWindow.cpp" />
     <ClCompile Include="CgxTopRightWindow.cpp" />
     <ClCompile Include="CgxWindow.cpp" />
     <ClCompile Include="FindNum.cpp" />

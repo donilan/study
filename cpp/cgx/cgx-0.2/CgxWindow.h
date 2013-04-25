@@ -26,6 +26,6 @@ public:
 	void leftClick(int index);
 	int getCommandSize(void);
 	void centerXY(int* centerX, int* centerY);
-	void getLocateRECT(RECT* rectOut);
+	virtual void getLocateRECT(RECT* rectOut);
 };
 

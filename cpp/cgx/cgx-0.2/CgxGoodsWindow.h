@@ -7,5 +7,8 @@ class CCgxGoodsWindow :
 public:
 	CCgxGoodsWindow(CHWNDScreen*);
 	~CCgxGoodsWindow(void);
+
+	void getLocateRECT(RECT* rectOut);
+	void locateCommands(void);
 };
 

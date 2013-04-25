@@ -58,5 +58,7 @@ public:
 	void doTalk();
 	void doFindEnemy();
 
+	void autoFight(void);
+	BOOL checkHPAndMP(void);
 };
 

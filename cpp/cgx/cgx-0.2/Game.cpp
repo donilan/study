@@ -14,7 +14,9 @@ CGame::CGame(HWND hwnd)
 	playerSkillLevelWindow = new CCgxSkillWindow(IDB_SKILL_LV, pScreen);
 	petSkillWindow = new CCgxSkillWindow(IDB_PET_SKILL, pScreen);
 	topRightWindow = new CCgxTopRightWindow(pScreen);
+	topLeftWindow = new CCgxTopLeftWindow(pScreen);
 	mapWindow = new CCgxMapWindow(pScreen);
+	goodsWindows = new CCgxGoodsWindow(pScreen);
 }
 
 CGame::~CGame()
@@ -27,6 +29,8 @@ CGame::~CGame()
 	delete playerSkillLevelWindow;
 	delete petSkillWindow;
 	delete topRightWindow;
+	delete topLeftWindow;
+	delete goodsWindows;
 }
 
 BOOL CGame::refresh(void)

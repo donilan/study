@@ -521,14 +521,15 @@ void CSystemTestDlg::OnBnClickedLocateMapWindow()
 
 void CSystemTestDlg::OnBnClickedLocateHpMp()
 {
-	RECT hpRect = {60, 46, 90, 57};
-	RECT mpRect = {25, 58, 50, 70};
+	RECT hpRect = {62, 46, 85, 57};
+	RECT mpRect = {25, 57, 50, 68};
 	if(pScreen)
 	{
-		//pScreen->flashRECT(&hpRect);
-		//pScreen->flashRECT(&mpRect);
+		
 		int hp = pScreen->toNumber(&hpRect);
 		int mp = pScreen->toNumber(&mpRect);
 		TRACE("HP: %d, MP: %d\n", hp, mp);
+		pScreen->flashRECT(&hpRect);
+		pScreen->flashRECT(&mpRect);
 	}
 }

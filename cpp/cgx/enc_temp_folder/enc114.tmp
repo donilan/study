@@ -148,8 +148,8 @@ int CFindNum::toNum(const RECT* rectIn)
 		
 	}
 	
-	//TRACE("width: %d, height: %d, left: %d, right: %d, top: %d, bottom: %d\n"
-	//	, w, h, leftLength, rightLength, topLength, bottomLength);
+	/TRACE("width: %d, height: %d, left: %d, right: %d, top: %d, bottom: %d\n"
+		, w, h, leftLength, rightLength, topLength, bottomLength);
 
 	// 1
 	if(w*100 / h < 35
