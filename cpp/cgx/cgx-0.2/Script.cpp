@@ -115,7 +115,8 @@ BOOL CScript::parseCommand(void)
 			}
 
 			//如果是对话或者治疗
-			if(command == TALK || command == HEAL || command == CHANGE_MAP || command == FIND_ENEMY)
+			if(command == TALK || command == HEAL || command == CHANGE_MAP 
+				|| command == FIND_ENEMY || command == SALE || command == BACK_TO_CITY)
 			{
 				if(split(nextLine, &cmdIdx, tmp))
 				{
@@ -172,6 +173,7 @@ BOOL CScript::parseChineseCommand(const TCHAR* pChar, COMMANDS* commandOut)
 	TO_COMMAND(commandOut, LOGOUT)
 	TO_COMMAND(commandOut, BACK_TO_CITY)
 	TO_COMMAND(commandOut, AUTO_FIGHT)
+	TO_COMMAND(commandOut, SALE)
 	else 
 	{
 		*commandOut = UNKNOW;

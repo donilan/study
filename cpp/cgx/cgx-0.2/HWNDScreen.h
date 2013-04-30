@@ -11,7 +11,7 @@ public:
 	~CHWNDScreen(void);
 
 	BOOL screenshot(PTSTR);
-	INT colorDeviation(RECT*, COLORREF);
+	INT colorDeviation(const RECT*, COLORREF);
 	static void flashRECT(const RECT*);
 
 	void loadImage(PTSTR pszImagePath);

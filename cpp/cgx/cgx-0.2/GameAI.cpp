@@ -14,6 +14,12 @@ const RECT YES_CONDITION = {200, 320, 270, 370}; // yes
 const RECT SURE_CONDITION = {200, 320, 400, 370}; // sure
 const RECT CANCEL_CONDITION = {200, 310, 400, 380}; // cancel
 
+const RECT SALE_ALL_CONDITION = {380, 390, 410, 410}; // sale all
+const RECT SALE_CANCEL_CONDITION = {475, 390, 550, 410};
+const RECT SALE_SURE_CONDITION = {305, 390, 375, 410}; // sale sure
+const RECT SALE_YES_CONDITION = {100, 405, 170, 430}; // sale yes
+const RECT SALE_CONDITION = {310, 302, 322, 312};		// sale
+const RECT NOT_SALE_CONDITION = {310, 314, 322, 326};   // not sale
 CGameAI::CGameAI( CGame* game)
 {
 	this->leader = game;
@@ -58,6 +64,10 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 			Sleep(500);
 			continue;
 		}
+		//int goods = 0;
+		//ai->checkGoods(&goods);
+		///TRACE("goods: %d", goods);
+		//Sleep(10000);
 		if(!isMapOpened && leader->topRightWindow->isExists())
 		{
 			leader->topRightWindow->openMap();
@@ -124,7 +134,12 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 					ai->autoFight();
 				break;
 			case CScript::BACK_TO_CITY:
-				//TODO 
+				ai->doBackToCity();
+				hasNextStep = ai->script.nextStep();
+				break;
+			case CScript::SALE:
+				ai->doSale();
+				hasNextStep = ai->script.nextStep();
 				break;
 			} // end switch
 			TRACE("command: %d, current (%d,%d), next: (%d,%d), target: (%d, %d)\n",
@@ -141,6 +156,8 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 				continue;
 			}
 		}
+		if(hasNextStep == FALSE)
+			return 0;
 		ai->autoFight();
 		
 	}
@@ -235,7 +252,7 @@ void CGameAI::doHeal()
 	Sleep(TALK_INTERVAL);
 	RECT rect = {309, 218, 323, 233};
 	
-	if(leader->getScreen()->colorDeviation(&rect, RGB(255,255,255)> 5))
+	if(leader->getScreen()->colorDeviation(&rect, RGB(255,255,255)) > 5)
 	{
 		CSystem::leftClick(&rect);
 		Sleep(TALK_INTERVAL);
@@ -257,7 +274,7 @@ void CGameAI::doHeal()
 	rect.top = 298;
 	rect.right = 340;
 	rect.bottom = 313;
-	if(leader->getScreen()->colorDeviation(&rect, RGB(255,255,255)> 5))
+	if(leader->getScreen()->colorDeviation(&rect, RGB(255,255,255)) > 5)
 	{
 		CSystem::leftClick(&rect);
 		Sleep(TALK_INTERVAL);
@@ -295,19 +312,19 @@ void CGameAI::rightClickTager(int x, int y){
 	leader->mapWindow->centerXY(&centerX, &centerY);
 	if(tmpX > 0)
 	{
-		CSystem::rightClick(centerX -38, centerY + 28);
+		CSystem::rightClick(centerX -38*3, centerY + 28*3);
 	} 
 	else if(tmpX < 0)
 	{
-		CSystem::rightClick(centerX + 38, centerY - 28);
+		CSystem::rightClick(centerX + 38*3, centerY - 28*3);
 	}
 	else if(tmpY > 0)
 	{
-		CSystem::rightClick(centerX - 38, centerY - 28);
+		CSystem::rightClick(centerX - 38*3, centerY - 28*3);
 	}
 	else if(tmpX < 0)
 	{
-		CSystem::rightClick(centerX + 38, centerY + 28);
+		CSystem::rightClick(centerX + 38*3, centerY + 28*3);
 	}
 }
 
@@ -351,17 +368,29 @@ void CGameAI::doFindEnemy()
 	int notExistCounter = 0;
 	BOOL isEndOfWest = FALSE;
 	BOOL isPress = FALSE;
-	
+	int goodsCounter = 0;
 	while(isAIStart)
 	{
 		if(pMap->isExists())
 		{
+			
 			if(notExistCounter > 0)
 			{
 				Sleep(200);
 				pMap->leftClickCenter();
 				notExistCounter = 0;
 				Sleep(1000);
+				checkGoods(&goodsCounter);
+				TRACE("==================Goods: %d\n", goodsCounter);
+				if(goodsCounter == 25)
+				{
+					if(isConfigYes(SCRIPT_CONTROLL, WHEN_FULL_GOODS_STOP_FIND_ENEMY))
+						break;
+				}
+				if(!checkHPAndMP())
+				{
+					break;
+				}
 			}
 			currX = pMap->getX();
 			currY = pMap->getY();
@@ -479,7 +508,162 @@ void CGameAI::autoFight(void)
 
 BOOL CGameAI::checkHPAndMP(void)
 {
+	int leaveHP = 0;
+	int leaveMP = 0;
+	int hp = 0, mp = 0;
 	if(leader->topLeftWindow->isExists())
-		TRACE("HP: %d, MP: %d\n", leader->topLeftWindow->getHP(), leader->topLeftWindow->getMP());
+	{
+		leaveHP = GetPrivateProfileInt(SCRIPT_CONTROLL, WHEN_HP_STOP_FIND_ENEMY, 0, CONFIG_FILE);
+		leaveMP = GetPrivateProfileInt(SCRIPT_CONTROLL, WHEN_MP_STOP_FIND_ENEMY, 0, CONFIG_FILE);
+		hp = leader->topLeftWindow->getHP();
+		mp = leader->topLeftWindow->getMP();
+		TRACE("HP: %d, MP: %d , leave HP: %d, leave MP: %d.\n", hp, mp, leaveHP, leaveMP);
+		if(leaveHP == 0 || leaveMP == 0)
+			return TRUE;
+		else if(hp <= leaveHP || mp <= leaveMP)
+			return FALSE;
+	}
 	return TRUE;
+}
+
+void CGameAI::doSale()
+{
+	RECT rect = {0};
+	rightClickTager(script.targetX, script.targetY);
+	Sleep(TALK_INTERVAL);
+	if(leader->getScreen()->colorDeviation(&SALE_CONDITION, RGB(255,255,255)) > 5)
+	{
+		
+		CSystem::leftClick(&SALE_CONDITION);
+		Sleep(TALK_INTERVAL);
+	}
+
+	if(leader->getScreen()->locate(IDB_ALL, &rect, &SALE_ALL_CONDITION))
+	{
+		TRACE("Found Sale all\n");
+		CSystem::leftClick(&rect);
+		Sleep(TALK_INTERVAL);
+	} else {
+		if(leader->getScreen()->locate(IDB_CANCEL, &rect, &SALE_CANCEL_CONDITION))
+		{
+			TRACE("Found Sale Cancel all\n");
+			CSystem::leftClick(&rect);
+			Sleep(TALK_INTERVAL);
+		}
+		
+	}
+
+	if(leader->getScreen()->locate(IDB_SURE, &rect, &SALE_SURE_CONDITION))
+	{
+		TRACE("Found sale sure\n");
+		CSystem::leftClick(&rect);
+		Sleep(TALK_INTERVAL);
+	}
+	if(leader->getScreen()->locate(IDB_YES, &rect, &SALE_YES_CONDITION))
+	{
+		TRACE("Found sale yes\n");
+		CSystem::leftClick(&rect);
+		Sleep(TALK_INTERVAL);
+	}
+
+	if(leader->getScreen()->colorDeviation(&NOT_SALE_CONDITION, RGB(255,255,255)) > 5)
+	{
+		CSystem::leftClick(&NOT_SALE_CONDITION);
+		Sleep(TALK_INTERVAL);
+	}
+}
+
+
+void CGameAI::checkGoods(int* goodsCounter)
+{
+	int goodsType = 0;
+	if(leader->bottomWindow->isExists())
+	{
+		leader->bottomWindow->openGoodsWindow();
+		Sleep(TALK_INTERVAL*2);
+		
+		if(leader->goodsWindows->isExists())
+		{
+			SetCursorPos(100, 100);
+			Sleep(100);
+			while(goodsType == 0)
+			{
+				goodsType = leader->goodsWindows->goodsType(*goodsCounter);
+				TRACE("goods[%d] type: %d\n", *goodsCounter, goodsType);
+
+				if(goodsType == IDB_GOODS_NO_GOODS)
+				{
+					break;
+				}
+				else if(goodsType == 0)
+				{
+					++(*goodsCounter);
+					
+					if(*goodsCounter >= 24)
+						break;
+				} 
+				else if(goodsType == IDB_GOODS_CARD)
+				{
+					if(isConfigYes(SCRIPT_CONTROLL, DROP_CARD))
+						leader->goodsWindows->dropGoods(*goodsCounter);
+					break;
+				} 
+				else if (goodsType == IDB_GOODS_EARTH_PROP
+					|| goodsType == IDB_GOODS_WIND_PROP)
+				{
+					if(isConfigYes(SCRIPT_CONTROLL, DROP_CRYSTAL))
+						leader->goodsWindows->dropGoods(*goodsCounter);
+					break;
+				}
+				
+			}
+		}
+		leader->bottomWindow->closeGoodsWindow();
+		
+	} // counter goods
+	Sleep(TALK_INTERVAL);
+}
+
+
+BOOL CGameAI::isConfigYes(LPCWSTR app, LPCWSTR key)
+{
+	TCHAR buff[MAX_PATH] = {0};
+	GetPrivateProfileString(app, key, CN_NO, buff, MAX_PATH, CONFIG_FILE);
+	TRACE("config: ");
+	OutputDebugString(buff);
+	TRACE("\n");
+	if(_tcsncmp(buff, CN_YES, wcslen(CN_YES)) == 0)
+		return TRUE;
+	return FALSE;
+}
+
+void CGameAI::doBackToCity()
+{
+	int x = 0;
+	int y = 0;
+	if(script.x == 0 || script.y == 0)
+		return;
+	while(TRUE && isAIStart)
+	{
+		if(!leader->mapWindow->isExists())
+		{
+			Sleep(500);
+			continue;
+		}
+		
+		x = leader->mapWindow->getX();
+		y = leader->mapWindow->getY();
+		if((x == script.x && y == script.y) 
+			|| (x == script.targetX && y == script.targetY))
+			break;
+		leader->bottomWindow->openSystemWindow();
+		Sleep(TALK_INTERVAL);
+		if(leader->systemWindow->isExists())
+		{
+			leader->systemWindow->clickBackToCity();
+		} else 
+		{
+			TRACE("System window not exists\n");
+		}
+	}
 }

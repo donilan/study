@@ -94,9 +94,14 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="image\window\all.bmp" />
     <None Include="image\window\bottom_window.bmp" />
     <None Include="image\window\cancel.bmp" />
     <None Include="image\window\goods.bmp" />
+    <None Include="image\window\goods_card.bmp" />
+    <None Include="image\window\goods_earth_prop.bmp" />
+    <None Include="image\window\goods_no_goods.bmp" />
+    <None Include="image\window\goods_wind_prop.bmp" />
     <None Include="image\window\map.bmp" />
     <None Include="image\window\no.bmp" />
     <None Include="image\window\player_command.bmp" />
@@ -106,6 +111,7 @@
     <None Include="image\window\right_top_buttons.bmp" />
     <None Include="image\window\skill_level.bmp" />
     <None Include="image\window\sure.bmp" />
+    <None Include="image\window\system_window.bmp" />
     <None Include="image\window\top_left_window.bmp" />
     <None Include="image\window\yes.bmp" />
     <None Include="ReadMe.txt" />
@@ -123,6 +129,7 @@
     <ClInclude Include="CgxPetCommandWindow.h" />
     <ClInclude Include="CgxPlayerCommand.h" />
     <ClInclude Include="CgxSkillWindow.h" />
+    <ClInclude Include="CgxSystemWindow.h" />
     <ClInclude Include="CgxTopLeftWindow.h" />
     <ClInclude Include="CgxTopRightWindow.h" />
     <ClInclude Include="CgxWindow.h" />
@@ -148,6 +155,7 @@
     <ClCompile Include="CgxPetCommandWindow.cpp" />
     <ClCompile Include="CgxPlayerCommand.cpp" />
     <ClCompile Include="CgxSkillWindow.cpp" />
+    <ClCompile Include="CgxSystemWindow.cpp" />
     <ClCompile Include="CgxTopLeftWindow.cpp" />
     <ClCompile Include="CgxTopRightWindow.cpp" />
     <ClCompile Include="CgxWindow.cpp" />

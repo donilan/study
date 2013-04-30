@@ -53,7 +53,7 @@ UINT CSystem::LeftClickThread( LPVOID lPvoid)
 }
 
 
-void CSystem::leftClick(RECT* rect)
+void CSystem::leftClick(const RECT* rect)
 {
 	int x = (rect->right - rect->left) / 2 + rect->left;
 	int y = (rect->bottom - rect->top) / 2 + rect->top;

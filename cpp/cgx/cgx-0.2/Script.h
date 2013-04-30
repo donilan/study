@@ -8,6 +8,7 @@
 #define CN_TALK			TEXT("对话")
 #define CN_AGAIN		TEXT("重来")
 #define CN_FIND_ENEMY	TEXT("遇敌")
+#define CN_SALE			TEXT("卖魔石")
 #define CN_AUTO_FIGHT	TEXT("自动战斗")
 #define CN_LOGOUT		TEXT("登出")
 #define CN_BACK_TO_CITY TEXT("回城")
@@ -22,7 +23,7 @@ class CScript
 public:
 	enum COMMANDS {
 		UNKNOW, WALK, HEAL, TALK, CHANGE_MAP, AGAIN, 
-		FIND_ENEMY, LOGOUT, MAZE, AUTO_FIGHT, BACK_TO_CITY
+		FIND_ENEMY, LOGOUT, MAZE, AUTO_FIGHT, BACK_TO_CITY, SALE
 	};
 	CScript();
 	CScript(TCHAR*);

@@ -73,6 +73,7 @@ BOOL CCgxWindow::getCommand(int index, RECT* rectOut)
 	if(index < 0 || index >= size)
 		return FALSE;
 	memcpy(rectOut, &commandRECTs[index], sizeof(RECT));
+	
 	return TRUE;
 }
 

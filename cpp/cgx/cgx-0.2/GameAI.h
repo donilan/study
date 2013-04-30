@@ -60,5 +60,9 @@ public:
 
 	void autoFight(void);
 	BOOL checkHPAndMP(void);
+	void doSale();
+	void checkGoods(int *);
+	BOOL isConfigYes(LPCWSTR app, LPCWSTR key);
+	void doBackToCity();
 };
 

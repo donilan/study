@@ -9,6 +9,8 @@ public:
 	void getLocateRECT(RECT* rectOut);
 	void locateCommands( void );
 	BOOL isCommandEnable(int index);
-	void openGoodWindow();
+	void openGoodsWindow();
+	void closeGoodsWindow();
+	void openSystemWindow();
 };
 

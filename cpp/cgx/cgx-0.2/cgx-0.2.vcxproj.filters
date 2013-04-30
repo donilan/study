@@ -67,6 +67,24 @@
     <None Include="image\window\bottom_window.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="image\window\all.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\goods_wind_prop.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\goods_card.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\goods_earth_prop.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\goods_no_goods.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\system_window.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CgxDlg.h">
@@ -138,6 +156,9 @@
     <ClInclude Include="CgxBottomWindow.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CgxSystemWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CgxDlg.cpp">
@@ -201,6 +222,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CgxBottomWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxSystemWindow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

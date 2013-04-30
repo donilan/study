@@ -35,6 +35,7 @@ void CCgxBottomWindow::locateCommands( void )
 BOOL CCgxBottomWindow::isCommandEnable( int index )
 {
 	RECT tmp;
+	isExists();
 	if(getCommand(index, &tmp))
 	{
 		if(pScreen->colorDeviation(&tmp, RGB(173, 166, 156)) > 2)
@@ -45,8 +46,20 @@ BOOL CCgxBottomWindow::isCommandEnable( int index )
 	return FALSE;
 }
 
-void CCgxBottomWindow::openGoodWindow()
+void CCgxBottomWindow::openGoodsWindow()
 {
 	if(!isCommandEnable(2))
 		leftClick(2);
+}
+
+void CCgxBottomWindow::closeGoodsWindow()
+{
+	if(isCommandEnable(2))
+		leftClick(2);
+}
+
+void CCgxBottomWindow::openSystemWindow()
+{
+	if(!isCommandEnable(6))
+		leftClick(6);
 }

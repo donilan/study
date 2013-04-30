@@ -18,6 +18,7 @@ CGame::CGame(HWND hwnd)
 	mapWindow = new CCgxMapWindow(pScreen);
 	goodsWindows = new CCgxGoodsWindow(pScreen);
 	bottomWindow = new CCgxBottomWindow(pScreen);
+	systemWindow = new CCgxSystemWindow(pScreen);
 }
 
 CGame::~CGame()
@@ -33,6 +34,7 @@ CGame::~CGame()
 	delete topLeftWindow;
 	delete goodsWindows;
 	delete bottomWindow;
+	delete systemWindow;
 }
 
 BOOL CGame::refresh(void)

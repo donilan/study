@@ -30,7 +30,7 @@ BOOL CHWNDScreen::screenshot( PTSTR pszFileName)
 	return FALSE;
 }
 
-INT CHWNDScreen::colorDeviation( RECT* rect, COLORREF rgb)
+INT CHWNDScreen::colorDeviation(const RECT* rect, COLORREF rgb)
 {
 	INT x = 0;
 	INT y = 0;
