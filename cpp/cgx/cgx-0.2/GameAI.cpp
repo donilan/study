@@ -24,7 +24,7 @@ CGameAI::CGameAI( CGame* game)
 {
 	this->leader = game;
 	isAIStart = FALSE;
-
+	isLocatePetSkill = FALSE;
 }
 
 CGameAI::~CGameAI()
@@ -225,10 +225,17 @@ void CGameAI::playerFight()
 
 void CGameAI::petFight(void)
 {
+	if(isLocatePetSkill == FALSE && leader->petCommandWindow->isExists())
+	{
+		leader->petCommandWindow->clickSkillCommand();
+		Sleep(FIGHT_INTERVAL);
+	}
 	if(leader->petSkillWindow->isExists())
 	{
+		isLocatePetSkill = TRUE;
 		leader->petSkillWindow->leftClick(0);
 		Sleep(FIGHT_INTERVAL);
+		
 	}
 	
 	leader->monster->hitBackOne();
@@ -379,10 +386,10 @@ void CGameAI::doFindEnemy()
 				Sleep(200);
 				pMap->leftClickCenter();
 				notExistCounter = 0;
-				Sleep(1000);
+				Sleep(200);
 				checkGoods(&goodsCounter);
 				TRACE("==================Goods: %d\n", goodsCounter);
-				if(goodsCounter == 25)
+				if(goodsCounter == NUMBER_OF_GOODS)
 				{
 					if(isConfigYes(SCRIPT_CONTROLL, WHEN_FULL_GOODS_STOP_FIND_ENEMY))
 						break;
@@ -435,6 +442,8 @@ void CGameAI::doFindEnemy()
 						walkStep = pMap->moveMouse(0, 8);
 					else if(currY >= endOfSouth-1)
 						walkStep = pMap->moveMouse(0, -8);
+					else if(!isPress)
+						walkStep = pMap->moveMouse(0, 8);
 					if(!isPress)
 					{
 						isPress = TRUE;
@@ -580,13 +589,13 @@ void CGameAI::checkGoods(int* goodsCounter)
 	if(leader->bottomWindow->isExists())
 	{
 		leader->bottomWindow->openGoodsWindow();
-		Sleep(TALK_INTERVAL*2);
+		Sleep(TALK_INTERVAL);
 		
 		if(leader->goodsWindows->isExists())
 		{
-			SetCursorPos(100, 100);
+			SetCursorPos(630, 500);
 			Sleep(100);
-			while(goodsType == 0)
+			while(goodsType == 0 && *goodsCounter < NUMBER_OF_GOODS)
 			{
 				goodsType = leader->goodsWindows->goodsType(*goodsCounter);
 				TRACE("goods[%d] type: %d\n", *goodsCounter, goodsType);
@@ -598,9 +607,6 @@ void CGameAI::checkGoods(int* goodsCounter)
 				else if(goodsType == 0)
 				{
 					++(*goodsCounter);
-					
-					if(*goodsCounter >= 24)
-						break;
 				} 
 				else if(goodsType == IDB_GOODS_CARD)
 				{
@@ -609,7 +615,9 @@ void CGameAI::checkGoods(int* goodsCounter)
 					break;
 				} 
 				else if (goodsType == IDB_GOODS_EARTH_PROP
-					|| goodsType == IDB_GOODS_WIND_PROP)
+					|| goodsType == IDB_GOODS_WIND_PROP
+					|| goodsType == IDB_GOODS_FIRE_PROP
+					|| goodsType == IDB_GOODS_WATER_PROP)
 				{
 					if(isConfigYes(SCRIPT_CONTROLL, DROP_CRYSTAL))
 						leader->goodsWindows->dropGoods(*goodsCounter);

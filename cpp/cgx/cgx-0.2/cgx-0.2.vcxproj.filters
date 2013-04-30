@@ -85,6 +85,12 @@
     <None Include="image\window\system_window.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="image\window\goods_water_prop.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image\window\goods_fire_prop.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CgxDlg.h">

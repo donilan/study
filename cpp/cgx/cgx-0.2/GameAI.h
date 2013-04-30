@@ -36,6 +36,7 @@ public:
 	int petSkill;
 
 	BOOL isAIStart;
+	BOOL isLocatePetSkill;
 
 	CScript script;
 private:

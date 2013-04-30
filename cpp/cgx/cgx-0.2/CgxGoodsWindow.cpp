@@ -68,6 +68,10 @@ int CCgxGoodsWindow::goodsType( int index )
 		return IDB_GOODS_EARTH_PROP;
 	else if(pScreen->locate(IDB_GOODS_WIND_PROP, &tmp, &goods[index]))
 		return IDB_GOODS_WIND_PROP;
+	else if(pScreen->locate(IDB_GOODS_FIRE_PROP, &tmp, &goods[index]))
+		return IDB_GOODS_FIRE_PROP;
+	else if(pScreen->locate(IDB_GOODS_WATER_PROP, &tmp, &goods[index]))
+		return IDB_GOODS_WATER_PROP;
 	return 0;
 }
 

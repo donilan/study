@@ -66,10 +66,12 @@ INT CHWNDScreen::colorDeviation(const RECT* rect, COLORREF rgb)
 
 void CHWNDScreen::flashRECT(const RECT* rect)
 {
+#ifdef DEBUG
 	//TRACE("Flash rect: %p (left: %d, right: %d, top: %d, bottom: %d)\n", rect, rect->left, rect->right, rect->top, rect->bottom);
 	RECT* tmp = (RECT*)malloc(sizeof(RECT));
 	memcpy(tmp, rect, sizeof(RECT));
 	AfxBeginThread(flashRECTThread, (LPVOID)tmp);
+#endif
 }
 
 UINT CHWNDScreen::flashRECTThread( LPVOID lPvoid )
@@ -134,7 +136,7 @@ void CHWNDScreen::loadImage(PTSTR pszImagePath)
 // Locate image
 BOOL CHWNDScreen::locate(const CImage* pImageIn, RECT* rectOut, const RECT* condition)
 {
-	RECT rect;
+	RECT rect ={0};
 	int width = pImageIn->GetWidth();
 	int height = pImageIn->GetHeight();
 	memset(rectOut, 0, sizeof(RECT));
@@ -147,7 +149,8 @@ BOOL CHWNDScreen::locate(const CImage* pImageIn, RECT* rectOut, const RECT* cond
 	{
 		memcpy(&rect, condition, sizeof(RECT));
 	}
-	TRACE("locating image: left %d, right %d, top %d, bottom %d\n", rect.left, rect.right, rect.top, rect.bottom);
+	TRACE("locating image: left %d, right %d, top %d, bottom %d, image width: %d, height: %d\n"
+		, rect.left, rect.right, rect.top, rect.bottom, width, height);
 	for(INT y = rect.top; y < rect.bottom - height; ++y)
 		for(INT x = rect.left; x < rect.right - width; ++x)
 		{
@@ -347,6 +350,6 @@ BOOL CHWNDScreen::locate(const int resourceId, RECT* rectOut,const RECT* conditi
 {
 	CImage img;
 	img.LoadFromResource(GetModuleHandle(NULL), resourceId);
-	TRACE("Locate for image: width: %d height: %d\n", img.GetWidth(), img.GetHeight());
+	//TRACE("Locate for image: width: %d height: %d\n", img.GetWidth(), img.GetHeight());
 	return locate(&img, rectOut, condition);
 }

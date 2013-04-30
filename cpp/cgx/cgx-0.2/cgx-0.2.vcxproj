@@ -100,7 +100,9 @@
     <None Include="image\window\goods.bmp" />
     <None Include="image\window\goods_card.bmp" />
     <None Include="image\window\goods_earth_prop.bmp" />
+    <None Include="image\window\goods_fire_prop.bmp" />
     <None Include="image\window\goods_no_goods.bmp" />
+    <None Include="image\window\goods_water_prop.bmp" />
     <None Include="image\window\goods_wind_prop.bmp" />
     <None Include="image\window\map.bmp" />
     <None Include="image\window\no.bmp" />
