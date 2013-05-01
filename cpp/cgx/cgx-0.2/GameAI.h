@@ -34,6 +34,8 @@ public:
 	int allSkill;
 	int allSkillLv;
 	int petSkill;
+	int resetMinu;
+	BOOL isReseted;
 
 	BOOL isAIStart;
 	BOOL isLocatePetSkill;
@@ -47,6 +49,7 @@ private:
 
 	static UINT gameAIThread(LPVOID);
 	inline void rightClickTager(int x, int y);
+	inline int getMinu();
 public:
 	HWND getHWND(void);
 	void startAI(void);

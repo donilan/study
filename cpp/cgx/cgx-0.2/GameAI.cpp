@@ -26,6 +26,8 @@ CGameAI::CGameAI( CGame* game)
 	this->leader = game;
 	isAIStart = FALSE;
 	isLocatePetSkill = FALSE;
+	isReseted = FALSE;
+	resetMinu = 0;
 }
 
 CGameAI::~CGameAI()
@@ -206,6 +208,8 @@ void CGameAI::playerFight()
 	}
 	else
 	{
+		//复原可重置
+		isReseted = FALSE;
 		if(!leader->playerCommandWindow->isCommandEnable(1))
 		{
 			leader->playerCommandWindow->clickSkillCommand();
@@ -385,6 +389,7 @@ void CGameAI::doFindEnemy()
 	BOOL isEndOfWest = FALSE;
 	BOOL isPress = FALSE;
 	int goodsCounter = 0;
+	int nowMinu = 0;
 	while(isAIStart)
 	{
 		if(pMap->isExists())
@@ -392,6 +397,17 @@ void CGameAI::doFindEnemy()
 			
 			if(notExistCounter > 0)
 			{
+				// 到点重置
+				if(!isReseted && resetMinu != 0)
+				{
+					nowMinu = getMinu();
+					TRACE("Now is %d\n");
+					if(resetMinu == nowMinu)
+					{
+						script.resetPos();
+						isReseted = TRUE;
+					}
+				}
 				Sleep(200);
 				pMap->leftClickCenter();
 				notExistCounter = 0;
@@ -401,7 +417,10 @@ void CGameAI::doFindEnemy()
 				if(goodsCounter == NUMBER_OF_GOODS)
 				{
 					if(isConfigYes(SCRIPT_CONTROLL, WHEN_FULL_GOODS_STOP_FIND_ENEMY))
+					{
+						script.resetPos();
 						break;
+					}
 				}
 				if(!checkHPAndMP())
 				{
@@ -691,9 +710,7 @@ void CGameAI::doBackToCity()
 
 void CGameAI::doTime()
 {
-	time_t tt = time(NULL);
-	tm *t = localtime(&tt);
-	int minu = t->tm_min;
+	int minu = getMinu();
 	BOOL hasNext = TRUE;
 	if(minu >= script.x && minu <= script.y)
 	{
@@ -706,6 +723,7 @@ void CGameAI::doTime()
 			{
 				if(minu >= script.x && minu <= script.y)
 				{
+					resetMinu = script.targetX;
 					return;
 				}
 			} 
@@ -719,5 +737,13 @@ void CGameAI::doTime()
 		}
 		
 	}
-	free(t);
+}
+
+int CGameAI::getMinu()
+{
+	time_t tt = time(NULL);
+	tm *t = localtime(&tt);
+	int minu = t->tm_min;
+	//free(t);
+	return minu;
 }
