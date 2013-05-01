@@ -65,5 +65,6 @@ public:
 	void checkGoods(int *);
 	BOOL isConfigYes(LPCWSTR app, LPCWSTR key);
 	void doBackToCity();
+	void doTime();
 };
 

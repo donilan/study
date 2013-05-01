@@ -21,7 +21,7 @@ CCgxWindow::~CCgxWindow(void)
 
 BOOL CCgxWindow::locate(void)
 {
-	TRACE("Locating window...\n");
+	//TRACE("Locating window...\n");
 	RECT newRECT;
 	BOOL found;
 	RECT condition;
@@ -57,7 +57,7 @@ BOOL CCgxWindow::isExists(void)
 	if(pScreen && rect.right != 0 && rect.bottom != 0)
 	{
 		result = pScreen->match(pLocateImage, &rect);
-		TRACE("Check is window (%d, %d) exist: %d\n", rect.left, rect.top, result);
+		//TRACE("Check is window (%d, %d) exist: %d\n", rect.left, rect.top, result);
 	} else {
 		//pScreen->refresh();
 		result = locate();
@@ -90,7 +90,7 @@ void CCgxWindow::leftClick(int index)
 	int y = 0;
 	//BOOL isCommandEabled = isCommandEnable(index);
 	//TRACE("Is this command enabled: %d\n", isCommandEabled);
-	//if(isCommandEabled) return;
+	//if(isCommandEnable(index)) return;
 	getCommand(index, &rect);
 	
 	if(rect.right > 0 && rect.bottom > 0)

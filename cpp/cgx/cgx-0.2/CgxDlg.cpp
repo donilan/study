@@ -62,6 +62,7 @@ BOOL CCgxDlg::OnInitDialog()
 #endif
 	RegisterHotKey(this->m_hWnd, HOTKEY_F5, 0, VK_F5);
 	RegisterHotKey(this->m_hWnd, HOTKEY_F6, 0, VK_F6);
+	RegisterHotKey(this->m_hWnd, HOTKEY_F7, 0, VK_F7);
 	OnBnClickedRefresh();
 	_initConfigFile();
 
@@ -110,6 +111,8 @@ void CCgxDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 {
 	CComboBox* gameList = (CComboBox*)GetDlgItem(IDC_GAME_LIST);
 	int index = gameList->GetCurSel();
+	CCgxMapWindow* mWind = gameManager.games[index]->getLeader()->mapWindow;
+	TCHAR buff[MAX_PATH] = {0};
 	switch(nHotKeyId)
 	{
 	case HOTKEY_F2:
@@ -126,6 +129,13 @@ void CCgxDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 	case HOTKEY_F6:
 		gameManager.games[index]->stopAI();
 		((CButton *)GetDlgItem(IDC_START))->SetWindowText(TEXT("Æô¶¯"));
+		break;
+	case HOTKEY_F7:
+		if(mWind->isExists())
+		{
+			swprintf(buff, sizeof(TCHAR)*MAX_PATH, TEXT("%d,%d"), mWind->getX(), mWind->getY());
+			_append2script(buff);
+		}
 		break;
 	}
 	CDialogEx::OnHotKey(nHotKeyId, nKey1, nKey2);
@@ -256,4 +266,18 @@ void CCgxDlg::_initConfigFile(void)
 		WritePrivateProfileString(SCRIPT_CONTROLL, DROP_CARD, CN_YES, CONFIG_FILE);
 		WritePrivateProfileString(SCRIPT_CONTROLL, DROP_CRYSTAL, CN_YES, CONFIG_FILE);
 	}
+}
+
+void CCgxDlg::_append2script( TCHAR* buff )
+{
+	CEdit* edit = (CEdit *)GetDlgItem(IDC_SCRIPT);
+	// get the initial text length
+	int nLength = edit->GetWindowTextLength();
+	// put the selection at the end of text
+	edit->SetSel(nLength, nLength);
+	// replace the selection
+	edit->ReplaceSel(buff);
+	nLength = edit->GetWindowTextLength();
+	edit->SetSel(nLength, nLength);
+	edit->ReplaceSel(TEXT("\n"));
 }

@@ -27,15 +27,18 @@ BOOL CCgxPetCommandWindow::isCommandEnable(int index)
 	RECT tmp;
 	if(getCommand(index, &tmp))
 	{
-		if(!(pScreen->colorDeviation(&tmp, RGB(212, 173, 106)) > 40))
+		if(!(pScreen->colorDeviation(&tmp, RGB(214, 174, 107)) > 40))
+		{
 			return TRUE;
+		}
 	}
 	return FALSE;
 }
 
 void CCgxPetCommandWindow::clickSkillCommand(void)
 {
-	leftClick(0);
+	if(!isCommandEnable(0))
+		leftClick(0);
 }
 
 void CCgxPetCommandWindow::getLocateRECT(RECT* rectOut)

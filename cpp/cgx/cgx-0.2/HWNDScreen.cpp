@@ -56,8 +56,9 @@ INT CHWNDScreen::colorDeviation(const RECT* rect, COLORREF rgb)
 		}
 	
 	rate = (100 * count) / pixSize;
-	TRACE("Size: %d found: %d RGB(%d,%d,%d) rate: %d%%\n"
-		, pixSize, count, (INT)GetRValue(rgb), (INT)GetGValue(rgb)
+	TRACE("left: %d right: %d top: %d, bottom: %d Size: %d found: %d RGB(%d,%d,%d) rate: %d%%\n",
+		rect->left, rect->right, rect->top, rect->bottom,
+		pixSize, count, (INT)GetRValue(rgb), (INT)GetGValue(rgb)
 		, (INT)GetBValue(rgb), rate);
 
 

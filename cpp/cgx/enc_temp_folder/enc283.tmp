@@ -709,7 +709,7 @@ void CGameAI::doTime()
 					return;
 				}
 			} 
-			else if(script.command == CScript::AGAIN)
+else if(script.command == CScript::AGAIN)
 			{
 				TRACE("Time.....\n");
 				script.resetPos();

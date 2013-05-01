@@ -49,6 +49,6 @@ int CCgxTopLeftWindow::getMP(void)
 	mpRECT.right = this->rect.right + 31;
 	mpRECT.top = this->rect.top + 11;
 	mpRECT.bottom = mpRECT.top + 10;
-	//pScreen->flashRECT(&mpRECT);
+	/pScreen->flashRECT(&mpRECT);
 	return pScreen->toNumber(&mpRECT);
 }

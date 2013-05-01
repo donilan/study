@@ -10,6 +10,7 @@
 #define HOTKEY_F4 4
 #define HOTKEY_F5 5
 #define HOTKEY_F6 6
+#define HOTKEY_F7 7
 #define MAX_GAME 10
 
 
@@ -42,6 +43,8 @@ public:
 private:
 	BOOL isTestDlgOpen;
 	CGameManager gameManager;
+
+	inline void _append2script(TCHAR* buff);
 public:
 	afx_msg void OnBnClickedRefresh();
 	

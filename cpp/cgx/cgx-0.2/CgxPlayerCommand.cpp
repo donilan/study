@@ -93,5 +93,5 @@ void CCgxPlayerCommand::getLocateRECT(RECT* rectOut)
 	rectOut->left = 353;
 	rectOut->top = 28;
 	rectOut->right = 435;
-	rectOut->bottom = 47;
+	rectOut->bottom = 50;
 }
