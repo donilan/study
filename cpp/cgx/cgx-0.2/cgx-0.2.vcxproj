@@ -126,6 +126,7 @@
     <ClInclude Include="CgxBottomWindow.h" />
     <ClInclude Include="CgxDlg.h" />
     <ClInclude Include="CgxGoodsWindow.h" />
+    <ClInclude Include="CgxLoginForm.h" />
     <ClInclude Include="CgxMapWindow.h" />
     <ClInclude Include="CgxMonster.h" />
     <ClInclude Include="CgxPetCommandWindow.h" />
@@ -152,6 +153,7 @@
     <ClCompile Include="CgxBottomWindow.cpp" />
     <ClCompile Include="CgxDlg.cpp" />
     <ClCompile Include="CgxGoodsWindow.cpp" />
+    <ClCompile Include="CgxLoginForm.cpp" />
     <ClCompile Include="CgxMapWindow.cpp" />
     <ClCompile Include="CgxMonster.cpp" />
     <ClCompile Include="CgxPetCommandWindow.cpp" />
@@ -166,6 +168,7 @@
     <ClCompile Include="GameAI.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="HWNDScreen.cpp" />
+    <ClCompile Include="macAddress.cpp" />
     <ClCompile Include="Script.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

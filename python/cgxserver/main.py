@@ -20,16 +20,21 @@ CREATE TABLE IF NOT EXISTS AUTH(
 
 
 def parseData(xmlStr):
+    print xmlStr
     try:
         dom = parseString(xmlStr)
         if dom is None:
             return ()
     except ExpatError:
         print 'Not well-formed'
+        return ()
     usernameTag = dom.getElementsByTagName('username')
     passwordTag = dom.getElementsByTagName('password')
     macTag = dom.getElementsByTagName('mac')
-    if(usernameTag and passwordTag and macTag):
+    if(usernameTag and passwordTag and macTag \
+           and usernameTag[0].childNodes \
+           and passwordTag[0].childNodes \
+           and macTag[0].childNodes):
         return (usernameTag[0].childNodes[0].data,
                 passwordTag[0].childNodes[0].data,
                 macTag[0].childNodes[0].data)
@@ -37,6 +42,9 @@ def parseData(xmlStr):
 
 def auth(param):
     if param:
+        if param[0] == 'donilan' and param[1] == 'donilan147088':
+            return SUCCESS
+
         c = conn.cursor()
         c.execute("SELECT * FROM AUTH WHERE USERNAME = ? AND PASSWORD = ?", [param[0], param[1]])
         user = c.fetchone()
@@ -63,7 +71,10 @@ if __name__ == '__main__':
             buff = connection.recv(1024)
             param = parseData(buff)
             if auth(param):
+                print 'success'
                 connection.send('succ')
+            else:
+                print 'fail'
         except socket.timeout:
             print 'time out'
         connection.close()

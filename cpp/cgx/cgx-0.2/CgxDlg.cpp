@@ -214,7 +214,7 @@ void CCgxDlg::OnCbnSelchangeScriptList()
 	MultiByteToWideChar(CP_ACP, NULL, buff, fileSize, text, size);
 	text[size] = '\0';
 	script->SetWindowTextW(text);
-	TRACE(text);
+	//TRACE(text);
 	delete[] buff;
 	delete[] text;
 	file.Close();

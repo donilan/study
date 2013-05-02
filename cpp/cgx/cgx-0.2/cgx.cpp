@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "cgx.h"
 #include "CgxDlg.h"
+#include "CgxLoginForm.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -66,6 +67,13 @@ BOOL CCgxApp::InitInstance()
 	// TODO: 应适当修改该字符串，
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
+
+#ifndef DEBUG
+	CCgxLoginForm loginDlg;
+	INT_PTR loginResp = loginDlg.DoModal();
+	if(loginResp != IDOK)
+		ExitProcess(-1);
+#endif
 
 	CCgxDlg dlg;
 	m_pMainWnd = &dlg;

@@ -8,7 +8,7 @@
 
 #define FIGHT_INTERVAL 800
 #define HIT_INTERNAL 200
-#define TALK_INTERVAL 1300
+#define TALK_INTERVAL 2000
 #define WALK_INTERVAL 250
 
 const RECT YES_CONDITION = {200, 320, 270, 370}; // yes
@@ -52,9 +52,11 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 	int mapWindowCheckCount = 0;
 	int currX;
 	int currY;
+	int lastX = 0, lastY = 0;
 	int nextX = 0;
 	int nextY = 0;
-	int walkStep;
+	int walkStep = 0;
+	int checkCounter = 0;
 	BOOL isMapOpened = FALSE;
 	BOOL hasNextStep = TRUE;
 	//leader->getScreen()->startAutoRefresh();
@@ -114,6 +116,17 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 					Sleep(WALK_INTERVAL*walkStep/2);
 				}
 				Sleep(walkStep*WALK_INTERVAL);
+
+				//重置机制
+				if(lastX == currX && lastY == currY)
+					++checkCounter;
+				else
+					checkCounter = 0;
+				if(checkCounter > 50)
+					ai->script.resetPos();
+				lastX = currX;
+				lastY = currY;
+				//end 重置机制
 				break;
 			case CScript::HEAL:
 				ai->doHeal();
@@ -390,6 +403,7 @@ void CGameAI::doFindEnemy()
 	BOOL isPress = FALSE;
 	int goodsCounter = 0;
 	int nowMinu = 0;
+	int failCounter = 0;
 	while(isAIStart)
 	{
 		if(pMap->isExists())
@@ -401,12 +415,17 @@ void CGameAI::doFindEnemy()
 				if(!isReseted && resetMinu != 0)
 				{
 					nowMinu = getMinu();
-					TRACE("Now is %d\n");
+					TRACE("Now is %d reset minu %d\n", nowMinu, resetMinu);
 					if(resetMinu == nowMinu)
 					{
 						script.resetPos();
 						isReseted = TRUE;
 					}
+				}
+				else
+				{
+					TRACE("NOT FOUND. %d %d\n", resetMinu, isReseted);
+					Sleep(10000);
 				}
 				Sleep(200);
 				pMap->leftClickCenter();
@@ -463,7 +482,8 @@ void CGameAI::doFindEnemy()
 					}
 					walkStep = pMap->goNext(0, -8);
 					Sleep(walkStep* WALK_INTERVAL);
-				} else
+				}  
+				else
 				{
 					//TRACE("All found\n");
 					if(currY <= endOfNorth+1)
@@ -477,8 +497,8 @@ void CGameAI::doFindEnemy()
 						isPress = TRUE;
 						CSystem::leftPress(0, 0);
 					}
-					
 				}
+				
 			} 
 			else // 限制遇敌
 			{
@@ -505,8 +525,22 @@ void CGameAI::doFindEnemy()
 					isPress = TRUE;
 					CSystem::leftPress(0, 0);
 				}
+			} // // end 限制遇敌
+			Sleep(WALK_INTERVAL*walkStep);
+			//重置机制
+			if(lastX == currX && lastY == currY)
+				++failCounter;
+			else
+				failCounter = 0;
+			if(failCounter > 10)
+			{
+				isEndOfWest = FALSE;
+				endOfNorth = 0;
+				endOfSouth = 0;
+				failCounter = 0;
+				isPress = FALSE;
 			}
-			Sleep(WALK_INTERVAL);
+			// end 重置机制
 			lastX = currX;
 			lastY = currY;
 			continue;
@@ -714,8 +748,10 @@ void CGameAI::doTime()
 	BOOL hasNext = TRUE;
 	if(minu >= script.x && minu <= script.y)
 	{
+		resetMinu = script.targetX;
 		return;
-	} else {
+	} 
+	else {
 		while(hasNext)
 		{
 			hasNext = script.nextStep();

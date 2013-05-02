@@ -165,6 +165,9 @@
     <ClInclude Include="CgxSystemWindow.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CgxLoginForm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CgxDlg.cpp">
@@ -231,6 +234,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CgxSystemWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CgxLoginForm.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="macAddress.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
