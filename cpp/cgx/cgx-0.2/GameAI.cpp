@@ -10,6 +10,7 @@
 #define HIT_INTERNAL 200
 #define TALK_INTERVAL 2000
 #define WALK_INTERVAL 250
+#define LOOP_TIMES 3
 
 const RECT YES_CONDITION = {200, 320, 270, 370}; // yes
 const RECT SURE_CONDITION = {200, 320, 400, 370}; // sure
@@ -20,7 +21,9 @@ const RECT SALE_CANCEL_CONDITION = {475, 390, 550, 410};
 const RECT SALE_SURE_CONDITION = {305, 390, 375, 410}; // sale sure
 const RECT SALE_YES_CONDITION = {100, 405, 170, 430}; // sale yes
 const RECT SALE_CONDITION = {310, 302, 322, 312};		// sale
+const RECT SALE_CONDITION2 = {310, 288, 322, 298};		// sale2
 const RECT NOT_SALE_CONDITION = {310, 314, 322, 326};   // not sale
+const RECT NOT_SALE_CONDITION2 = {310, 302, 322, 312};   // not sale2
 CGameAI::CGameAI( CGame* game)
 {
 	this->leader = game;
@@ -69,10 +72,9 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 			Sleep(500);
 			continue;
 		}
-		//int goods = 0;
-		//ai->checkGoods(&goods);
-		///TRACE("goods: %d", goods);
-		//Sleep(10000);
+		
+		ai->fuckingMouse();
+		Sleep(500);
 		if(!isMapOpened && leader->topRightWindow->isExists())
 		{
 			leader->topRightWindow->openMap();
@@ -242,7 +244,9 @@ void CGameAI::playerFight()
 	}
 	Sleep(FIGHT_INTERVAL);
 	leader->monster->hitOne();
-	Sleep(FIGHT_INTERVAL/2);
+	Sleep(FIGHT_INTERVAL/3);
+	fuckingMouse();
+	Sleep(FIGHT_INTERVAL/3);
 }
 
 
@@ -265,6 +269,8 @@ void CGameAI::petFight(void)
 	//·ÀÖ¹ÍµÏ®
 	Sleep(FIGHT_INTERVAL);
 	leader->monster->hitOne();
+	Sleep(FIGHT_INTERVAL);
+	fuckingMouse();
 }
 
 
@@ -365,11 +371,14 @@ void CGameAI::doTalk()
 {
 	RECT rect = {118, 164, 515, 330};
 	BOOL done = FALSE;
-	rightClickTager(script.targetX, script.targetY);
+	int currX = 0;
+	int currY = 0;
+	rightClickTager(script.x, script.x);
 	Sleep(TALK_INTERVAL);
 	//leader->getScreen()->flashRECT(&rect);
 	while(!done)
 	{
+		
 		if(leader->getScreen()->locate(IDB_YES, &rect, &YES_CONDITION))
 		{
 			CSystem::leftClick(&rect);
@@ -379,7 +388,14 @@ void CGameAI::doTalk()
 		{
 			CSystem::leftClick(&rect);
 			Sleep(TALK_INTERVAL);
-		} 
+		}
+		else if(script.targetX != 0 && script.targetY != 0)
+		{
+			currX = leader->mapWindow->getX();
+			currY = leader->mapWindow->getY();
+			if(currX == script.targetX && currY == script.targetY)
+				done = TRUE;
+		}
 		else{
 			done = TRUE;
 		}
@@ -421,11 +437,6 @@ void CGameAI::doFindEnemy()
 						script.resetPos();
 						isReseted = TRUE;
 					}
-				}
-				else
-				{
-					TRACE("NOT FOUND. %d %d\n", resetMinu, isReseted);
-					Sleep(10000);
 				}
 				Sleep(200);
 				pMap->leftClickCenter();
@@ -573,7 +584,7 @@ void CGameAI::autoFight(void)
 		else if(leader->petCommandWindow->isExists())
 		{
 			petFight();
-			Sleep(6000);
+			Sleep(2000);
 		}
 	} else {
 		Sleep(500);
@@ -604,47 +615,81 @@ BOOL CGameAI::checkHPAndMP(void)
 void CGameAI::doSale()
 {
 	RECT rect = {0};
-	rightClickTager(script.targetX, script.targetY);
-	Sleep(TALK_INTERVAL);
-	if(leader->getScreen()->colorDeviation(&SALE_CONDITION, RGB(255,255,255)) > 5)
+	int goodsCounter = 0;
+	int times = 0;
+	BOOL done = FALSE;
+	int tmp = 0;
+	while(!done && isAIStart)
 	{
-		
-		CSystem::leftClick(&SALE_CONDITION);
-		Sleep(TALK_INTERVAL);
-	}
-
-	if(leader->getScreen()->locate(IDB_ALL, &rect, &SALE_ALL_CONDITION))
-	{
-		TRACE("Found Sale all\n");
-		CSystem::leftClick(&rect);
-		Sleep(TALK_INTERVAL);
-	} else {
-		if(leader->getScreen()->locate(IDB_CANCEL, &rect, &SALE_CANCEL_CONDITION))
+		++times;
+		rightClickTager(script.targetX, script.targetY);
+		Sleep(TALK_INTERVAL/2);
+		fuckingMouse();
+		Sleep(TALK_INTERVAL/2);
+		tmp = leader->getScreen()->colorDeviation(&SALE_CONDITION, RGB(255,255,255));
+		if(tmp == 40)
 		{
-			TRACE("Found Sale Cancel all\n");
-			CSystem::leftClick(&rect);
+			CSystem::leftClick(&SALE_CONDITION);
+			Sleep(TALK_INTERVAL);
+		} 
+		else if (tmp == 24)
+		{
+			CSystem::leftClick(&SALE_CONDITION2);
 			Sleep(TALK_INTERVAL);
 		}
-		
-	}
 
-	if(leader->getScreen()->locate(IDB_SURE, &rect, &SALE_SURE_CONDITION))
-	{
-		TRACE("Found sale sure\n");
-		CSystem::leftClick(&rect);
-		Sleep(TALK_INTERVAL);
-	}
-	if(leader->getScreen()->locate(IDB_YES, &rect, &SALE_YES_CONDITION))
-	{
-		TRACE("Found sale yes\n");
-		CSystem::leftClick(&rect);
-		Sleep(TALK_INTERVAL);
-	}
-
-	if(leader->getScreen()->colorDeviation(&NOT_SALE_CONDITION, RGB(255,255,255)) > 5)
-	{
-		CSystem::leftClick(&NOT_SALE_CONDITION);
-		Sleep(TALK_INTERVAL);
+		for(int i = 0; i < LOOP_TIMES; ++i) 
+		{
+			if(leader->getScreen()->locate(IDB_ALL, &rect, &SALE_ALL_CONDITION))
+			{
+				TRACE("Found Sale all\n");
+				CSystem::leftClick(&rect);
+				Sleep(TALK_INTERVAL);
+				for( int x = 0; x < LOOP_TIMES; ++x)
+				{
+					if(leader->getScreen()->locate(IDB_SURE, &rect, &SALE_SURE_CONDITION))
+					{
+						TRACE("Found sale sure\n");
+						CSystem::leftClick(&rect);
+						Sleep(TALK_INTERVAL);
+					}
+					if(leader->getScreen()->locate(IDB_YES, &rect, &SALE_YES_CONDITION))
+					{
+						TRACE("Found sale yes\n");
+						CSystem::leftClick(&rect);
+						Sleep(TALK_INTERVAL);
+						break;
+					}
+					Sleep(TALK_INTERVAL);
+				}
+				checkGoods(&goodsCounter);
+				if(goodsCounter < 10)
+				{
+					done = TRUE;
+					break;
+				}
+			} 
+			if(leader->getScreen()->locate(IDB_CANCEL, &rect, &SALE_CANCEL_CONDITION))
+			{
+				TRACE("Found Sale Cancel\n");
+				CSystem::leftClick(&rect);
+				Sleep(TALK_INTERVAL);
+			} 
+			if(leader->getScreen()->colorDeviation(&NOT_SALE_CONDITION, RGB(255,255,255)) > 5)
+			{
+				CSystem::leftClick(&NOT_SALE_CONDITION);
+				Sleep(TALK_INTERVAL);
+				done = TRUE;
+				break;
+			} else if(leader->getScreen()->colorDeviation(&NOT_SALE_CONDITION2, RGB(255,255,255)) > 5)
+			{
+				CSystem::leftClick(&NOT_SALE_CONDITION2);
+				Sleep(TALK_INTERVAL);
+				done = TRUE;
+				break;
+			}
+			Sleep(TALK_INTERVAL);
+		}
 	}
 }
 
@@ -659,7 +704,7 @@ void CGameAI::checkGoods(int* goodsCounter)
 		
 		if(leader->goodsWindows->isExists())
 		{
-			SetCursorPos(630, 500);
+			fuckingMouse();
 			Sleep(100);
 			while(goodsType == 0 && *goodsCounter < NUMBER_OF_GOODS)
 			{
@@ -721,6 +766,7 @@ void CGameAI::doBackToCity()
 	{
 		if(!leader->mapWindow->isExists())
 		{
+			fuckingMouse();
 			Sleep(500);
 			continue;
 		}
@@ -782,4 +828,10 @@ int CGameAI::getMinu()
 	int minu = t->tm_min;
 	//free(t);
 	return minu;
+}
+
+
+void CGameAI::fuckingMouse(void)
+{
+	SetCursorPos(630, 500);
 }

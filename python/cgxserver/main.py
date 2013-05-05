@@ -42,13 +42,12 @@ def parseData(xmlStr):
 
 def auth(param):
     if param:
-        if param[0] == 'donilan' and param[1] == 'donilan147088':
-            return SUCCESS
-
         c = conn.cursor()
         c.execute("SELECT * FROM AUTH WHERE USERNAME = ? AND PASSWORD = ?", [param[0], param[1]])
         user = c.fetchone()
         if user is not None:
+            if user[2] == 'dev':
+                return SUCCESS
             if user[2] is not None and user[2] != param[2]:
                 return FAIL
             if user[2] is None:

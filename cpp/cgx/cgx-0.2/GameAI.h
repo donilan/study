@@ -69,5 +69,6 @@ public:
 	BOOL isConfigYes(LPCWSTR app, LPCWSTR key);
 	void doBackToCity();
 	void doTime();
+	void fuckingMouse();
 };
 
