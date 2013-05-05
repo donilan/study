@@ -77,6 +77,7 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 		Sleep(500);
 		if(!isMapOpened && leader->topRightWindow->isExists())
 		{
+			ai->checkHPAndMP();
 			leader->topRightWindow->openMap();
 			isMapOpened = TRUE;
 			TRACE("Map is opened!\n");
@@ -278,10 +279,21 @@ BOOL CGameAI::choiceSkill(const int monsterNumber, int* skillIndex, int* skillLv
 {
 	CString skillStr;
 	CString skillLvStr;
-	skillStr.Format(NUMBER_OF_MONSTER_SKILL, monsterNumber);
-	skillLvStr.Format(NUMBER_OF_MONSTER_SKILL_LV, monsterNumber);
-	*skillIndex = GetPrivateProfileInt(FIGHT_SKILL, skillStr.GetBuffer(20), 0, CONFIG_FILE);
-	*skillLv = GetPrivateProfileInt(FIGHT_SKILL, skillLvStr.GetBuffer(20), 10, CONFIG_FILE);
+	int skill0MP = 0;
+	checkHPAndMP();
+	skill0MP = GetPrivateProfileInt(SCRIPT_CONTROLL, WHEN_LOW_MP_SKILL, 20, CONFIG_FILE);
+	TRACE("Mp %d, SKILL0 Mp %d\n", mp, skill0MP);
+	if(skill0MP > 0 && mp < skill0MP)
+	{
+		*skillIndex = 0;
+	}
+	else
+	{
+		skillStr.Format(NUMBER_OF_MONSTER_SKILL, monsterNumber);
+		skillLvStr.Format(NUMBER_OF_MONSTER_SKILL_LV, monsterNumber);
+		*skillIndex = GetPrivateProfileInt(FIGHT_SKILL, skillStr.GetBuffer(20), 0, CONFIG_FILE);
+		*skillLv = GetPrivateProfileInt(FIGHT_SKILL, skillLvStr.GetBuffer(20), 10, CONFIG_FILE);
+	}
 	return TRUE;
 }
 
@@ -587,7 +599,7 @@ void CGameAI::autoFight(void)
 			Sleep(2000);
 		}
 	} else {
-		Sleep(500);
+		Sleep(1000);
 	}
 }
 
@@ -596,7 +608,6 @@ BOOL CGameAI::checkHPAndMP(void)
 {
 	int leaveHP = 0;
 	int leaveMP = 0;
-	int hp = 0, mp = 0;
 	if(leader->topLeftWindow->isExists())
 	{
 		leaveHP = GetPrivateProfileInt(SCRIPT_CONTROLL, WHEN_HP_STOP_FIND_ENEMY, 0, CONFIG_FILE);
@@ -608,6 +619,12 @@ BOOL CGameAI::checkHPAndMP(void)
 			return TRUE;
 		else if(hp <= leaveHP || mp <= leaveMP)
 			return FALSE;
+	} 
+	else
+	{
+		hp = leader->topLeftWindow->getHPOnFighting();
+		mp = leader->topLeftWindow->getMPOnFighting();
+		TRACE("HP: %d, MP: %d \n", hp, mp);
 	}
 	return TRUE;
 }

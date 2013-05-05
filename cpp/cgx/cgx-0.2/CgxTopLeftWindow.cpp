@@ -52,3 +52,25 @@ int CCgxTopLeftWindow::getMP(void)
 	//pScreen->flashRECT(&mpRECT);
 	return pScreen->toNumber(&mpRECT);
 }
+
+int CCgxTopLeftWindow::getMPOnFighting( void )
+{
+	RECT mpRECT;
+	mpRECT.left = this->rect.right + 2;
+	mpRECT.right = this->rect.right + 33;
+	mpRECT.top = this->rect.top -6;
+	mpRECT.bottom = mpRECT.top + 9;
+	//pScreen->flashRECT(&mpRECT);
+	return pScreen->toNumber(&mpRECT);
+}
+
+int CCgxTopLeftWindow::getHPOnFighting( void )
+{
+	RECT hpRECT;
+	hpRECT.left = this->rect.right + 2;
+	hpRECT.right = this->rect.right + 32;
+	hpRECT.top = this->rect.top-18;
+	hpRECT.bottom = hpRECT.top + 11;
+	pScreen->flashRECT(&hpRECT);
+	return pScreen->toNumber(&hpRECT);
+}

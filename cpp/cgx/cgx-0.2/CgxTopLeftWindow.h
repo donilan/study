@@ -9,6 +9,8 @@ public:
 	void locateCommands(void);
 	void getLocateRECT(RECT* rectOut);
 	int getHP(void);
+	int getHPOnFighting(void);
 	int getMP(void);
+	int getMPOnFighting(void);
 };
 

@@ -12,5 +12,6 @@ public:
 	//void skillRECT(INT index, RECT* skillRECTOut);
 	void locateCommands(void);
 	BOOL isCommandEnable(int);
+	void getLocateRECT(RECT* rectOut);
 };
 

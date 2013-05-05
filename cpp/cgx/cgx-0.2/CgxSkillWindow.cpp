@@ -42,3 +42,11 @@ BOOL CCgxSkillWindow::isCommandEnable(int index)
 	}
 	return FALSE;
 }
+
+void CCgxSkillWindow::getLocateRECT( RECT* rectOut )
+{
+	rectOut->left = 348;
+	rectOut->top = 98;
+	rectOut->right = 435;
+	rectOut->bottom = 146;
+}

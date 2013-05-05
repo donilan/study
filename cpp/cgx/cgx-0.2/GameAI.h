@@ -35,6 +35,8 @@ public:
 	int allSkillLv;
 	int petSkill;
 	int resetMinu;
+	int hp;
+	int mp;
 	BOOL isReseted;
 
 	BOOL isAIStart;
