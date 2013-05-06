@@ -35,8 +35,6 @@ public:
 	int allSkillLv;
 	int petSkill;
 	int resetMinu;
-	int hp;
-	int mp;
 	BOOL isReseted;
 
 	BOOL isAIStart;
@@ -71,6 +69,6 @@ public:
 	BOOL isConfigYes(LPCWSTR app, LPCWSTR key);
 	void doBackToCity();
 	void doTime();
-	void fuckingMouse();
+	void fuckingMouse(void);
 };
 

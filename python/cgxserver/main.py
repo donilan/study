@@ -16,18 +16,34 @@ CREATE TABLE IF NOT EXISTS AUTH(
   MAC VARCHAR(255)
 )
 ''')
+    c.execute('''
+CREATE TABLE IF NOT EXISTS AUTH_LOG(
+  USERNAME VARCHAR(255),
+  PASSWORD VARCHAR(255),
+  MAC VARCHAR(255),
+  IP VARCHAR(255),
+  AUTH_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+''')
     conn.commit()
 
+def authLog(fn):
+    def new(param):
+        c = conn.cursor()
+        c.execute("INSERT INTO AUTH_LOG(USERNAME, PASSWORD, MAC, IP) VALUES (?,?,?,?)", param)
+        conn.commit()
+        return fn(param)
+    return new
 
 def parseData(xmlStr):
     print xmlStr
     try:
         dom = parseString(xmlStr)
         if dom is None:
-            return ()
+            return []
     except ExpatError:
         print 'Not well-formed'
-        return ()
+        return []
     usernameTag = dom.getElementsByTagName('username')
     passwordTag = dom.getElementsByTagName('password')
     macTag = dom.getElementsByTagName('mac')
@@ -35,11 +51,12 @@ def parseData(xmlStr):
            and usernameTag[0].childNodes \
            and passwordTag[0].childNodes \
            and macTag[0].childNodes):
-        return (usernameTag[0].childNodes[0].data,
+        return [usernameTag[0].childNodes[0].data,
                 passwordTag[0].childNodes[0].data,
-                macTag[0].childNodes[0].data)
-    return ()
+                macTag[0].childNodes[0].data]
+    return []
 
+@authLog
 def auth(param):
     if param:
         c = conn.cursor()
@@ -69,6 +86,8 @@ if __name__ == '__main__':
             connection.settimeout(5)
             buff = connection.recv(1024)
             param = parseData(buff)
+            if(param):
+                param.append(address[0])
             if auth(param):
                 print 'success'
                 connection.send('succ')
