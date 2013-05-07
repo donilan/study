@@ -827,7 +827,7 @@ void CGameAI::doBackToCity()
 		if(!leader->mapWindow->isExists())
 		{
 			fuckingMouse();
-			Sleep(500);
+			Sleep(TALK_INTERVAL);
 			continue;
 		}
 		
@@ -836,32 +836,50 @@ void CGameAI::doBackToCity()
 		if((x == script.x && y == script.y) 
 			|| (x == script.targetX && y == script.targetY))
 			break;
-		Sleep(TALK_INTERVAL);
-		if(x == 72 && y == 123)
+		TRACE("Do back city: %d,%d %d,%d\n", script.x, script.y, script.targetX, script.targetY);
+		if((script.x == 72 && script.y == 123)
+			|| (script.x == 233 && script.y == 78)
+			|| (script.x == 162 && script.y == 130)
+			|| (script.targetX == 72 && script.targetY == 123)
+			|| (script.targetX == 233 && script.targetY == 78)
+			|| (script.targetX == 162 && script.targetY == 130))
 		{
-			rightClickTager(73, 123);
-			continue;
-		} else if(x == 233 && y == 78)
-		{
-			rightClickTager(233, 77);
-			continue;
-		} else if(x == 162 && y == 130 )
-		{
-			rightClickTager(163, 130);
-			continue;
-		} else if(x == 63 && y == 79)
-		{
-			rightClickTager(63, 78);
-			continue;
-		} else if(x == 242 && y == 100)
-		{
-			rightClickTager(243, 100);
-			continue;
-		} else if(x == 141 && y == 148)
-		{
-			rightClickTager(141, 147);
-			continue;
+			if(x == 72 && y == 123)
+			{
+				rightClickTager(73, 123);
+				continue;
+			} else if(x == 233 && y == 78)
+			{
+				rightClickTager(233, 77);
+				continue;
+			} else if(x == 162 && y == 130 )
+			{
+				rightClickTager(163, 130);
+				continue;
+			}
 		}
+		if((script.x == 63 && script.y == 79)
+			|| (script.x == 242 && script.y == 100)
+			|| (script.x == 141 && script.y == 148)
+			|| (script.targetX == 63 && script.targetY == 79)
+			|| (script.targetX == 242 && script.targetY == 100)
+			|| (script.targetX == 141 && script.targetY == 148))
+		{
+			if(x == 63 && y == 79)
+			{
+				rightClickTager(63, 78);
+				continue;
+			} else if(x == 242 && y == 100)
+			{
+				rightClickTager(243, 100);
+				continue;
+			} else if(x == 141 && y == 148)
+			{
+				rightClickTager(141, 147);
+				continue;
+			}
+		}
+		
 		leader->bottomWindow->openSystemWindow();
 		Sleep(TALK_INTERVAL);
 		if(leader->systemWindow->isExists())
