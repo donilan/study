@@ -13,6 +13,8 @@
 #define WHEN_FULL_GOODS_STOP_FIND_ENEMY TEXT("满道具停止遇敌")
 #define DROP_CARD TEXT("丢弃卡片")
 #define DROP_CRYSTAL TEXT("丢弃水晶")
+#define NUMBER_OF_MONSTER_PET_SKILL TEXT("%d个怪物宠物使用技能")
+#define PET_ATTACK_BACK TEXT("宠物是否攻击后排")
 #define NUMBER_OF_MONSTER_SKILL TEXT("%d个怪物技能")
 #define NUMBER_OF_MONSTER_SKILL_LV TEXT("%d个怪物技能等级")
 #define CONFIG_FILE TEXT(".\\config.ini")
@@ -26,7 +28,8 @@ public:
 
 	void join(CGameAI*);
 
-	
+	CTime startTime;
+	CTime endTime;
 	int singleSkill;
 	int singleSkillLv;
 	int fourSkill;
@@ -36,7 +39,8 @@ public:
 	int petSkill;
 	int resetMinu;
 	BOOL isReseted;
-
+	int mp;
+	int hp;
 	BOOL isAIStart;
 	BOOL isLocatePetSkill;
 
@@ -70,5 +74,6 @@ public:
 	void doBackToCity();
 	void doTime();
 	void fuckingMouse(void);
+	void writeLog(CString str);
 };
 

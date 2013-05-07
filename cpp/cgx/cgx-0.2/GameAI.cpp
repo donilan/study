@@ -9,7 +9,7 @@
 #define FIGHT_INTERVAL 800
 #define HIT_INTERNAL 200
 #define TALK_INTERVAL 2000
-#define WALK_INTERVAL 250
+#define WALK_INTERVAL 185
 #define LOOP_TIMES 3
 
 const RECT YES_CONDITION = {200, 320, 270, 370}; // yes
@@ -52,6 +52,7 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 {
 	CGameAI *ai = (CGameAI *) lpVoid;
 	CGame* leader = ai->getLeader();
+	CString logTmp;
 	int mapWindowCheckCount = 0;
 	int currX;
 	int currY;
@@ -65,6 +66,9 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 	//leader->getScreen()->startAutoRefresh();
 	ai->script.command = CScript::UNKNOW;
 	ai->script.resetPos();
+	ai->startTime = CTime::GetCurrentTime();
+	ai->writeLog(TEXT("\r\n开始脚本"));
+	ai->fuckingMouse();
 	while(ai->isAIStart && hasNextStep)
 	{
 		if(!leader->getScreen()->isFocus())
@@ -72,8 +76,6 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 			Sleep(500);
 			continue;
 		}
-		
-		ai->fuckingMouse();
 		Sleep(500);
 		if(!isMapOpened && leader->topRightWindow->isExists())
 		{
@@ -100,8 +102,10 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 				(abs(currX - ai->script.x) > 4 || abs(currY - ai->script.y) > 4)))
 				{
 					hasNextStep = ai->script.nextStep();
+					ai->writeLog(TEXT("转图完成"));
 					break;
 				}
+				
 			case CScript::WALK:
 				if(currX == ai->script.x && currY == ai->script.y)
 				{
@@ -116,7 +120,7 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 					|| (nextY != 0 && abs(nextY) < 10))
 				{
 					TRACE("Sleep more................................\n");
-					Sleep(WALK_INTERVAL*walkStep/2);
+					Sleep(WALK_INTERVAL*walkStep/8);
 				}
 				Sleep(walkStep*WALK_INTERVAL);
 
@@ -125,8 +129,11 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 					++checkCounter;
 				else
 					checkCounter = 0;
-				if(checkCounter > 50)
+				if(checkCounter > 20)
+				{
+					ai->writeLog(TEXT("发现人物卡死，尝试重新开始"));
 					ai->script.resetPos();
+				}
 				lastX = currX;
 				lastY = currY;
 				//end 重置机制
@@ -136,6 +143,7 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 				hasNextStep = ai->script.nextStep();
 				break;
 			case CScript::AGAIN:
+				ai->writeLog(TEXT("\r\n脚本重来"));
 				ai->script.resetPos();
 				hasNextStep = ai->script.nextStep();
 				TRACE("===============  Again  ==================\n");
@@ -150,6 +158,7 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 				break;
 			case CScript::AUTO_FIGHT:
 				TRACE("Start auto fight.\n");
+				ai->writeLog(TEXT("开始自动战斗"));
 				while(ai->isAIStart)
 					ai->autoFight();
 				break;
@@ -173,6 +182,14 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 		}// Travel
 		else
 		{
+			if(leader->isOffline())
+			{
+				logTmp.Format(TEXT("执行脚本命令[%d] x: %d, y: %d 目标x: %d, 目标y: %d 时断线")
+					, ai->script.command, ai->script.x, ai->script.y, ai->script.targetX, ai->script.targetY);
+				ai->writeLog(logTmp);
+				ai->isAIStart = FALSE;
+				break;
+			}
 			++mapWindowCheckCount;
 			if(mapWindowCheckCount < 5)
 			{
@@ -185,6 +202,8 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 		ai->autoFight();
 		
 	}
+	ai->endTime = CTime::GetCurrentTime();
+	ai->writeLog(TEXT("结束脚本"));
 	return 0;
 }
 
@@ -253,15 +272,16 @@ void CGameAI::playerFight()
 
 void CGameAI::petFight(void)
 {
-	if(isLocatePetSkill == FALSE && leader->petCommandWindow->isExists())
-	{
-		leader->petCommandWindow->clickSkillCommand();
-		Sleep(FIGHT_INTERVAL);
-	}
+	int numOfMonster = leader->monster->countAlive();
+	CString petSkill;
+	petSkill.Format(NUMBER_OF_MONSTER_PET_SKILL, numOfMonster);
+	int skillNumber = GetPrivateProfileInt(FIGHT_SKILL, petSkill.GetBuffer(20), 1, CONFIG_FILE);
+	leader->petCommandWindow->clickSkillCommand();
+	Sleep(FIGHT_INTERVAL);
 	if(leader->petSkillWindow->isExists())
 	{
 		isLocatePetSkill = TRUE;
-		leader->petSkillWindow->leftClick(0);
+		leader->petSkillWindow->leftClick(skillNumber-1);
 		Sleep(FIGHT_INTERVAL);
 		
 	}
@@ -302,7 +322,7 @@ void CGameAI::doHeal()
 	rightClickTager(script.targetX, script.targetY);
 	Sleep(TALK_INTERVAL);
 	RECT rect = {309, 218, 323, 233};
-	
+	writeLog(TEXT("执行治疗"));
 	if(leader->getScreen()->colorDeviation(&rect, RGB(255,255,255)) > 5)
 	{
 		CSystem::leftClick(&rect);
@@ -354,6 +374,7 @@ void CGameAI::doHeal()
 	{
 		TRACE("Cancel button not found!\n");
 	}
+	writeLog(TEXT("治疗完成"));
 }
 
 void CGameAI::rightClickTager(int x, int y){
@@ -388,6 +409,7 @@ void CGameAI::doTalk()
 	rightClickTager(script.x, script.x);
 	Sleep(TALK_INTERVAL);
 	//leader->getScreen()->flashRECT(&rect);
+	writeLog(TEXT("执行对话"));
 	while(!done)
 	{
 		
@@ -412,11 +434,12 @@ void CGameAI::doTalk()
 			done = TRUE;
 		}
 	}
-	
+	writeLog(TEXT("执行对话完成"));
 }
 
 void CGameAI::doFindEnemy()
 {
+	static UINT fightCounter = 0;
 	CCgxMapWindow* pMap = leader->mapWindow;
 	int lastX = 0;
 	int lastY = 0;
@@ -432,6 +455,8 @@ void CGameAI::doFindEnemy()
 	int goodsCounter = 0;
 	int nowMinu = 0;
 	int failCounter = 0;
+	CString logTmp;
+	writeLog(TEXT("开始遇敌"));
 	while(isAIStart)
 	{
 		if(pMap->isExists())
@@ -446,6 +471,7 @@ void CGameAI::doFindEnemy()
 					TRACE("Now is %d reset minu %d\n", nowMinu, resetMinu);
 					if(resetMinu == nowMinu)
 					{
+						writeLog(TEXT("发现人物卡死，尝试重新开始"));
 						script.resetPos();
 						isReseted = TRUE;
 					}
@@ -455,7 +481,9 @@ void CGameAI::doFindEnemy()
 				notExistCounter = 0;
 				Sleep(200);
 				checkGoods(&goodsCounter);
-				TRACE("==================Goods: %d\n", goodsCounter);
+				logTmp.Format(TEXT("战斗结束，检查物品有%d个"), goodsCounter);
+				writeLog(logTmp);
+				//TRACE("==================Goods: %d\n", goodsCounter);
 				if(goodsCounter == NUMBER_OF_GOODS)
 				{
 					if(isConfigYes(SCRIPT_CONTROLL, WHEN_FULL_GOODS_STOP_FIND_ENEMY))
@@ -557,6 +585,7 @@ void CGameAI::doFindEnemy()
 				failCounter = 0;
 			if(failCounter > 10)
 			{
+				writeLog(TEXT("发现人物遇敌时卡死，尝试恢复"));
 				isEndOfWest = FALSE;
 				endOfNorth = 0;
 				endOfSouth = 0;
@@ -570,6 +599,14 @@ void CGameAI::doFindEnemy()
 		}
 		else
 		{
+			if(leader->isOffline())
+			{
+				logTmp.Format(TEXT("执行脚本命令[%d] x: %d, y: %d 目标x: %d, 目标y: %d 时断线")
+					, script.command, script.x, script.y, script.targetX, script.targetY);
+				writeLog(logTmp);
+				isAIStart = FALSE;
+				break;
+			}
 			isPress = FALSE;
 			++notExistCounter;
 			if(notExistCounter < 5)
@@ -597,7 +634,8 @@ void CGameAI::autoFight(void)
 		{
 			petFight();
 			Sleep(2000);
-		}
+		} else 
+			Sleep(500);
 	} else {
 		Sleep(1000);
 	}
@@ -636,6 +674,7 @@ void CGameAI::doSale()
 	int times = 0;
 	BOOL done = FALSE;
 	int tmp = 0;
+	writeLog(TEXT("出售魔石"));
 	while(!done && isAIStart)
 	{
 		++times;
@@ -644,12 +683,12 @@ void CGameAI::doSale()
 		fuckingMouse();
 		Sleep(TALK_INTERVAL/2);
 		tmp = leader->getScreen()->colorDeviation(&SALE_CONDITION, RGB(255,255,255));
-		if(tmp == 40)
+		if(tmp >=30 && tmp < 50)
 		{
 			CSystem::leftClick(&SALE_CONDITION);
 			Sleep(TALK_INTERVAL);
 		} 
-		else if (tmp == 24)
+		else if (tmp < 30 && tmp > 5)
 		{
 			CSystem::leftClick(&SALE_CONDITION2);
 			Sleep(TALK_INTERVAL);
@@ -708,12 +747,14 @@ void CGameAI::doSale()
 			Sleep(TALK_INTERVAL);
 		}
 	}
+	writeLog(TEXT("出售魔石完成"));
 }
 
 
 void CGameAI::checkGoods(int* goodsCounter)
 {
 	int goodsType = 0;
+	writeLog(TEXT("检查物品"));
 	if(leader->bottomWindow->isExists())
 	{
 		leader->bottomWindow->openGoodsWindow();
@@ -758,6 +799,7 @@ void CGameAI::checkGoods(int* goodsCounter)
 	Sleep(TALK_INTERVAL);
 	leader->bottomWindow->closeGoodsWindow();
 	Sleep(TALK_INTERVAL);
+	writeLog(TEXT("检查物品完成"));
 }
 
 
@@ -779,6 +821,7 @@ void CGameAI::doBackToCity()
 	int y = 0;
 	if(script.x == 0 || script.y == 0)
 		return;
+	writeLog(TEXT("回城开始"));
 	while(TRUE && isAIStart)
 	{
 		if(!leader->mapWindow->isExists())
@@ -793,6 +836,32 @@ void CGameAI::doBackToCity()
 		if((x == script.x && y == script.y) 
 			|| (x == script.targetX && y == script.targetY))
 			break;
+		Sleep(TALK_INTERVAL);
+		if(x == 72 && y == 123)
+		{
+			rightClickTager(73, 123);
+			continue;
+		} else if(x == 233 && y == 78)
+		{
+			rightClickTager(233, 77);
+			continue;
+		} else if(x == 162 && y == 130 )
+		{
+			rightClickTager(163, 130);
+			continue;
+		} else if(x == 63 && y == 79)
+		{
+			rightClickTager(63, 78);
+			continue;
+		} else if(x == 242 && y == 100)
+		{
+			rightClickTager(243, 100);
+			continue;
+		} else if(x == 141 && y == 148)
+		{
+			rightClickTager(141, 147);
+			continue;
+		}
 		leader->bottomWindow->openSystemWindow();
 		Sleep(TALK_INTERVAL);
 		if(leader->systemWindow->isExists())
@@ -803,6 +872,7 @@ void CGameAI::doBackToCity()
 			TRACE("System window not exists\n");
 		}
 	}
+	writeLog(TEXT("回城完成"));
 }
 
 void CGameAI::doTime()
@@ -851,4 +921,34 @@ int CGameAI::getMinu()
 void CGameAI::fuckingMouse(void)
 {
 	SetCursorPos(630, 500);
+}
+
+void CGameAI::writeLog( CString str )
+{
+	static TCHAR* szFileName = TEXT("运行日志.log");
+	CString fmtStr;
+	CTime nowTime = CTime::GetCurrentTime();
+	CFile file;
+	CFileStatus status;
+	BOOL isOk = FALSE;
+	if( CFile::GetStatus( szFileName, status ) )
+	{
+		// Open the file without the Create flag
+		//OutputDebugString(TEXT("Write file.\n"));
+		isOk = file.Open( szFileName, CFile::modeWrite );
+	}
+	else
+	{
+		// Open the file with the Create flag
+		//OutputDebugString(TEXT("Create file.\n"));
+		isOk = file.Open( szFileName, CFile::modeCreate | CFile::modeWrite );
+	}
+	if(isOk)
+	{
+		file.SeekToEnd();
+		fmtStr.Format(TEXT("%s - %s\r\n"), nowTime.Format("%Y-%m-%d %H:%M:%S"), str);
+		file.Write(fmtStr, fmtStr.GetLength()*sizeof(TCHAR));
+		file.Close();
+	}
+	
 }

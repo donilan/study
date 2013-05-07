@@ -19,6 +19,7 @@ CGame::CGame(HWND hwnd)
 	goodsWindows = new CCgxGoodsWindow(pScreen);
 	bottomWindow = new CCgxBottomWindow(pScreen);
 	systemWindow = new CCgxSystemWindow(pScreen);
+	offlineWindow = new CCgxOfflineWindow(pScreen);
 }
 
 CGame::~CGame()
@@ -35,6 +36,7 @@ CGame::~CGame()
 	delete goodsWindows;
 	delete bottomWindow;
 	delete systemWindow;
+	delete offlineWindow;
 }
 
 BOOL CGame::refresh(void)
@@ -96,4 +98,9 @@ HWND CGame::getHWND(void)
 CHWNDScreen* CGame::getScreen(void)
 {
 	return this->pScreen;
+}
+
+BOOL CGame::isOffline()
+{
+	return offlineWindow->locate();
 }

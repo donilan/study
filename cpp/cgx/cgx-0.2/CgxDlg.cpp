@@ -240,7 +240,7 @@ void CCgxDlg::_initConfigFile(void)
 	CString valSk;
 	CString keyLv;
 	CString valLv;
-
+	CString keyPetSk;
 	CFileFind finder;
 	BOOL isExists = finder.FindFile(CONFIG_FILE);
 	
@@ -253,12 +253,17 @@ void CCgxDlg::_initConfigFile(void)
 			valSk.Format(TEXT("%d"), i == 1? 0: 1);
 			keyLv.Format(NUMBER_OF_MONSTER_SKILL_LV, i);
 			valLv.Format(TEXT("%d"), i < 3? 1: i-1);
+			keyPetSk.Format(NUMBER_OF_MONSTER_PET_SKILL, i);
+			
 			WritePrivateProfileString(FIGHT_SKILL, keySk.GetBuffer(20),
 				valSk.GetBuffer(10), CONFIG_FILE);
 			WritePrivateProfileString(FIGHT_SKILL, keyLv.GetBuffer(20),
 				valLv.GetBuffer(10), CONFIG_FILE);
+			WritePrivateProfileString(FIGHT_SKILL, keyPetSk.GetBuffer(20),
+				TEXT("1"), CONFIG_FILE);
 			
 		}
+		WritePrivateProfileString(FIGHT_SKILL, PET_ATTACK_BACK, CN_YES, CONFIG_FILE);
 		WritePrivateProfileString(SCRIPT_CONTROLL, WHEN_HP_STOP_FIND_ENEMY, TEXT("150"), CONFIG_FILE);
 		WritePrivateProfileString(SCRIPT_CONTROLL, WHEN_MP_STOP_FIND_ENEMY, TEXT("100"), CONFIG_FILE);
 		WritePrivateProfileString(SCRIPT_CONTROLL, WHEN_LOW_MP_SKILL, TEXT("50"), CONFIG_FILE);

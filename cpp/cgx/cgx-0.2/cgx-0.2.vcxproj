@@ -14,7 +14,7 @@
     <ProjectGuid>{3C5E63F0-A0E1-4EC6-AAF3-50FC7FB918E8}</ProjectGuid>
     <RootNamespace>cgx02</RootNamespace>
     <Keyword>MFCProj</Keyword>
-    <ProjectName>cgx-0.3.2</ProjectName>
+    <ProjectName>cgx-0.3.6</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -132,6 +132,7 @@
     <ClInclude Include="CgxLoginForm.h" />
     <ClInclude Include="CgxMapWindow.h" />
     <ClInclude Include="CgxMonster.h" />
+    <ClInclude Include="CgxOfflineWindow.h" />
     <ClInclude Include="CgxPetCommandWindow.h" />
     <ClInclude Include="CgxPlayerCommand.h" />
     <ClInclude Include="CgxSkillWindow.h" />
@@ -159,6 +160,7 @@
     <ClCompile Include="CgxLoginForm.cpp" />
     <ClCompile Include="CgxMapWindow.cpp" />
     <ClCompile Include="CgxMonster.cpp" />
+    <ClCompile Include="CgxOfflineWindow.cpp" />
     <ClCompile Include="CgxPetCommandWindow.cpp" />
     <ClCompile Include="CgxPlayerCommand.cpp" />
     <ClCompile Include="CgxSkillWindow.cpp" />

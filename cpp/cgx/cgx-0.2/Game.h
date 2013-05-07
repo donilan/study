@@ -10,6 +10,7 @@
 #include "CgxGoodsWindow.h"
 #include "CgxBottomWindow.h"
 #include "CgxSystemWindow.h"
+#include "CgxOfflineWindow.h"
 
 class CGame
 {
@@ -39,6 +40,7 @@ public:
 	CCgxGoodsWindow* goodsWindows;
 	CCgxBottomWindow* bottomWindow;
 	CCgxSystemWindow* systemWindow;
+	CCgxOfflineWindow* offlineWindow;
 private:
 	HWND hwnd;
 	CHWNDScreen* pScreen;
@@ -46,6 +48,7 @@ private:
 public:
 	HWND getHWND(void);
 	CHWNDScreen* getScreen(void);
+	BOOL isOffline();
 };
 
 
