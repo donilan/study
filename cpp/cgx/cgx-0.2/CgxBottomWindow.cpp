@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "CgxBottomWindow.h"
 #include "resource.h"
+#include "System.h"
 
 CCgxBottomWindow::CCgxBottomWindow(CHWNDScreen* pScreen)
 	: CCgxWindow(IDB_BOTTOM_WINDOW, pScreen)
@@ -49,17 +50,26 @@ BOOL CCgxBottomWindow::isCommandEnable( int index )
 void CCgxBottomWindow::openGoodsWindow()
 {
 	if(!isCommandEnable(2))
-		leftClick(2);
+		//leftClick(2);
+	{
+		CSystem::sendKeyWithCtrl('E');
+	}
 }
 
 void CCgxBottomWindow::closeGoodsWindow()
 {
 	if(isCommandEnable(2))
-		leftClick(2);
+		//leftClick(2);
+	{
+		CSystem::sendKeyWithCtrl('E');
+	}
 }
 
 void CCgxBottomWindow::openSystemWindow()
 {
 	if(!isCommandEnable(6))
-		leftClick(6);
+		//leftClick(6);
+	{
+		CSystem::sendKey(VK_ESCAPE);
+	}
 }

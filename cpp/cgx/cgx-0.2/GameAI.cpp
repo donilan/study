@@ -9,7 +9,8 @@
 #define FIGHT_INTERVAL 800
 #define HIT_INTERNAL 200
 #define TALK_INTERVAL 2000
-#define WALK_INTERVAL 185
+//185
+#define WALK_INTERVAL 210
 #define LOOP_TIMES 3
 
 const RECT YES_CONDITION = {200, 320, 270, 370}; // yes
@@ -67,7 +68,7 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 	ai->script.command = CScript::UNKNOW;
 	ai->script.resetPos();
 	ai->startTime = CTime::GetCurrentTime();
-	ai->writeLog(TEXT("\r\n开始脚本"));
+	ai->writeLog(TEXT("开始脚本"));
 	ai->fuckingMouse();
 	while(ai->isAIStart && hasNextStep)
 	{
@@ -203,7 +204,7 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 		
 	}
 	ai->endTime = CTime::GetCurrentTime();
-	ai->writeLog(TEXT("结束脚本"));
+	ai->writeLog(TEXT("结束脚本\r\n\r\n"));
 	return 0;
 }
 
@@ -634,6 +635,7 @@ void CGameAI::autoFight(void)
 		{
 			petFight();
 			Sleep(2000);
+			sayAgain();
 		} else 
 			Sleep(500);
 	} else {
@@ -944,6 +946,7 @@ void CGameAI::fuckingMouse(void)
 void CGameAI::writeLog( CString str )
 {
 	static TCHAR* szFileName = TEXT("运行日志.log");
+	const DWORD unicode = 0xFEFF;
 	CString fmtStr;
 	CTime nowTime = CTime::GetCurrentTime();
 	CFile file;
@@ -960,6 +963,10 @@ void CGameAI::writeLog( CString str )
 		// Open the file with the Create flag
 		//OutputDebugString(TEXT("Create file.\n"));
 		isOk = file.Open( szFileName, CFile::modeCreate | CFile::modeWrite );
+		if(isOk)
+		{
+			file.Write(&unicode, 2);
+		}
 	}
 	if(isOk)
 	{
@@ -969,4 +976,11 @@ void CGameAI::writeLog( CString str )
 		file.Close();
 	}
 	
+}
+
+void CGameAI::sayAgain()
+{
+	CSystem::sendKey(VK_UP);
+	Sleep(500);
+	CSystem::sendKey(VK_RETURN);
 }

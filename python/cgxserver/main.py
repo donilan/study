@@ -22,16 +22,17 @@ CREATE TABLE IF NOT EXISTS AUTH_LOG(
   PASSWORD VARCHAR(255),
   MAC VARCHAR(255),
   IP VARCHAR(255),
-  AUTH_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  AUTH_DATE DATE DEFAULT (DATETIME('now', 'localtime'))
 )
 ''')
     conn.commit()
 
 def authLog(fn):
     def new(param):
-        c = conn.cursor()
-        c.execute("INSERT INTO AUTH_LOG(USERNAME, PASSWORD, MAC, IP) VALUES (?,?,?,?)", param)
-        conn.commit()
+        if(param):
+            c = conn.cursor()
+            c.execute("INSERT INTO AUTH_LOG(USERNAME, PASSWORD, MAC, IP) VALUES (?,?,?,?)", param)
+            conn.commit()
         return fn(param)
     return new
 

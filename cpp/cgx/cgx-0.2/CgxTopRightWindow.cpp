@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "CgxTopRightWindow.h"
 #include "resource.h"
+#include "System.h"
 
 CCgxTopRightWindow::CCgxTopRightWindow(CHWNDScreen* pScreen)
 	: CCgxWindow(IDB_TOP_RIGHT, pScreen)
@@ -47,5 +48,8 @@ BOOL CCgxTopRightWindow::isCommandEnable( int index )
 void CCgxTopRightWindow::openMap()
 {
 	if(!isCommandEnable(7))
-		leftClick(7);
+	{
+		//leftClick(7);
+		CSystem::sendKeyWithCtrl('S');
+	}
 }

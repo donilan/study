@@ -3,6 +3,8 @@
 #include <time.h>
 #include <stdlib.h>
 
+#define KEY_PRESS_INTERVAL 100
+
 CSystem::CSystem(void)
 {
 }
@@ -118,4 +120,21 @@ void CSystem::leftPress(int x, int y)
 	Sleep(1000);
 	//SetCursorPos(oldPoint.x, oldPoint.y);
 	CSystem::lockScreen(FALSE);
+}
+
+void CSystem::sendKey( int key )
+{
+	keybd_event(key, 0, 0, 0);
+	Sleep(KEY_PRESS_INTERVAL);
+	keybd_event(key, 0, KEYEVENTF_KEYUP, 0);
+}
+
+void CSystem::sendKeyWithCtrl( int key )
+{
+	keybd_event(VK_CONTROL, 0, 0, 0);
+	keybd_event(key, 0, 0, 0);
+	Sleep(KEY_PRESS_INTERVAL);
+	keybd_event(key, 0, KEYEVENTF_KEYUP, 0);
+	keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, 0);	
+	
 }
