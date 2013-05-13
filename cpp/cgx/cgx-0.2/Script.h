@@ -18,6 +18,7 @@
 #define CN_SURE			TEXT("确定")
 #define CN_CANCEL		TEXT("取消")
 #define CN_TIME			TEXT("时间")
+#define CN_TEST			TEXT("测试")
 
 class CScript
 {
@@ -25,7 +26,7 @@ public:
 	enum COMMANDS {
 		UNKNOW, WALK, HEAL, TALK, CHANGE_MAP, AGAIN, 
 		FIND_ENEMY, LOGOUT, MAZE, AUTO_FIGHT, BACK_TO_CITY, 
-		SALE, TIME
+		SALE, TIME, TEST
 	};
 	CScript();
 	CScript(TCHAR*);

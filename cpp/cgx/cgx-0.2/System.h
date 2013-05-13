@@ -1,7 +1,6 @@
 #pragma once
 
 
-
 class CSystem
 {
 public:
@@ -18,5 +17,9 @@ public:
 	static void leftPress(int x, int y);
 	static void sendKey(int key);
 	static void sendKeyWithCtrl(int key);
+	static void resetCounter();
+	static int getLeftClickCounter();
+	static int getRightClickCounter();
+	static int getSendKeyCounter();
 };
 

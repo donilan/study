@@ -43,7 +43,7 @@ public:
 	int hp;
 	BOOL isAIStart;
 	BOOL isLocatePetSkill;
-
+	int fightTimes; //战斗回合统计
 	CScript script;
 private:
 	
@@ -76,5 +76,7 @@ public:
 	void doTime();
 	void fuckingMouse(void);
 	void writeLog(CString str);
+	void sayRandom();
+	void doTest();
 };
 

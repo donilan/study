@@ -4,6 +4,11 @@
 #include <stdlib.h>
 
 #define KEY_PRESS_INTERVAL 100
+#define CLICK_RADOM 500
+
+int __leftClickCounter = 0;
+int __rightClickCounter = 0;
+int __sendKeyCounter = 0;
 
 CSystem::CSystem(void)
 {
@@ -21,10 +26,7 @@ BOOL CSystem::lockScreen(BOOL lock)
 
 BOOL CSystem::leftClick(int x, int y)
 {
-#ifdef DEBUG
-	static int leftClickCount = 0;
-	TRACE("**Left click counter: %d\n", ++leftClickCount);
-#endif
+	++__leftClickCounter;
 	POINT* point = (POINT*)malloc(sizeof(POINT));
 	point->x = x;
 	point->y = y;
@@ -34,15 +36,17 @@ BOOL CSystem::leftClick(int x, int y)
 
 UINT CSystem::LeftClickThread( LPVOID lPvoid)
 {
-	//srand(time(NULL));
+	srand(time(NULL));
 	CSystem::lockScreen(TRUE);
 	POINT oldPoint;
+	int randNum =  rand() % CLICK_RADOM;
 	GetCursorPos(&oldPoint);
 	LPPOINT p = (LPPOINT) lPvoid;
 	TRACE("Lect click: (%d, %d)\n", p->x, p->y);
 	SetCursorPos(p->x, p->y);
 	Sleep(100);
 	mouse_event(MOUSEEVENTF_LEFTDOWN, p->x, p->y, 0, 0);
+	TRACE("Check random number: %d\n", randNum);
 	Sleep(50);
 	mouse_event(MOUSEEVENTF_LEFTUP, p->x, p->y, 0, 0);
 	Sleep(50);
@@ -57,9 +61,13 @@ UINT CSystem::LeftClickThread( LPVOID lPvoid)
 
 void CSystem::leftClick(const RECT* rect)
 {
-	int x = (rect->right - rect->left) / 2 + rect->left;
-	int y = (rect->bottom - rect->top) / 2 + rect->top;
-	leftClick(x, y);
+	srand(time(NULL));
+	int ranX = rand() % (rect->right - rect->left -4) +2;
+	int ranY = rand() % (rect->bottom - rect->top -4) +2;
+	//int x = (rect->right - rect->left) / 2 + rect->left;
+	//int y = (rect->bottom - rect->top) / 2 + rect->top;
+	//leftClick(x, y);
+	leftClick(rect->left+ranX, rect->top+ranY);
 }
 
 
@@ -74,14 +82,17 @@ int CSystem::ansi2unicode(char* in, size_t inSize, TCHAR* out, size_t outSize)
 
 void CSystem::rightClick(int x, int y)
 {
+	++__rightClickCounter;
 	POINT* point = (POINT*)malloc(sizeof(POINT));
 	point->x = x;
 	point->y = y;
 	AfxBeginThread(CSystem::rightClickThread, point);
+	
 }
 
 UINT CSystem::rightClickThread( LPVOID lPvoid)
 {
+	srand(time(NULL));
 	CSystem::lockScreen(TRUE);
 	POINT oldPoint;
 	GetCursorPos(&oldPoint);
@@ -90,7 +101,7 @@ UINT CSystem::rightClickThread( LPVOID lPvoid)
 	SetCursorPos(p->x, p->y);
 	Sleep(100);
 	mouse_event(MOUSEEVENTF_RIGHTDOWN, p->x, p->y, 0, 0);
-	Sleep(50);
+	Sleep(100+ rand() % 200);
 	mouse_event(MOUSEEVENTF_RIGHTUP, p->x, p->y, 0, 0);
 	Sleep(50);
 	SetCursorPos(30, 400);
@@ -115,26 +126,52 @@ void CSystem::leftPress(int x, int y)
 	GetCursorPos(&oldPoint);
 	if(p.x == 0 && p.y == 0)
 		memcpy(&p, &oldPoint, sizeof(POINT));
-	Sleep(100);
+	Sleep(100+ rand() % 200);
 	mouse_event(MOUSEEVENTF_LEFTDOWN, p.x, p.y, 0, 0);
-	Sleep(1000);
+	Sleep(2000+ + rand() % 200);
+	mouse_event(MOUSEEVENTF_RIGHTUP, p.x, p.y, 0, 0);
 	//SetCursorPos(oldPoint.x, oldPoint.y);
 	CSystem::lockScreen(FALSE);
 }
 
 void CSystem::sendKey( int key )
 {
+	++__sendKeyCounter;
 	keybd_event(key, 0, 0, 0);
-	Sleep(KEY_PRESS_INTERVAL);
+	Sleep(KEY_PRESS_INTERVAL + rand() % CLICK_RADOM);
 	keybd_event(key, 0, KEYEVENTF_KEYUP, 0);
+	
 }
 
 void CSystem::sendKeyWithCtrl( int key )
 {
+	++__sendKeyCounter;
 	keybd_event(VK_CONTROL, 0, 0, 0);
 	keybd_event(key, 0, 0, 0);
-	Sleep(KEY_PRESS_INTERVAL);
+	Sleep(KEY_PRESS_INTERVAL+ rand() % CLICK_RADOM);
 	keybd_event(key, 0, KEYEVENTF_KEYUP, 0);
 	keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, 0);	
 	
+}
+
+void CSystem::resetCounter()
+{
+	__leftClickCounter = 0;
+	__sendKeyCounter = 0;
+	__rightClickCounter = 0;
+}
+
+int CSystem::getLeftClickCounter()
+{
+	return __leftClickCounter;
+}
+
+int CSystem::getRightClickCounter()
+{
+	return __rightClickCounter;
+}
+
+int CSystem::getSendKeyCounter()
+{
+	return __sendKeyCounter;
 }

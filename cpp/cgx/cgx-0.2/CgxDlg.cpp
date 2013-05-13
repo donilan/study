@@ -56,6 +56,7 @@ BOOL CCgxDlg::OnInitDialog()
 	ShowWindow(SW_NORMAL);
 
 	// TODO: 在此添加额外的初始化代码
+	//InitializeWinIo();
 #ifdef DEBUG
 	RegisterHotKey(this->m_hWnd, HOTKEY_F2, 0, VK_F2);
 	isTestDlgOpen = FALSE;

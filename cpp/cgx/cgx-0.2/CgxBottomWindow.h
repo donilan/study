@@ -12,5 +12,6 @@ public:
 	void openGoodsWindow();
 	void closeGoodsWindow();
 	void openSystemWindow();
+	void closeSystemWindow();
 };
 

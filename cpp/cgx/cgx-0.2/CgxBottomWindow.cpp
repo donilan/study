@@ -73,3 +73,12 @@ void CCgxBottomWindow::openSystemWindow()
 		CSystem::sendKey(VK_ESCAPE);
 	}
 }
+
+void CCgxBottomWindow::closeSystemWindow()
+{
+	if(isCommandEnable(6))
+		//leftClick(6);
+	{
+		CSystem::sendKey(VK_ESCAPE);
+	}
+}

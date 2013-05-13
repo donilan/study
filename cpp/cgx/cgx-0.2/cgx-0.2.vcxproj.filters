@@ -91,6 +91,7 @@
     <None Include="image\window\goods_fire_prop.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CgxDlg.h">

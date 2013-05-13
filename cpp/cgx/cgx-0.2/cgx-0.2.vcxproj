@@ -14,7 +14,7 @@
     <ProjectGuid>{3C5E63F0-A0E1-4EC6-AAF3-50FC7FB918E8}</ProjectGuid>
     <RootNamespace>cgx02</RootNamespace>
     <Keyword>MFCProj</Keyword>
-    <ProjectName>cgx-0.3.9</ProjectName>
+    <ProjectName>cgx-0.4.4</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -58,6 +58,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -84,6 +85,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -97,6 +100,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="image\window\all.bmp" />
     <None Include="image\window\bottom_window.bmp" />
     <None Include="image\window\cancel.bmp" />

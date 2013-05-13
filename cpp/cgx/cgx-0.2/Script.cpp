@@ -104,7 +104,7 @@ BOOL CScript::parseCommand(void)
 		{
 			if(command == CHANGE_MAP || command == FIND_ENEMY
 				|| command == BACK_TO_CITY || command == TIME
-				|| command == TALK)
+				|| command == TALK || command == TEST)
 			{
 				//CHANGE_MAP 第一个是走路坐标，第二个是转图后坐标
 				//FIND_ENEMY 限制坐标
@@ -119,7 +119,8 @@ BOOL CScript::parseCommand(void)
 			//如果是对话或者治疗
 			if(command == TALK || command == HEAL || command == CHANGE_MAP 
 				|| command == FIND_ENEMY || command == SALE 
-				|| command == BACK_TO_CITY || command == TIME)
+				|| command == BACK_TO_CITY || command == TIME
+				|| command == TEST)
 			{
 				if(split(nextLine, &cmdIdx, tmp))
 				{
@@ -178,6 +179,7 @@ BOOL CScript::parseChineseCommand(const TCHAR* pChar, COMMANDS* commandOut)
 	TO_COMMAND(commandOut, AUTO_FIGHT)
 	TO_COMMAND(commandOut, SALE)
 	TO_COMMAND(commandOut, TIME)
+	TO_COMMAND(commandOut, TEST)
 	else 
 	{
 		*commandOut = UNKNOW;
