@@ -104,3 +104,9 @@ BOOL CGame::isOffline()
 {
 	return offlineWindow->locate();
 }
+
+void CGame::setHWND( HWND _hwnd)
+{
+	this->hwnd = _hwnd;
+	this->pScreen->hwnd = _hwnd;
+}

@@ -26,6 +26,8 @@ BOOL CSystem::lockScreen(BOOL lock)
 
 BOOL CSystem::leftClick(int x, int y)
 {
+	if(x <= 10 || y <= 10)
+		return FALSE;
 	++__leftClickCounter;
 	POINT* point = (POINT*)malloc(sizeof(POINT));
 	point->x = x;
@@ -61,13 +63,13 @@ UINT CSystem::LeftClickThread( LPVOID lPvoid)
 
 void CSystem::leftClick(const RECT* rect)
 {
-	srand(time(NULL));
-	int ranX = rand() % (rect->right - rect->left -4) +2;
-	int ranY = rand() % (rect->bottom - rect->top -4) +2;
-	//int x = (rect->right - rect->left) / 2 + rect->left;
-	//int y = (rect->bottom - rect->top) / 2 + rect->top;
-	//leftClick(x, y);
-	leftClick(rect->left+ranX, rect->top+ranY);
+	//srand(time(NULL));
+//	int ranX = rand() % (rect->right - rect->left -4) +2;
+//	int ranY = rand() % (rect->bottom - rect->top -4) +2;
+	int x = (rect->right - rect->left) / 2 + rect->left;
+	int y = (rect->bottom - rect->top) / 2 + rect->top;
+	leftClick(x, y);
+	//leftClick(rect->left+ranX, rect->top+ranY);
 }
 
 
@@ -101,7 +103,7 @@ UINT CSystem::rightClickThread( LPVOID lPvoid)
 	SetCursorPos(p->x, p->y);
 	Sleep(100);
 	mouse_event(MOUSEEVENTF_RIGHTDOWN, p->x, p->y, 0, 0);
-	Sleep(100+ rand() % 200);
+	Sleep(100+ rand() % CLICK_RADOM);
 	mouse_event(MOUSEEVENTF_RIGHTUP, p->x, p->y, 0, 0);
 	Sleep(50);
 	SetCursorPos(30, 400);
@@ -126,10 +128,10 @@ void CSystem::leftPress(int x, int y)
 	GetCursorPos(&oldPoint);
 	if(p.x == 0 && p.y == 0)
 		memcpy(&p, &oldPoint, sizeof(POINT));
-	Sleep(100+ rand() % 200);
+	Sleep(100);
 	mouse_event(MOUSEEVENTF_LEFTDOWN, p.x, p.y, 0, 0);
-	Sleep(2000+ + rand() % 200);
-	mouse_event(MOUSEEVENTF_RIGHTUP, p.x, p.y, 0, 0);
+	Sleep(100);
+	//mouse_event(MOUSEEVENTF_RIGHTUP, p.x, p.y, 0, 0);
 	//SetCursorPos(oldPoint.x, oldPoint.y);
 	CSystem::lockScreen(FALSE);
 }
@@ -175,3 +177,76 @@ int CSystem::getSendKeyCounter()
 {
 	return __sendKeyCounter;
 }
+
+
+BOOL CSystem::SafeTerminateProcess(HANDLE hProcess, UINT uExitCode)
+{
+	DWORD dwTID, dwCode, dwErr = 0;
+	HANDLE hProcessDup = INVALID_HANDLE_VALUE;
+	HANDLE hRT = NULL;
+	HINSTANCE hKernel = GetModuleHandle(TEXT("Kernel32"));
+	BOOL bSuccess = FALSE;
+
+	BOOL bDup = DuplicateHandle(GetCurrentProcess(), 
+		hProcess, 
+		GetCurrentProcess(), 
+		&hProcessDup, 
+		PROCESS_ALL_ACCESS, 
+		FALSE, 
+		0);
+
+	// Detect the special case where the process is 
+	// already dead...
+	if ( GetExitCodeProcess((bDup) ? hProcessDup : hProcess, &dwCode) && 
+		(dwCode == STILL_ACTIVE) ) 
+	{
+		FARPROC pfnExitProc;
+
+		pfnExitProc = GetProcAddress(hKernel, "ExitProcess");
+
+		hRT = CreateRemoteThread((bDup) ? hProcessDup : hProcess, 
+			NULL, 
+			0, 
+			(LPTHREAD_START_ROUTINE)pfnExitProc,
+			(PVOID)uExitCode, 0, &dwTID);
+
+		if ( hRT == NULL )
+			dwErr = GetLastError();
+	}
+	else
+	{
+		dwErr = ERROR_PROCESS_ABORTED;
+	}
+
+
+	if ( hRT )
+	{
+		// Must wait process to terminate to 
+		// guarantee that it has exited...
+		WaitForSingleObject((bDup) ? hProcessDup : hProcess, 
+			INFINITE);
+
+		CloseHandle(hRT);
+		bSuccess = TRUE;
+	}
+
+	if ( bDup )
+		CloseHandle(hProcessDup);
+
+	if ( !bSuccess )
+		SetLastError(dwErr);
+
+	return bSuccess;
+}
+
+BOOL CSystem::enumChildProc( HWND hwnd, LPARAM lParam )
+{
+	TCHAR buff[256];
+	::GetWindowText(hwnd, buff, 255);
+	int nCtrlID = ::GetDlgCtrlID(hwnd);
+	OutputDebugString(buff);
+	TRACE("ctrl id: %08x \n", nCtrlID);
+
+	return TRUE;
+}
+

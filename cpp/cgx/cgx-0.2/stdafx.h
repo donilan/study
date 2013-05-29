@@ -55,4 +55,6 @@
 #endif
 #endif
 
-
+#define MAX_CROSS_GATE 10
+#define CROSS_GATE_CN TEXT("\u9b54\u529b\u5b9d\u8d1d")
+#define DEBUG_RECT(rect) TRACE("Left: %d, top: %d, right: %d, bottom: %d\n", rect.left, rect.top, rect.right, rect.bottom)

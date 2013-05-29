@@ -14,7 +14,7 @@
     <ProjectGuid>{3C5E63F0-A0E1-4EC6-AAF3-50FC7FB918E8}</ProjectGuid>
     <RootNamespace>cgx02</RootNamespace>
     <Keyword>MFCProj</Keyword>
-    <ProjectName>cgx-0.4.4</ProjectName>
+    <ProjectName>cgx-0.5.0</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

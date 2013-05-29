@@ -43,8 +43,20 @@ public:
 	int hp;
 	BOOL isAIStart;
 	BOOL isLocatePetSkill;
-	int fightTimes; //战斗回合统计
+	//统计
+	BOOL isFighting;
+	int fightTimes; //战斗次数统计
+	int fightRound; //战斗回合统计
+
+	int saleCounter;
+	int healCounter;
+	int resetCounter;
+	int talkCounter;
+	int backToCityCounter;
+	//end统计
 	CScript script;
+
+	BOOL isGameClosed;
 private:
 	
 	int gamerNumber;
@@ -55,6 +67,7 @@ private:
 	inline void rightClickTager(int x, int y);
 	inline int getMinu();
 	inline void sayAgain();
+	inline void fuckingNP();
 public:
 	HWND getHWND(void);
 	void startAI(void);
@@ -63,6 +76,7 @@ public:
 	void playerFight();
 	void petFight(void);
 	BOOL choiceSkill(const int monsterNumber, int* skillIndex, int* skillLv);
+	void makeSureLocation();
 	void doHeal();
 	void doTalk();
 	void doFindEnemy();
@@ -78,5 +92,7 @@ public:
 	void writeLog(CString str);
 	void sayRandom();
 	void doTest();
+	void doCloseGame();
+	void doStartGame();
 };
 

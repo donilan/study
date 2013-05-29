@@ -46,6 +46,7 @@ private:
 	CHWNDScreen* pScreen;
 	
 public:
+	void setHWND(HWND);
 	HWND getHWND(void);
 	CHWNDScreen* getScreen(void);
 	BOOL isOffline();

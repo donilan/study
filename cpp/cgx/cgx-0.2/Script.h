@@ -19,6 +19,8 @@
 #define CN_CANCEL		TEXT("取消")
 #define CN_TIME			TEXT("时间")
 #define CN_TEST			TEXT("测试")
+#define CN_CLOSE_GAME	TEXT("关闭游戏")
+#define CN_START_GAME	TEXT("启动游戏")
 
 class CScript
 {
@@ -26,7 +28,7 @@ public:
 	enum COMMANDS {
 		UNKNOW, WALK, HEAL, TALK, CHANGE_MAP, AGAIN, 
 		FIND_ENEMY, LOGOUT, MAZE, AUTO_FIGHT, BACK_TO_CITY, 
-		SALE, TIME, TEST
+		SALE, TIME, TEST, CLOSE_GAME, START_GAME
 	};
 	CScript();
 	CScript(TCHAR*);

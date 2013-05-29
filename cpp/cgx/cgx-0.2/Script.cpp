@@ -180,6 +180,8 @@ BOOL CScript::parseChineseCommand(const TCHAR* pChar, COMMANDS* commandOut)
 	TO_COMMAND(commandOut, SALE)
 	TO_COMMAND(commandOut, TIME)
 	TO_COMMAND(commandOut, TEST)
+	TO_COMMAND(commandOut, CLOSE_GAME)
+	TO_COMMAND(commandOut, START_GAME)
 	else 
 	{
 		*commandOut = UNKNOW;

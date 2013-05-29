@@ -21,5 +21,7 @@ public:
 	static int getLeftClickCounter();
 	static int getRightClickCounter();
 	static int getSendKeyCounter();
+	static BOOL SafeTerminateProcess(HANDLE hProcess, UINT uExitCode);
+	static BOOL CALLBACK enumChildProc(HWND hwnd, LPARAM lParam);
 };
 

@@ -41,6 +41,82 @@ int CCgxMapWindow::getY(void)
 	return pScreen->toNumber(&yRECT);
 }
 
+#define MAX_STEP 4
+int CCgxMapWindow::_calcNextPoint(int nextX, int nextY, PPOINT pPoint)
+{
+	if(nextX > MAX_STEP)
+		nextX = MAX_STEP;
+	else if(nextX < -MAX_STEP)
+		nextX = -MAX_STEP;
+	if(nextY > MAX_STEP)
+		nextY = MAX_STEP;
+	else if(nextY < -MAX_STEP)
+		nextY = -MAX_STEP;
+
+	int centerX = 0;
+	int centerY = 0;
+	centerXY(&centerX, &centerY);
+	if(nextX == 0 && nextY == 0)
+	{
+		pPoint->x = centerX;
+		pPoint->y = centerY;
+		return 0;
+	}
+	else if(nextX == 0)
+	{
+		if(nextY > 0)
+		{
+			pPoint->x = centerX + 31 * nextY;
+			pPoint->y = centerY + 24 * nextY;
+		}
+		else
+		{
+			pPoint->x = centerX + 31 * nextY;
+			pPoint->y = centerY + 24 * nextY;
+		}
+		return abs(nextY);
+	}
+	else if(nextY == 0)
+	{
+		if(nextX > 0)
+		{
+			pPoint->x = centerX + 31 * nextX;
+			pPoint->y = centerY - 24 * nextX;
+		}
+		else
+		{
+			pPoint->x = centerX + 31 * nextX;
+			pPoint->y = centerY - 24 * nextX;
+		}
+		return abs(nextX);
+	}
+	else if(nextX > 0 && nextY > 0)
+	{
+		pPoint->x = centerX + 62 * min(nextX, nextY);
+		pPoint->y = centerY;
+		return min(nextX, nextY);
+	}
+	else if(nextX > 0 && nextY < 0)
+	{
+		pPoint->x = centerX;
+		pPoint->y = centerY  - 43 * min(nextX, -nextY);
+		return min(nextX, -nextY);
+	}
+	else if(nextX < 0 && nextY > 0)
+	{
+		pPoint->x = centerX;
+		pPoint->y = centerY  + 43 * min(-nextX, nextY);
+		return  min(-nextX, nextY);
+	}
+	else if(nextX < 0 && nextY < 0)
+	{
+		pPoint->x = centerX - 62 * min(-nextX, -nextY);
+		pPoint->y = centerY;
+		return min(-nextX, -nextY);
+	}
+	return 0;
+}
+/*
 int CCgxMapWindow::_calcNextPoint(const int nextX, const int nextY, PPOINT pPoint)
 {
 	int walkStep = 0;
@@ -82,7 +158,7 @@ int CCgxMapWindow::_calcNextPoint(const int nextX, const int nextY, PPOINT pPoin
 	pPoint->y = centerY + flagY * walkStep * 25;
 	return walkStep;
 }
-
+*/
 
 
 int CCgxMapWindow::goNext(int nextX, int nextY)
@@ -109,4 +185,12 @@ int CCgxMapWindow::moveMouse(int nextX, int nextY)
 	int walkStep = _calcNextPoint(nextX, nextY, &p);
 	SetCursorPos(p.x, p.y);
 	return walkStep;
+}
+
+void CCgxMapWindow::move2center()
+{
+	int x;
+	int y;
+	centerXY(&x, &y);
+	SetCursorPos(x, y);
 }
