@@ -94,14 +94,15 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 		if(ai->script.command == CScript::UNKNOW) {
 			hasNextStep = ai->script.nextStep();
 		}
-		if(!leader->getScreen()->isFocus() && 
-			ai->script.command != CScript::START_GAME
-			&& ai->script.command != CScript::TIME
-			&& ai->script.command != CScript::AGAIN
-			&& ai->isGameClosed == FALSE)
+		if(!leader->getScreen()->isFocus() || 
+			ai->script.command == CScript::START_GAME
+			|| ai->script.command == CScript::TIME
+			|| ai->script.command == CScript::AGAIN
+			|| !ai->isGameClosed)
 		{
 			Sleep(500);
-			TRACE("No focus... command[%d]\n", ai->script.command);
+			TRACE("No focus... command[%d], is focus [%d], is game closed [%d].\n", 
+				ai->script.command, leader->getScreen()->isFocus(), ai->isGameClosed);
 			continue;
 		}
 		
@@ -113,10 +114,20 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 			Sleep(500);
 			ai->checkHPAndMP();
 			leader->topRightWindow->openMap();
+			Sleep(500);
+			leader->topRightWindow->disablePets();
 			isMapOpened = TRUE;
 			TRACE("Map is opened!\n");
 			Sleep(500);
-		}
+			ai->writeLog(TEXT("打开地图窗口"));
+			if(leader->topLeftWindow->isExists()) 
+				ai->writeLog(TEXT("检查左上窗口成功"));
+			else
+				ai->writeLog(TEXT("检查左上窗口失败"));
+			Sleep(200);
+		} 
+		else 
+			ai->writeLog(TEXT("不检查右上窗口"));
 
 		if(ai->script.command == CScript::WALK || ai->script.command == CScript::CHANGE_MAP)
 		{
@@ -349,11 +360,14 @@ CGame* CGameAI::getLeader(void)
 
 void CGameAI::playerFight()
 {
+	CString logStr;
 	int skill = -1;
 	int level = -1;
 	int numOfMonster = leader->monster->countAlive();
 	choiceSkill(numOfMonster, &skill, &level);
 	TRACE("Player fighting start skill index [%d] level [%d]...\n", skill, level);
+	logStr.Format(TEXT("战斗中，怪物数量[%d]，选择技能[%d]，等级[%d]"), numOfMonster, skill, level);
+	writeLog(logStr);
 	if(skill == 0)
 	{
 		if(!leader->playerCommandWindow->isCommandEnable(0))
@@ -368,13 +382,14 @@ void CGameAI::playerFight()
 			leader->playerCommandWindow->clickSkillCommand();
 			Sleep(FIGHT_INTERVAL);
 		}
+		OutputDebugString(TEXT("Find player skill window. "));
 		if(leader->playerSkillWindow->isExists())
 		{
 			
 			leader->playerSkillWindow->leftClick(skill-1);
 			Sleep(FIGHT_INTERVAL);
 		}
-		
+		OutputDebugString(TEXT("Find player skill level window. "));
 		if(leader->playerSkillLevelWindow->isExists())
 		{
 			leader->playerSkillLevelWindow->leftClick(level-1);
@@ -426,7 +441,7 @@ BOOL CGameAI::choiceSkill(const int monsterNumber, int* skillIndex, int* skillLv
 	int skill0MP = 0;
 	checkHPAndMP();
 	skill0MP = GetPrivateProfileInt(SCRIPT_CONTROLL, WHEN_LOW_MP_SKILL, 20, CONFIG_FILE);
-	TRACE("Mp %d, SKILL0 Mp %d\n", mp, skill0MP);
+	//TRACE("Mp %d, SKILL0 Mp %d\n", mp, skill0MP);
 	if(skill0MP > 0 && mp < skill0MP)
 	{
 		*skillIndex = 0;
@@ -604,9 +619,11 @@ void CGameAI::doFindEnemy()
 					TRACE("Now is %d reset minu %d\n", nowMinu, resetMinu);
 					if(resetMinu == nowMinu)
 					{
-						writeLog(TEXT("发现人物卡死，尝试重新开始"));
+						writeLog(TEXT("到达重置时间，重新开始。"));
 						script.resetPos();
+						script.nextStep();
 						isReseted = TRUE;
+						break;
 					}
 				}
 				Sleep(300);
@@ -620,12 +637,12 @@ void CGameAI::doFindEnemy()
 				++fightingCounter;
 				++fightTimes;
 				//战斗超过10次才检查物品
-				if(fightingCounter > 6)
+				if(fightingCounter > 10)
 				{
 					checkGoods(&goodsCounter);
 					logTmp.Format(TEXT("战斗结束，检查物品有%d个"), goodsCounter);
 					writeLog(logTmp);
-					//TRACE("==================Goods: %d\n", goodsCounter);
+					TRACE("==================Goods: %d\n", goodsCounter);
 					if(goodsCounter == NUMBER_OF_GOODS)
 					{
 						if(isConfigYes(SCRIPT_CONTROLL, WHEN_FULL_GOODS_STOP_FIND_ENEMY))
@@ -642,6 +659,19 @@ void CGameAI::doFindEnemy()
 			}
 			currX = pMap->getX();
 			currY = pMap->getY();
+
+			//防止迷宫重置
+			if(script.lastX == currX && script.lastY == currY)
+			{
+				walkStep = pMap->goNext(0, 1);
+				Sleep(walkStep* WALK_INTERVAL);
+			}
+			if(abs(script.lastX - currX) < 2 && abs(script.lastY - currY) < 2)
+			{
+				walkStep = pMap->goNext(script.lastX - currX, script.lastY - currY);
+				Sleep(walkStep* WALK_INTERVAL);
+			}
+
 			// 无限制遇敌
 			if(script.x == 0 && script.y == 0)
 			{
@@ -654,7 +684,7 @@ void CGameAI::doFindEnemy()
 						continue;
 					}
 					walkStep = pMap->goNext(-10, 0);
-					Sleep(walkStep* WALK_INTERVAL);
+					Sleep(walkStep* WALK_INTERVAL / 2);
 				} 
 				else if(endOfSouth == 0)
 				{
@@ -665,7 +695,7 @@ void CGameAI::doFindEnemy()
 						continue;
 					}
 					walkStep = pMap->goNext(0, 8);
-					Sleep(walkStep* WALK_INTERVAL);
+					Sleep(walkStep* WALK_INTERVAL/ 2);
 				}
 				else if(endOfNorth == 0)
 				{
@@ -675,7 +705,7 @@ void CGameAI::doFindEnemy()
 						continue;
 					}
 					walkStep = pMap->goNext(0, -8);
-					Sleep(walkStep* WALK_INTERVAL);
+					Sleep(walkStep* WALK_INTERVAL/ 2);
 				}  
 				else
 				{
@@ -1333,9 +1363,11 @@ BOOL CALLBACK FindCrossGateWindowsProc4Login(HWND hwnd, LPARAM lParam)
 
 void CGameAI::doStartGame()
 {
+	int x = 0;
+	int y = 0;
 	RECT rect;
 	DWORD pId = NULL;
-
+	CString logStr;
 	HWND ywtHWND = NULL;
 	HWND crossGameHWND = NULL;
 	//HWND ywtHWND = FindWindow(TEXT("#32770"), NULL);
@@ -1349,47 +1381,85 @@ void CGameAI::doStartGame()
 		GetWindowThreadProcessId(ywtHWND, &pId);
 		EnumWindows(EnumWindowCallBack, (LPARAM)&pId);
 		ywtHWND = (HWND)pId;
-		
-		//ShowWindow(ywtHWND, SW_SHOWMINNOACTIVE);
-		//Sleep(500);
-		//ShowWindow(ywtHWND, SW_RESTORE);
 
 		ShowWindow(ywtHWND, SW_SHOWNORMAL);
 		Sleep(500);
-		//SetForegroundWindow(ywtHWND);
-		//Sleep(1000);
-		
-		
-		//EnumChildWindows(ywtHWND, enterUsernameAndPassword, NULL);
+	
 		SetForegroundWindow(ywtHWND);
 		Sleep(1000);
-		//EnumChildWindows(ywtHWND, loginPlatformLeftClickNextStep, NULL);
-		//PostMessage(ywtHWND, WM_KEYUP, VK_RETURN, NULL);
 		CSystem::sendKey(VK_RETURN);
 		Sleep(1000);
+
+		if(script.x > 1 && script.x < 10) {
+			for(int i = 1; i < script.x; ++i)
+			{
+				CSystem::sendKey(VK_DOWN);
+				Sleep(1000);
+			}
+		}
 		CSystem::sendKey(VK_RETURN);
-		Sleep(5000);
+		Sleep(4000);
 		EnumWindows(FindCrossGateWindowsProc4Login, (LPARAM)&crossGameHWND);
 		if(crossGameHWND)
 		{
 			isGameClosed = FALSE;
 			leader->setHWND(crossGameHWND);
 			SetForegroundWindow(ywtHWND);
-			Sleep(1000);
-			leader->mapWindow->leftClickCenter();
-			Sleep(2000);
-			CSystem::leftClick(156, 148);
-			Sleep(1000);
-			CSystem::leftClick(156, 276);
-			Sleep(100);
-			CSystem::leftClick(156, 276);
+			Sleep(500);
+
+			rect.left = 140;
+			rect.top = 140;
+			rect.right = 170;
+			rect.bottom = 154;
+			while(leader->getScreen()->colorDeviation(&rect, RGB(99,36,33)) == 0)
+			{
+				leader->mapWindow->leftClickCenter();
+				Sleep(500);
+			}
+
+			rect.left = 136;
+			rect.top = 172;
+			rect.right = 166;
+			rect.bottom = 186;
+			fuckingMouse();
+			while(leader->getScreen()->colorDeviation(&rect, RGB(99,36,33)) == 0)
+			{
+				CSystem::leftClick(156, 148);
+				Sleep(1000);
+			}
+
 			rect.left = 142;
 			rect.top = 352;
 			rect.right = 184;
 			rect.bottom = 362;
+			logStr.Format(TEXT("正在登录%d线"), script.y);
+			writeLog(logStr);
+			if(script.y < 1 || script.y > 10)
+				script.y = 3;
+			fuckingMouse();
 			while(leader->getScreen()->colorDeviation(&rect, RGB(255,255,255)) < 4)
-				Sleep(500);
-			CSystem::leftClick(162, 358);
+			{
+				if(script.y < 6)
+				{
+					x = 156;
+					y = 116 + script.y*32;
+				}
+				else
+				{
+					x = 255;
+					y = 116 + (script.y-5)*32;
+				}
+				CSystem::leftClick(x, y);
+				Sleep(100);
+				CSystem::leftClick(x, y);
+				Sleep(100);
+				CSystem::leftClick(x, y);
+				Sleep(1000);
+			}
+			if(script.targetX != 2)
+				CSystem::leftClick(162, 358);
+			else
+				CSystem::leftClick(480, 358);
 			Sleep(8000);
 			
 		}

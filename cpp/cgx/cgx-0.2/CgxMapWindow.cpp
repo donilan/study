@@ -194,3 +194,11 @@ void CCgxMapWindow::move2center()
 	centerXY(&x, &y);
 	SetCursorPos(x, y);
 }
+
+void CCgxMapWindow::getLocateRECT( RECT* rectOut )
+{
+	rectOut->left = 500;
+	rectOut->top = 40;
+	rectOut->right = 600;
+	rectOut->bottom = 100;
+}

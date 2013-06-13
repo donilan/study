@@ -53,3 +53,11 @@ void CCgxTopRightWindow::openMap()
 		CSystem::sendKeyWithCtrl('S');
 	}
 }
+
+void CCgxTopRightWindow::disablePets()
+{
+	if(!isCommandEnable(8))
+	{
+		leftClick(8);
+	}
+}

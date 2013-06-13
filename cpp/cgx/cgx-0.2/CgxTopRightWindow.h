@@ -11,5 +11,6 @@ public:
 	void locateCommands( void );
 	BOOL isCommandEnable(int index);
 	void openMap();
+	void disablePets();
 };
 

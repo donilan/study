@@ -20,5 +20,6 @@ public:
 	void leftClickCenter(void);
 	void move2center();
 	int moveMouse(int nextX, int nextY);
+	void getLocateRECT( RECT* rectOut );
 };
 

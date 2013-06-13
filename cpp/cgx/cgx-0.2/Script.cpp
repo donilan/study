@@ -104,7 +104,7 @@ BOOL CScript::parseCommand(void)
 		{
 			if(command == CHANGE_MAP || command == FIND_ENEMY
 				|| command == BACK_TO_CITY || command == TIME
-				|| command == TALK || command == TEST)
+				|| command == TALK || command == TEST || command == START_GAME)
 			{
 				//CHANGE_MAP 第一个是走路坐标，第二个是转图后坐标
 				//FIND_ENEMY 限制坐标
@@ -120,7 +120,7 @@ BOOL CScript::parseCommand(void)
 			if(command == TALK || command == HEAL || command == CHANGE_MAP 
 				|| command == FIND_ENEMY || command == SALE 
 				|| command == BACK_TO_CITY || command == TIME
-				|| command == TEST)
+				|| command == TEST || command == START_GAME)
 			{
 				if(split(nextLine, &cmdIdx, tmp))
 				{
