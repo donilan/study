@@ -94,11 +94,11 @@ UINT CGameAI::gameAIThread(LPVOID lpVoid)
 		if(ai->script.command == CScript::UNKNOW) {
 			hasNextStep = ai->script.nextStep();
 		}
-		if(!leader->getScreen()->isFocus() || 
-			ai->script.command == CScript::START_GAME
-			|| ai->script.command == CScript::TIME
-			|| ai->script.command == CScript::AGAIN
-			|| !ai->isGameClosed)
+		if(leader->getScreen()->isFocus() &&
+			ai->script.command != CScript::START_GAME
+			&& ai->script.command != CScript::TIME
+			&& ai->script.command != CScript::AGAIN
+			&& ai->isGameClosed == FALSE)
 		{
 			Sleep(500);
 			TRACE("No focus... command[%d], is focus [%d], is game closed [%d].\n", 
